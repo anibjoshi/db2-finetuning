@@ -1,0 +1,623 @@
+<table summary="" id="sqlmsg__sqlmsg" class="defaultstyle cds--data-table"><colgroup><col style="width: 30pt;"><col style="width: 200pt;"><col style="width: 200pt;"><col style="width: 200pt;"></colgroup><thead style="text-align: left;"><tr><th id="sqlmsg__sqlmsg__entry__1" class="ncol"><div class="cds--table-header-label">
+	SQL Message ID
+	</div></th><th id="sqlmsg__sqlmsg__entry__2" class="ncol"><div class="cds--table-header-label">
+	Message
+	</div></th><th id="sqlmsg__sqlmsg__entry__3" class="ncol"><div class="cds--table-header-label">
+	Explanation
+	</div></th><th id="sqlmsg__sqlmsg__entry__4" class="ncol"><div class="cds--table-header-label">
+	User Response
+	</div></th></tr></thead><tbody><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8000N">SQL8000N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>DB2START processing failed; a valid product license was not found. If you have licensed this product, ensure the license key is properly registered. You can register the license using the db2licm command. The license key can be obtained from your licensed product CD.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>A valid license key could not be found and the evaluation period has expired.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Install a license key for the fully entitled version of the product. You can obtain a license key for the product by contacting your IBM representative or authorized dealer.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8001N">SQL8001N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>An attempt to connect to the database failed due to a product license problem.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The connection attempt failed due to one of the following licensing issues:</p>
+	
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">A license key is not present.</li>
+	
+	<li class="cds--list__item">A license key has not been correctly installed.</li>
+	
+	<li class="cds--list__item">A license key has expired.</li>
+	
+	<li class="cds--list__item">This product edition does not support a license key.</li>
+	
+	</ul>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Instruct your database administrator to verify that a valid license key for the database product is installed correctly, and has not expired.</p>
+	
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">Use the db2licm -l command to view licenses.</li>
+	
+	<li class="cds--list__item">Use the db2licm -a command to register a license.</li>
+	
+	<li class="cds--list__item">You can obtain a license key for the product by contacting your IBM representative or authorized dealer.</li>
+	
+	</ul>
+	
+	<p><strong>sqlcode</strong>:  -8001</p>
+	
+	<p><strong>sqlstate</strong>:  42968</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8002N">SQL8002N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>An attempt to connect to a host failed due to a missing DB2 Connect product or invalid license.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>If connecting directly to a host server, a DB2 Connect product with a valid license may not be present on your machine.</p>
+	
+	<p>If connecting to a host server through a DB2 Connect gateway, a valid license may not be present on the DB2 Connect gateway.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Instruct your database administrator to check the following:</p>
+	
+	<p>If connecting directly to the host, first ensure that a DB2 Connect product is present and that the appropriate license key is installed on your machine and is unexpired.</p>
+	
+	<p>If connecting through a DB2 Connect gateway, ensure that the appropriate license key is installed on the gateway and is unexpired.</p>
+	
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">To view licenses, use the db2licm -l command.</li>
+	
+	<li class="cds--list__item">To register a license, use the db2licm -a command.</li>
+	
+	<li class="cds--list__item">You can obtain a license key for the product by contacting your IBM representative or authorized dealer.</li>
+	
+	</ul>
+	
+	<p>Note: Some database product editions may not support connections to a host server.</p>
+	
+	<p><strong>sqlcode</strong>:  -8002</p>
+	
+	<p><strong>sqlstate</strong>:  42968</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8003N">SQL8003N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>A valid license key was not found for the requested function.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The current license key(s) do not allow the requested functionality.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Purchase the license key for this function from your IBM representative or authorized dealer and update your license using the db2licm command.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8004N">SQL8004N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>A valid license key was not found for the requested function.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The current license key(s) do not allow the requested functionality.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Examine the administration notification log for more information. </p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8005N">SQL8005N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The license certificate <var class="keyword varname vartype=quotedString varnumber=1">license-certificate-file-name</var> was not applied because a conflicting license certificate is already registered on the system.  Conflicting license certificate: <var class="keyword varname vartype=quotedString varnumber=2">conflicting-license-certificate-name</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>To license your product, you must register the appropriate license key with your database product.  There are some restrictions on the supported combinations of licenses.  This message is returned when an attempt is made to apply an unsupported combination of licenses:</p>
+	
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">An attempt was made to apply the DB2 pureScale feature license on a system on which either the DB2 Advanced Workgroup Server Edition terabyte license or the DB2 Advanced Enterprise Server Edition terabyte license is already registered.</li>
+	
+	<li class="cds--list__item">An attempt was made to apply the DB2 Advanced Workgroup Server Edition terabyte license or the DB2 Advanced Enterprise Server Edition terabyte license on a system on which the DB2 pureScale feature license is already registered.</li>
+	
+	</ul>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Remove the conflicting license by issuing the db2licm -r command, and then apply the new license again.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8006W">SQL8006W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The product <var class="keyword varname vartype=quotedString varnumber=1">product-name</var> does not have a valid license key registered. If you have licensed this product, ensure the license key is properly registered. You can register the license by using the db2licm command. The license key can be obtained from your licensed product CD. If a license key is not registered, this product will be enabled for a <var class="keyword varname vartype=quotedString varnumber=2">number</var> day evaluation period. USE OF THE PRODUCT FOR THE EVALUATION PERIOD CONSTITUTES ACCEPTANCE OF THE TERMS OF THE IBM LICENSE AGREEMENT located in the installation path of this product in the license directory.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>A valid license key has not been installed for this product. The product will be enabled to operate for a limited period of time for evaluation purposes. THE EVALUATION PERIOD IS CONTROLLED BY A TIME DISABLING DEVICE.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>If you have purchased a fully entitled version of this product, install your license key as described in the product installation documentation. If you have already installed the license key, verify your license file for accuracy.</p>
+	
+	<p>USE OF THE PRODUCT FOR THE EVALUATION PERIOD IS SUBJECT TO THE TERMS OF THE IBM LICENSE AGREEMENT AND LICENSE INFORMATION DOCUMENT FOR THIS PRODUCT.  YOUR USE OF THE PRODUCT DURING THE EVALUATION PERIOD CONSTITUTES YOUR ACCEPTANCE OF THESE TERMS.</p>
+	
+	<p>If you do not accept the terms, you are not authorized to use the product and you must de-install it. You can obtain a license key for the fully authorized program with the product by contacting your IBM representative or authorized dealer.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8007W">SQL8007W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>There are <var class="keyword varname vartype=quotedString varnumber=1">number</var> day(s) left in the evaluation period for the product <var class="keyword varname vartype=quotedString varnumber=2">product-name</var>. For evaluation license terms and conditions, refer to the License Agreement document located in the license directory in the installation path of this product. If you have licensed this product, ensure the license key is properly registered. You can register the license by using the db2licm command line utility. The license key can be obtained from your licensed product CD.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>A valid license key has not been installed for this product. The evaluation period will expire after the specified number of days.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>The product is operating in evaluation mode, and is enabled for a limited period of time. When the evaluation period has expired it will not execute until a license key for the fully entitled version of the product is installed.</p>
+	
+	<p>You can obtain a license key for the product by contacting your IBM representative or authorized dealer.</p>
+	
+	<p><strong>sqlcode</strong>:  +8007</p>
+	
+	<p><strong>sqlstate</strong>:  0168H</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8008N">SQL8008N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The product <var class="keyword varname vartype=quotedString varnumber=1">text</var> does not have a valid license key installed and the evaluation period has expired. Functions specific to this product are not enabled.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>A valid license key could not be found and the evaluation period has
+	expired.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Install a license key for the fully entitled version of the product.
+	You can obtain a license key for the product by contacting your IBM
+	representative or authorized dealer.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8009W">SQL8009W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The number of concurrent users of the DB2 Workgroup product has exceeded the defined entitlement of <var class="keyword varname vartype=quotedString varnumber=1">number</var>. Concurrent user count is <var class="keyword varname vartype=quotedString varnumber=2">number</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The number of concurrent users has exceeded the number of defined DB2 concurrent user entitlements.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Contact your IBM representative or authorized dealer to obtain additional DB2 user entitlements and update the DB2 license information using the db2licm command.</p>
+	
+	<p><strong>sqlcode</strong>:  +8009</p>
+	
+	<p><strong>sqlstate</strong>:  01632</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8010W">SQL8010W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The number of concurrent users of the DB2 Connect product has exceeded the defined entitlement of <var class="keyword varname vartype=quotedString varnumber=1">number</var>. Concurrent user count is <var class="keyword varname vartype=quotedString varnumber=2">number</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The number of concurrent users has exceeded the number of defined DB2 concurrent user entitlements.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Contact your IBM representative or authorized dealer to obtain additional DB2 user entitlements and update the DB2 license information using the db2licm command.</p>
+	
+	<p><strong>sqlcode</strong>:  +8010</p>
+	
+	<p><strong>sqlstate</strong>:  01632</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8011W">SQL8011W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>One or more database partitions does not have a valid DB2 license key installed for the <var class="keyword varname vartype=quotedString varnumber=1">product-name</var> product.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>A valid license key has not been installed for this product on all
+	database partitions.  The product will be enabled to operate for a
+	limited period of time for evaluation purposes.  THE EVALUATION PERIOD IS
+	CONTROLLED BY A TIME DISABLING DEVICE.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>If you have purchased a fully
+	entitled version of this product, please install your license key
+	as described in the product installation documentation.  If you have
+	already installed the license key, please verify your license file for
+	accuracy.</p>
+	
+	<p>USE OF THE PRODUCT FOR THE EVALUATION PERIOD IS SUBJECT TO
+	THE TERMS OF THE IBM EVALUATION AGREEMENT IN THE
+	EVALUATE.ARG FILE.  YOUR USE OF THE PRODUCT DURING THE
+	EVALUATION PERIOD CONSTITUTES YOUR ACCEPTANCE OF THESE
+	TERMS.</p>
+	
+	<p>If you do not accept the terms, you are not authorized to
+	use the product and you must de-install it.  You can obtain
+	a license key for the fully authorized program with the
+	product by contacting your IBM representative or authorized
+	dealer.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8012W">SQL8012W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The number of concurrent users of the DB2 Enterprise product has exceeded the defined entitlement of <var class="keyword varname vartype=quotedString varnumber=1">number</var>. Concurrent user count is <var class="keyword varname vartype=quotedString varnumber=2">number</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The number of concurrent users has exceeded the number of defined DB2 concurrent user entitlements.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Contact your IBM representative or authorized dealer to obtain additional DB2 user entitlements and update the DB2 license information using the db2licm command.</p>
+	
+	<p><strong>sqlcode</strong>:  +8012</p>
+	
+	<p><strong>sqlstate</strong>:  01632</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8013W">SQL8013W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The number of concurrent database connections to the DB2 Connect product has exceeded the defined entitlement of <var class="keyword varname vartype=quotedString varnumber=1">number</var>. Database connection count is <var class="keyword varname vartype=quotedString varnumber=2">number</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The license for the DB2 Connect product you are using supports a
+	limited
+	number of concurrent database connections. You have requested a number of
+	connections that exceeds this limit.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Upgrade to a version of the DB2 Connect product with a higher limit of concurrent
+	database connections.</p>
+	
+	<p>DB2 Connect Enterprise Edition users: obtain licenses for additional users
+	by purchasing Additional User Packs.</p>
+	
+	<p>
+	<strong>sqlcode</strong>:  +8013</p>
+	
+	<p>
+	<strong>sqlstate</strong>:  01632</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8014N">SQL8014N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The version of the DB2 Connect product you are using is not licensed for use with TCP/IP protocol. Upgrade to a full function DB2 Connect product to use TCP/IP.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This version of DB2 Connect is limited to SNA connectivity. TCP/IP connections are not supported.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Upgrade to a full function DB2 Connect product.</p>
+	
+	<p><strong>sqlcode</strong>:  -8014</p>
+	
+	<p><strong>sqlstate</strong>:  42968</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8015N">SQL8015N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The version of the DB2 Connect product you are using is not licensed for updating multiple databases in the same transaction.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This version of DB2 Connect is limited to working with a single database in a transaction. It does not support 2-phase commit protocol.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Upgrade to a full function DB2 Connect product to be able to update multiple databases in a single transaction.</p>
+	
+	<p><strong>sqlcode</strong>:  -8015</p>
+	
+	<p><strong>sqlstate</strong>:  42968</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8017W">SQL8017W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The number of processors on this machine exceeds the defined entitlement of <var class="keyword varname vartype=quotedString varnumber=1">licensed-quantity</var> for the product <var class="keyword varname vartype=quotedString varnumber=2">product-name</var>. The number of processors on this machine is <var class="keyword varname vartype=quotedString varnumber=3">processor-quantity</var>. You should purchase additional processor based entitlements from your IBM representative or authorized dealer and update your license using the db2licm command.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8018W">SQL8018W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The number of concurrent users for this product has exceeded the defined entitlement of <var class="keyword varname vartype=quotedString varnumber=1">number</var>. Concurrent user count is <var class="keyword varname vartype=quotedString varnumber=2">number</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The number of concurrent users has exceeded the  number of defined concurrent user entitlements.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Contact your IBM representative or authorized  dealer to obtain additional user entitlements and update the  DB2 license information using the db2licm command.</p>
+	
+	<p><strong>sqlcode</strong>:  +8018</p>
+	
+	<p><strong>sqlstate</strong>:  01632</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8019N">SQL8019N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>There was an error updating the license for the OLAP Starter Kit. RC = <var class="keyword varname vartype=quotedString varnumber=1">reason-code</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The license utility could not update the OLAP Starter Kit
+	license because of an unknown error.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Try the command again. If the problem persists,
+	please contact an IBM service representative.</p>
+	
+	<p>
+	<strong>sqlcode</strong>:  -8019</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8020W">SQL8020W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The number of concurrent connectors for one server has exceeded the defined entitlement of <var class="keyword varname vartype=quotedString varnumber=1">number-sources</var>. Current number of connectors is <var class="keyword varname vartype=quotedString varnumber=2">number-entitled</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The number of concurrent connectors has exceeded the number of defined entitlements.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Contact your IBM representative or authorized dealer to obtain additional entitlements and then update the DB2 license information using the db2licm command.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8022N">SQL8022N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Database partitioning feature is being used without database partitioning license. The database manager has detected that the database partitioning feature is being used but the database partitioning feature license has not been installed.  Ensure that you have purchased database partitioning feature entitlements from your IBM representative or authorized dealer and have updated your license using the db2licm command.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8023N">SQL8023N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The number of concurrent users for <var class="keyword varname vartype=quotedString varnumber=1">product-name</var> product has exceeded the defined entitlement of <var class="keyword varname vartype=quotedString varnumber=2">entitlement</var>. Concurrent user count is <var class="keyword varname vartype=quotedString varnumber=3">count</var>. You should purchase additional user based entitlements from your IBM representative or authorized dealer and update your license using the the db2licm command.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8024N">SQL8024N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>A valid license key was not found for the requested function. The current license key for <var class="keyword varname vartype=quotedString varnumber=1">product-name</var> product does not allow the requested functionality. Purchase the license key for this function from your IBM representative or authorized dealer and update your license using the db2licm command.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8025W">SQL8025W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The connection to the server <var class="keyword varname vartype=quotedString varnumber=1">server-name</var> is not allowed. A valid WebSphere Federated Server license could not be found.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>Your current WebSphere Federated Server license does not allow connection to the specified data source.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Refer to the Administration Notification log for possible causes of this error. If this problem persist, contact IBM Support.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8026W">SQL8026W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>DB2 server has detected that a valid license for this product has not been registered.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>Registration of a valid license key is required in order to comply with the terms and conditions of your License Agreement.  The license keys for this product are located on this product's media in the 'license' directory.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Use the db2licm command to register the appropriate licenses that you have purchased. The License Agreement text is located in the 'license' directory in the installation directory of this product.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8027N">SQL8027N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The table partitioning feature is being used without a DB2 Enterprise Server Edition license. The database manager has detected that the table partitioning feature is being used without a DB2 Enterprise Server Edition license.  Ensure that you have purchased a valid DB2 Enterprise Server Edition entitlement from your IBM representative or authorized dealer and have updated your license using the db2licm command.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8028N">SQL8028N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The <var class="keyword varname vartype=quotedString varnumber=1">feature</var> feature is being used without a <var class="keyword varname vartype=quotedString varnumber=2">license</var> license. The database manager has detected that this feature is being used without the appropriate entitlements. Ensure that you have purchased appropriate entitlements from your IBM representative or authorized dealer and have updated your license using the db2licm command.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8029N">SQL8029N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>A valid license key cannot be found for the requested functionality. Reference numbers: <var class="keyword varname vartype=quotedString varnumber=1">list-of-numbers</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>License keys are required for all database products. To use the database product features or to be in compliance with your current product entitlement, you must apply the licenses manually after installation.</p>
+	
+	<p>This message is returned when the database manager detects that a feature or functionality is being used for which there is no valid license key registered.</p>
+	
+	<p>The list of function numbers in <var class="keyword varname">list-of-numbers</var> identifies one or more features or functionality that is missing a valid license key:</p>
+	
+	<dl>
+	
+	<dt class="dlterm">1</dt>
+	
+	<dd class="dlentry">
+	<p>Column-organized tables</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">2</dt>
+	
+	<dd class="dlentry">
+	<p>Db2 pureScale Feature</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">3</dt>
+	
+	<dd class="dlentry">
+	<p>Table partitioning</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">4</dt>
+	
+	<dd class="dlentry">
+	<p>Database partitioning</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">5</dt>
+	
+	<dd class="dlentry">
+	<p>Row compression</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">6</dt>
+	
+	<dd class="dlentry">
+	<p>Index compression</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">7</dt>
+	
+	<dd class="dlentry">
+	<p>Workload management</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">8</dt>
+	
+	<dd class="dlentry">
+	<p>Db2 native encryption</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">9</dt>
+	
+	<dd class="dlentry">
+	<p>Db2 Audit</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">10</dt>
+	
+	<dd class="dlentry">
+	<p>Advanced database recovery</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">11</dt>
+	
+	<dd class="dlentry">
+	<p>HADR</p>
+	
+	</dd>
+	
+	
+	</dl>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Purchase the license key from your IBM representative or authorized dealer, and then update your license using the 'db2licm' command.</p>
+	
+	<p><strong>sqlcode</strong>:  -8029</p>
+	
+	<p><strong>sqlstate</strong>:  560D8</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8030W">SQL8030W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The license for the product <var class="keyword varname vartype=quotedString varnumber=1">product</var> will expire in <var class="keyword varname vartype=quotedString varnumber=2">number</var> day(s). You can register and update your license using the db2licm command. The license key can be obtained from your licensed product CD.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8100N">SQL8100N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The table is full.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>When creating a database the following parameters may be specified:</p>
+	
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">maximum number of pages per segment per file</li>
+	
+	<li class="cds--list__item">number of segments</li>
+	
+	</ul>
+	
+	<p>Each table part may now have multiple files within the database segments. The file can grow until it reaches its maximum size in a segment (maximum number of pages per segment) and then it moves to the next segment to add more data.  This occurs until it has used the maximum number of pages per segment in all configured segments, and the table becomes full.</p>
+	
+	<p>Therefore, the total amount of space per database part is the product of the maximum number of pages and the number of segments. The table will be full if any of the table parts use all of their configured space.</p>
+	
+	<p>Federated system users: this situation can also be detected by the data source.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">Delete rows from the table</li>
+	
+	<li class="cds--list__item">Reorganize the table to make more space</li>
+	
+	<li class="cds--list__item">Create a new database with larger values for maximum pages per segment and number of segments, back up the original database and restore to the new database.</li>
+	
+	</ul>
+	
+	<p>Federated system users: isolate the problem to the data source failing the request and:</p>
+	
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">Take the necessary steps to increase the space in the table at the data source.</li>
+	
+	<li class="cds--list__item">If the table is on the federated server, create a new database with larger values for maximum pages per segment and number of segments.  Back up the original database and restore to the new database.</li>
+	
+	</ul>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL8101N">SQL8101N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>A Database segment may be incorrect.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<div class="p">This error could occur in two ways:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">Every database segment has an identifier file.  The
+	file may be missing or the contents of the file may be incorrect.</li>
+	
+	<li class="cds--list__item">One, or more, previously allocated
+	database segments are missing.</li>
+	
+	</ol>
+	</div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<div class="p">
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">Check to ensure that the file systems are mounted correctly</li>
+	
+	<li class="cds--list__item">Restore the database from a backup</li>
+	
+	<li class="cds--list__item">Call your IBM service representative</li>
+	
+	</ul>
+	</div>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL9301N">SQL9301N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>An invalid option is specified or an option parameter is missing.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>Either the option specified is invalid or an option parameter is
+	not specified.</p>
+	
+	<p>The command cannot be processed.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Correct the option and resubmit the command.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL9302N">SQL9302N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Invalid option parameter: <var class="keyword varname vartype=quotedString varnumber=1">option-parameter</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The option parameter specified is invalid.</p>
+	
+	<p>The command cannot be processed.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Correct the option parameter and resubmit the command.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL9303N">SQL9303N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>No <var class="keyword varname vartype=unquotedString varnumber=1">option</var> is specified.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The required option <var class="keyword varname">option</var> is not specified.</p>
+	
+	<p>The command cannot be processed.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Resubmit the command with the required option.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL9304N">SQL9304N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Unable to open file <var class="keyword varname vartype=quotedString varnumber=1">filename</var> for writing.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The command cannot be processed.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Ensure that the system can access the file.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL9305N">SQL9305N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The <var class="keyword varname vartype=unquotedString varnumber=1">name</var> is too long. The maximum length is <var class="keyword varname vartype=unquotedString varnumber=2">max-length</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The &lt;name&gt; is longer than the maximum length of &lt;max-length&gt;.</p>
+	
+	<p>The command cannot be processed.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Ensure that the &lt;name&gt; does not exceed the maximum length.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL9306N">SQL9306N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>One or more of the field names are too long. The maximum length is <var class="keyword varname vartype=unquotedString varnumber=1">max-length</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The total length of a field name includes the specified prefix
+	and/or a column suffix, which can either be its name or its number.
+	This total length must not exceed the maximum length.</p>
+	
+	<p>The command cannot be processed.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Ensure that all the field names do not exceed the maximum length.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL9307N">SQL9307N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Remarks cannot be retrieved from the database. Error code = <var class="keyword varname vartype=quotedString varnumber=1">sqlcode</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>An error has occurred when attempting to retrieve the remarks
+	of a column from the database.</p>
+	
+	<p>The command cannot be processed.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Check the error code for more information.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL9308W">SQL9308W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>SQL data type <var class="keyword varname vartype=quotedString varnumber=1">sqltype</var> of the column <var class="keyword varname vartype=quotedString varnumber=2">colname</var> is not supported.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The SQL data type <var class="keyword varname">sqltype</var> is not supported in
+	the specified host language.</p>
+	
+	<p>No declaration is generated for this column.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Ensure that this is the desired table.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL9999N">SQL9999N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Placeholder sqlcode for development use only. Must be cha nged before code is shipped. Generic tokens: <var class="keyword varname vartype=quotedString varnumber=1">Token1</var>, <var class="keyword varname vartype=quotedString varnumber=2">Token2</var>, <var class="keyword varname vartype=quotedString varnumber=3">Token3</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This sqlcode can be used as a placeholder before the actual sqlcode value is defined. Code must not be shipped if it contains references to this sqlcode.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>N/A</p>
+	
+	<p>
+	<strong>sqlcode</strong>:  -9999</p>
+	
+	<p>
+	<strong>sqlstate</strong>:  ZZZZZ</p>
+	</td></tr></tbody></table>

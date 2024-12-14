@@ -1,0 +1,3277 @@
+<table summary="" id="sqlmsg__sqlmsg" class="defaultstyle cds--data-table"><colgroup><col style="width: 30pt;"><col style="width: 200pt;"><col style="width: 200pt;"><col style="width: 200pt;"></colgroup><thead style="text-align: left;"><tr><th id="sqlmsg__sqlmsg__entry__1" class="ncol"><div class="cds--table-header-label">
+	SQL Message ID
+	</div></th><th id="sqlmsg__sqlmsg__entry__2" class="ncol"><div class="cds--table-header-label">
+	Message
+	</div></th><th id="sqlmsg__sqlmsg__entry__3" class="ncol"><div class="cds--table-header-label">
+	Explanation
+	</div></th><th id="sqlmsg__sqlmsg__entry__4" class="ncol"><div class="cds--table-header-label">
+	User Response
+	</div></th></tr></thead><tbody><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL21000N">SQL21000N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>A text search option is not installed or not properly configured.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">DB2 Text Search or DB2 Net Search Extender is not installed or not correctly configured on this server. One of the text search features must be correctly configured and started on your system if you want to use a text search function such as CONTAINS, SCORE, or NUMBEROFMATCHES, or the DESCRIBE TEXT SEARCH INDEXES command.</li>
+	
+	<li class="cds--list__item">DB2 Text Search is not supported in a DB2 pureScale environment.</li>
+	
+	</ol>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">Ensure that either DB2 Text Search or DB2 Net Search Extender is correctly installed and configured and that the database is enabled for text search.</li>
+	
+	<li class="cds--list__item">Disable the DB2 pureScale Feature to use DB2 Text Search.</li>
+	
+	</ol>
+	
+	<p><strong>sqlcode</strong>:  -21000</p>
+	
+	<p><strong>sqlstate</strong>:  42724</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL21002N">SQL21002N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>A snapshot backup failed.  The database being backed up is configured to use raw logs, but raw logs are not supported with snapshot backups.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>You cannot perform a snapshot backup on a database that uses a raw device for database logging.</p>
+	
+	<p>The snapshot backup failed.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>You have two choices:</p>
+	
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">Even though you cannot perform a snapshot backup on a database that uses a raw device for database logging, you can perform a traditional backup on a database that uses a raw device for database logging.</li>
+	
+	<li class="cds--list__item">You can reconfigure the database log path to be a file path instead of a raw device and then run a snapshot backup.</li>
+	
+	</ul>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22000W">SQL22000W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Cannot find the requested configuration for object <var class="keyword varname vartype=quotedString varnumber=1">object-name</var>. Returning default configuration for <var class="keyword varname vartype=quotedString varnumber=2">object-type</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The object does not have a specific configuration of its own so the default
+	configuration for that object type will be returned.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>If the behavior of the default configuration is correct, no action has to be taken.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22001W">SQL22001W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Cannot find the default configuration for object <var class="keyword varname vartype=quotedString varnumber=1">object-name</var>. Returning install configuration for <var class="keyword varname vartype=quotedString varnumber=2">object-type</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The object does not have a specific configuration of its own so the install
+	configuration for that object type will be returned.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>If the behavior of the install configuration is correct, no action has to be taken.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22004N">SQL22004N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Cannot find the requested configuration for the given object. Returning default configuration for <var class="keyword varname vartype=quotedString varnumber=1">object-name</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The object does not have a specific configuration of its own so the default configuration for that object type will be returned.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>If the behavior of the default configuration is correct, no action has to be taken.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22005N">SQL22005N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Cannot find the default configuration for the given object, returning install configuration for <var class="keyword varname vartype=quotedString varnumber=1">object-name</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The object does not have a specific configuration of its own so the install configuration for that object type will be returned.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>If the behavior of the install configuration is correct, no action has to be taken.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22006N">SQL22006N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Cannot update <var class="keyword varname vartype=quotedString varnumber=1">object-action-or-contact-name</var> because it does not exist.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The API was requested to update the configuration of an element which does
+	not exist.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Create the element and then re-issue the API call.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22007N">SQL22007N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The specified Health Indicator identifier or name, <var class="keyword varname vartype=quotedString varnumber=1">Health-Indicator-name</var>, is invalid.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The requested action can only be performed against a valid Health Indicator.
+	The supplied Health Indicator does not exist.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Determine the correct the identifier or name, and resubmit the request.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22008N">SQL22008N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The value <var class="keyword varname vartype=quotedString varnumber=1">parameter-value</var> of parameter <var class="keyword varname vartype=quotedString varnumber=2">parameter-name</var> is not of the correct format, type, or value.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The requested action can not be taken because the supplied value for this
+	parameter is not of an acceptable format, type, or value.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Determine the correct format and type of, or value for, this parameter,
+	and resubmit the request.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22009N">SQL22009N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>There is no health contact information for this instance.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>There is no health contact information for this instance.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>If the current contact information is correct, no action has to be taken.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22010N">SQL22010N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The value <var class="keyword varname vartype=quotedString varnumber=1">parameter-value</var> of parameter <var class="keyword varname vartype=quotedString varnumber=2">parameter-name</var> is not within the acceptable range of values for this parameter, which is greater than <var class="keyword varname vartype=quotedString varnumber=3">parameter-max-value</var> and/or less than <var class="keyword varname vartype=quotedString varnumber=4">parameter-min-value</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The requested action can not be taken because the supplied value for this
+	parameter is not within the acceptable range of values.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Resubmit the request with an acceptable value for this parameter.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22011W">SQL22011W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Cannot find the configuration for <var class="keyword varname vartype=quotedString varnumber=1">object-name-or-type</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The object or object type does not have a specific or default configuration
+	of its own.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22012W">SQL22012W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Implicit instance attach failed.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>An explicit instance attachment does not exist and an implicit attachment
+	to the default instance failed. The command cannot be executed.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Make sure that the database manager is started and that environment variables are set properly.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22013N">SQL22013N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Cannot add <var class="keyword varname vartype=quotedString varnumber=1">obj-act-contact</var> because it already exists.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The API was requested to add an action or notification which already exists.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Modify or delete the existing actions and notifications.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22014W">SQL22014W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The health monitor returned no health related data.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>There is no health data for this instance or the health monitor
+	is off. </p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Verify that the health monitor is running on this instance.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22015N">SQL22015N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The specified Health Indicator identifier or name, <var class="keyword varname vartype=quotedString varnumber=1">Health-Indicator-name</var>, is invalid for this object type.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The supplied Health Indicator does not exist for this object type.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Verify the object type and identifier or name, and resubmit the request.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22016N">SQL22016N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The health monitor returned no recommendations for health indicator <var class="keyword varname vartype=quotedString varnumber=1">Health-Indicator-name</var>. Reason code = <var class="keyword varname vartype=quotedString varnumber=2">reason-code</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<div class="p">The health monitor was unable to return any recommendations. The explanation corresponding to the reason code is:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">The health indicator is not in an alert state.</li>
+	
+	<li class="cds--list__item">The health indicator has not yet been evaluated.</li>
+	
+	<li class="cds--list__item">The health indicator is disabled.</li>
+	
+	</ol>
+	</div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<div class="p">The action corresponding to the reason code is:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">Verify that the health indicator is in an alert state. The problem may have already been resolved. It is also possible that the health indicator is fluctuating between alert and normal states. If the indicator is fluctuating, the sensitivity for the health indicator may be set too low and the health indicator may be reacting to changes in system usage. If this is the case, consider increasing the sensitivity using the UPDATE ALERT CONFIGURATION command.</li>
+	
+	<li class="cds--list__item">Wait for at least one full refresh interval for the health indicator, to ensure that the health indicator has been evaluated. Resubmit the request.</li>
+	
+	<li class="cds--list__item">Enable the health indicator using the UPDATE ALERT CONFIGURATION command. Wait until the health indicator has been evaluated, then resubmit the request.</li>
+	
+	</ol>
+	</div>
+	
+	<p>If the problem persists, contact IBM Support.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22017N">SQL22017N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>A non-severe error occurred while generating recommendations at the health monitor. SQLCODE = <var class="keyword varname vartype=quotedString varnumber=1">sqlcode</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The health monitor encountered a non-severe error while trying to retrieve recommendations for the specified health indicator.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Correct the error as indicated in the SQLCODE. Resubmit the recommendation request.</p>
+	
+	<p>If the problem persists, contact IBM Support.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22018W">SQL22018W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The collection data for this health indicator could not be retrieved.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>Collection data is stored in tables in the database. The table data could not be retrieved either because the table could not be accessed or the table has been altered from its original definition and the correct columns no longer exist.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>If the problem persists, contact IBM Support.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22019N">SQL22019N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Health monitor processing was halted due to an unexpected error. Reason code = <var class="keyword varname vartype=quotedString varnumber=1">reason-code</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>If the problem persists, contact IBM Support.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22020N">SQL22020N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Health monitor processing was halted because its shared memory segment upper limit was reached. The current size is <var class="keyword varname vartype=quotedString varnumber=1">size</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>If the problem persists, contact IBM Support.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22021N">SQL22021N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Automation is turned off.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The required utility cannot be performed because the automation switch is turned off currently.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<div class="p">Attempt one of the following:
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">Resolve the problem according to the recommendation provided by the health monitor.</li>
+	
+	<li class="cds--list__item">Turn on the corresponding automation switch.</li>
+	
+	</ul>
+	</div>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22022N">SQL22022N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The duration of the maintenance window is not long enough to run the maintenance activity.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The required utility cannot be performed because the maintenance window defined in the automatic maintenance configuration does not have an adequate duration.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<div class="p">Attempt one of the following:
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">Resolve the problem according to the recommendation provided by the health monitor.
+	</li>
+	
+	<li class="cds--list__item">Increase the duration of the maintenance window for the corresponding automatic maintenance activity.</li>
+	
+	</ul>
+	</div>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22025N">SQL22025N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>An invalid input argument was specified for the reorgchk stored procedure.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>Only 'T' and 'S' are supported for the first argument of the stored procedure. If 'T' is specified as the first argument, the second argument to the stored procedure must be a fully qualified table name as &lt;schema.table-name&gt;.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Resubmit with valid input arguments.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22200N">SQL22200N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The DB2 Administration Server cannot be stopped.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The DB2 Administration Server cannot be stopped because it is currently handling
+	at least one request from a client. </p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Issue the DB2ADMIN STOP command with the /FORCE option to cancel all current requests
+	being handled by the DB2 Administration Server and force the DB2 Administration
+	Server to stop. </p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22201N">SQL22201N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The DB2 Administration Server failed to authenticate the user <var class="keyword varname vartype=quotedString varnumber=1">authorization-ID</var> on the host <var class="keyword varname vartype=quotedString varnumber=2">hostname</var>. Reason code <var class="keyword varname vartype=quotedString varnumber=3">reason-code</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<div class="p">The DB2 Administration Server was unable to authenticate the user
+	<var class="keyword varname">authorization-ID</var> for the following reason:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">Invalid user ID or password.</li>
+	
+	<li class="cds--list__item">Password expired.</li>
+	
+	<li class="cds--list__item">User account is disabled.</li>
+	
+	<li class="cds--list__item">User account is restricted.</li>
+	
+	<li class="cds--list__item">The DB2 Administration Server is unable to process requests submitted as the root user. </li>
+	
+	<li class="cds--list__item">Authorization failed.</li>
+	
+	</ol>
+	</div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<div class="p">Depending on the reason code, try the following:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">Verify that a valid user ID and password were specified for the host <var class="keyword varname">hostname</var>.</li>
+	
+	<li class="cds--list__item">Change the password on host <var class="keyword varname">hostname</var> for user <var class="keyword varname">authorization-ID</var>. Contact your
+	system administrator for assistance. Attempt the request again once the password has been changed. </li>
+	
+	<li class="cds--list__item">Contact your system administrator to unlock the account.</li>
+	
+	<li class="cds--list__item">Contact your system administrator to find out the restrictions placed on the account.</li>
+	
+	<li class="cds--list__item">Resubmit the request as a user other than root. </li>
+	
+	<li class="cds--list__item">An internal authentication error has occurred.</li>
+	
+	</ol>
+	</div>
+	
+	<p>If you continue to receive this message after attempting the suggested solutions, contact
+	IBM Support.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22202W">SQL22202W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The DB2 Administration Server cannot be quiesced. Reason code <var class="keyword varname vartype=quotedString varnumber=1">reason-code</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<div class="p">The DB2 Administration Server quiesce operation failed for one of the following reasons:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">The DB2 Administration Server is already quiesced.</li>
+	
+	<li class="cds--list__item">The DB2 Administration Server is currently processing requests on behalf of DB2 clients. </li>
+	
+	</ol>
+	</div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<div class="p">Depending on the reason for the failure, attempt one of the following:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">No action required.</li>
+	
+	<li class="cds--list__item">Wait until the DB2 Administration Server is not processing any requests, or resubmit the quiesce request and specify the force option. Forcing a quiesce will terminate any requests that are currently being processed. </li>
+	
+	</ol>
+	</div>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22203W">SQL22203W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The DB2 Administration Server cannot be unquiesced. Reason code <var class="keyword varname vartype=quotedString varnumber=1">reason-code</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<div class="p">The DB2 Administration Server unquiesce operation failed for one of the following reasons:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">The DB2 Administration Server is not quiesced.</li>
+	
+	<li class="cds--list__item">There is at least one administration request in progress.</li>
+	
+	</ol>
+	</div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<div class="p">Depending on the reason for the failure, attempt one of the following:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">No action required.</li>
+	
+	<li class="cds--list__item">Wait until the DB2 Administration Server has completed processing all administration
+	requests, or resubmit the unquiesce request and specify the force option. Forcing
+	the unquiesce operation will allow normal requests to be handled concurrently with
+	the administration requests, which may prevent the administration requests from
+	completing successfully. </li>
+	
+	</ol>
+	
+	</div>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22204N">SQL22204N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The DB2 Administration Server encountered a non-severe error while executing a request.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>A non-severe error occurred in the DB2 Administration Server while it was processing a request. </p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Refer to the DB2 Administration Server's First Failure Data Capture Log for additional information.</p>
+	
+	<div class="p">If trace was active, invoke the Independent Trace Facility at the operating system
+	command prompt.
+	Contact IBM Support with
+	the following required information:
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">Problem description </li>
+	
+	<li class="cds--list__item">SQLCODE or message number </li>
+	
+	<li class="cds--list__item">SQLCA contents if possible </li>
+	
+	<li class="cds--list__item">Trace file if possible</li>
+	
+	</ul>
+	</div>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22205C">SQL22205C</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The DB2 Administration Server encountered an unexpected error while executing a request.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>An unexpected error occurred in the DB2 Administration Server while it was processing a request. </p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Refer to the DB2 Administration Server's First Failure Data Capture Log for additional information.</p>
+	
+	<div class="p">If trace was active, invoke the Independent Trace Facility at the operating system
+	command prompt.
+	Contact IBM Support with
+	the following required information:
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">Problem description </li>
+	
+	<li class="cds--list__item">SQLCODE or message number </li>
+	
+	<li class="cds--list__item">SQLCA contents if possible </li>
+	
+	<li class="cds--list__item">Trace file if possible</li>
+	
+	</ul>
+	</div>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22206N">SQL22206N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>An error occurred while accessing a message queue. Reason code <var class="keyword varname vartype=quotedString varnumber=1">reason-code</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<div class="p">An unexpected error or bad message was received on
+	a message queue.  The following is a list of reason codes:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">Unable to create a message queue. The number of message queues allowed may have been exceeded.  </li>
+	
+	<li class="cds--list__item">An error was encountered while reading from a message queue.  </li>
+	
+	<li class="cds--list__item">An error was encountered while writing to a message queue.  </li>
+	
+	<li class="cds--list__item">An invalid message was received from a message queue.  </li>
+	
+	<li class="cds--list__item">An error was encountered while opening a message queue.  </li>
+	
+	<li class="cds--list__item">An error was encountered while closing a message queue.  </li>
+	
+	<li class="cds--list__item">An error was encountered while querying a message queue.</li>
+	
+	<li class="cds--list__item">An error was encountered while deleting a message queue.  </li>
+	
+	</ol>
+	</div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Ensure the number of message queues allowed is not reached. Reduce the number of
+	message queues in use if necessary and resubmit the request.  </p>
+	
+	<p>If you continue to receive this error message after attempting the suggested solutions,
+	please contact IBM Support. </p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22207N">SQL22207N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The DB2 Administration server cannot execute the script at host <var class="keyword varname vartype=quotedString varnumber=1">hostname</var>. Reason code <var class="keyword varname vartype=quotedString varnumber=2">reason-code</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<div class="p">The DB2 Administration Server failed to execute the script for one of the following reasons:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">The user specified an existing script and the script does not exist.</li>
+	
+	<li class="cds--list__item">The script working directory is invalid.</li>
+	
+	<li class="cds--list__item">The last line of the script failed to run because a statement termination character could not be found.</li>
+	
+	<li class="cds--list__item">A system error occurred while attempting to execute the script.</li>
+	
+	</ol>
+	</div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<div class="p">Depending on the reason for the failure, attempt one of the following:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">Verify that the script specified exists on host <var class="keyword varname">hostname</var> at the path provided.</li>
+	
+	<li class="cds--list__item">Verify that the working directory is valid on host <var class="keyword varname">hostname</var>.</li>
+	
+	<li class="cds--list__item">Verify the script contents and resubmit the request. </li>
+	
+	<li class="cds--list__item">Refer to the DB2 Administration Server's First Failure Data Capture Log for additional information.</li>
+	
+	</ol>
+	</div>
+	
+	<p>If you continue to receive this error message after attempting the suggested response, refer
+	to the DB2 Administration Server's First Failure Data Capture Log for additional information or
+	contact IBM Support.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22208N">SQL22208N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The DB2 Administration Server failed to execute function/method <var class="keyword varname vartype=quotedString varnumber=1">function-name</var> in library/class <var class="keyword varname vartype=quotedString varnumber=2">library-name</var> at host <var class="keyword varname vartype=quotedString varnumber=3">hostname</var>. Reason code <var class="keyword varname vartype=quotedString varnumber=4">reason-code</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<div class="p">The DB2 Administration server encountered an error while trying to execute a function/method
+	in a library/class for one of the following reasons:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">The library/class <var class="keyword varname">library-name</var> could not be found. </li>
+	
+	<li class="cds--list__item">The function/method <var class="keyword varname">function-name</var> could not be found in the library/class
+	<var class="keyword varname">library-name</var>.</li>
+	
+	<li class="cds--list__item">The version of the function/method invoked at the DB2 Administration Server is not supported.</li>
+	
+	</ol>
+	
+	</div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<div class="p">Depending on the reason for the failure, attempt one of the following:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">Verify that the library <var class="keyword varname">library-name</var> exists on host <var class="keyword varname">hostname</var>.</li>
+	
+	<li class="cds--list__item">Refer to the DB2 Administration Server's First Failure Data Capture Log for additional information.
+	If trace was active, invoke the Independent Trace Facility at the operating system
+	command prompt.
+	Contact IBM Support with the
+	following required information:
+	<ul class="cds--list--unordered cds--list--nested">
+	<li class="cds--list__item">Problem description </li>
+	
+	<li class="cds--list__item">SQLCODE or message number </li>
+	
+	<li class="cds--list__item">SQLCA contents if possible </li>
+	
+	<li class="cds--list__item">Trace file if possible</li>
+	
+	</ul>
+	</li>
+	
+	<li class="cds--list__item">See response for reason code 2.</li>
+	
+	</ol>
+	
+	</div>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22209N">SQL22209N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The DB2 Administration Server encountered an unexpected Java error on host <var class="keyword varname vartype=quotedString varnumber=1">hostname</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<div class="p">An error occurred while the DB2 Administration Server was attempting to start or
+	communicate with a Java Interpreter. The following could be the cause of the problem:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">Java has been improperly installed or configured on host <var class="keyword varname">hostname</var>.</li>
+	
+	<li class="cds--list__item">The DB2 Administration Server jdk_path configuration parameter has been set incorrectly.</li>
+	
+	</ol>
+	
+	</div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<div class="p">Attempt the following:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">Contact the system administrator for host <var class="keyword varname">hostname</var> to verify that Java
+	is properly installed and configured. </li>
+	
+	<li class="cds--list__item">Verify that the DB2 Administration Server jdk_path configuration parameter has been
+	set correctly. The jdk_path configuration parameter can be viewed using CLP. The
+	parameter should point to the location where Java is
+	installed on the host <var class="keyword varname">hostname</var>. </li>
+	
+	</ol>
+	</div>
+	
+	<p>If you continue to receive this error message after attempting the suggested response, please contact IBM Support. </p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22210N">SQL22210N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The DB2 Administration server cannot execute the specified request while quiesced.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The DB2 Administration Server failed to execute the request because the DB2 Administration
+	Server is currently quiesced. Only administrative requests can be executed while
+	the DB2 Administration Server is quiesced. </p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Try the request again when the DB2 Administration Server is no longer quiesced.
+	Contact your database administrator to determine when the DB2 Administration Server
+	will be unquiesced.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22211N">SQL22211N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>An error occurred setting or retrieving the DB2 Administration Server configuration parameter <var class="keyword varname vartype=quotedString varnumber=1">parameter-token</var>. Reason code <var class="keyword varname vartype=quotedString varnumber=2">reason-code</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<div class="p">The following error occurred while updating or reading the DB2 Administration Server configuration:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">Configuration parameter is unknown.</li>
+	
+	<li class="cds--list__item">Configuration parameter value is not in the correct range.</li>
+	
+	<li class="cds--list__item">A system error occurred while updating the DB2 Administration Server configuration parameters.</li>
+	
+	</ol>
+	
+	</div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<div class="p">Depending on the reason code, verify the following:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">The configuration parameter exists.</li>
+	
+	<li class="cds--list__item">The value specified for the configuration parameter is in the correct range. See
+	the description of the configuration parameter in the DB2 Administration Guide:
+	Performance volume for the range of allowable values.</li>
+	
+	<li class="cds--list__item">Refer to the DB2 Administration Server's First Failure Data Capture Log for additional information
+	or contact IBM Support.</li>
+	
+	</ol>
+	</div>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22212N">SQL22212N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>A DB2 Administration Server communication error has been detected. Client system: <var class="keyword varname vartype=quotedString varnumber=1">client-ip-address</var>. Server system <var class="keyword varname vartype=quotedString varnumber=2">server-ip-address</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<div class="p">A DB2 Administration Server communication error has been detected.
+	Possible causes include the following:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">The DB2 Administration Server at the server system was shut down by the system administrator.</li>
+	
+	<li class="cds--list__item">The DB2 Administration Server at the server system was terminated due to an internal or system error.</li>
+	
+	<li class="cds--list__item">The DB2 Administration Server is not installed at the server system. </li>
+	
+	<li class="cds--list__item">The DB2 Administration Server has not been cataloged correctly at the client system.</li>
+	
+	<li class="cds--list__item">The communication subsystem at the client system or server system has not been configured correctly, or has not been started successfully.  </li>
+	
+	<li class="cds--list__item">A network error has caused the connection to go down.  </li>
+	
+	<li class="cds--list__item">An internal error in the DB2 Administration Server caused the connection to go down.</li>
+	
+	</ol>
+	</div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<div class="p">Verify the following:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">The DB2 Administration Server has not been shut down.</li>
+	
+	<li class="cds--list__item">The DB2 Administration Server has not been terminated.</li>
+	
+	<li class="cds--list__item">The DB2 Administration Server has been installed at the server system. </li>
+	
+	<li class="cds--list__item">The remote DB2 Administration Server is cataloged properly on the client system.</li>
+	
+	<li class="cds--list__item">The communication subsystems on both client and server systems are configured and started up properly.  </li>
+	
+	<li class="cds--list__item">The network is operating properly.</li>
+	
+	<li class="cds--list__item">Nothing to verify. </li>
+	
+	</ol>
+	</div>
+	
+	<p>If the problem persists, consult with your network administrator or contact IBM Support. </p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22213N">SQL22213N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>DB2ADMIN processing was successful. The scheduler was not started successfully.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The DB2ADMIN command successfully started the DB2 Administration Server, but the DB2 Administration Server was unable to start the scheduler.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Perform the following actions:</p>
+	
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">Ensure that the tools catalog database configuration parameters are set to the correct values. For instructions on configuring the Tools Catalog Database, refer to the section on the DB2 Administration Server in the DB2 Administration Guide.</li>
+	
+	<li class="cds--list__item">Ensure the database manager containing the tools catalog database has been started.</li>
+	
+	<li class="cds--list__item">If the tools catalog database is remote to the tools catalog database instance, ensure the scheduler user ID and password are set correctly. The scheduler user ID must have SYSADM authority on the tools catalog database. You can change the scheduler user ID and password by using the db2admin setschedid command.</li>
+	
+	<li class="cds--list__item">Ensure the tools catalog database is not being used by another scheduler.</li>
+	
+	</ul>
+	
+	<p>After performing the suggested actions, try stopping and then restarting the DB2 Administration Server. If you continue to receive the error message after performing the suggested actions, contact IBM Support.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22214N">SQL22214N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The admin node <var class="keyword varname vartype=quotedString varnumber=1">node-name</var> does not exist in the DB2 node directory.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The admin node <var class="keyword varname">node-name</var> is invalid. The node name does not exist in the
+	DB2 node directory.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Verify that the node name <var class="keyword varname">node-name</var> is cataloged in the admin node directory
+	using the LIST ADMIN NODE DIRECTORY command. If the admin node is not listed in
+	the admin node directory, submit a CATALOG ADMIN ... NODE command to catalog the admin node.
+	If you continue to receive this error message after attempting the suggested response,
+	please contact IBM Support.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22215W">SQL22215W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The DB2 Administration Server configuration parameters were updated successfully.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The configuration parameters were updated successfully, however, you must
+	restart the DB2 Administration Server to have the changes become effective.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Restart the DB2 Administration Server to have the changes become effective.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22216N">SQL22216N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>An error occurred while performing an extended console operation. Reason code = <var class="keyword varname vartype=quotedString varnumber=1">reason-code</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<div class="p">While performing the operation, an unexpected
+	error occurred. The possible reason codes are as follows:
+	<dl>
+	<dt class="dlterm">1</dt>
+	
+	<dd class="dlentry">The console name used to active the console
+	has more than 8 characters.
+	</dd>
+	
+	
+	<dt class="dlterm">2</dt>
+	
+	<dd class="dlentry">The operator command that was issued is
+	longer than the allowed 126 characters.
+	</dd>
+	
+	
+	<dt class="dlterm">3</dt>
+	
+	<dd class="dlentry">For an activate request, the issuer does not
+	have read authority to resource name,
+	MVS.MCSOPER.*, where * is the name of the
+	console.
+	</dd>
+	
+	
+	<dt class="dlterm">4</dt>
+	
+	<dd class="dlentry">For an activate request, the console was
+	already active.  </dd>
+	
+	
+	</dl>
+	</div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<div class="p">The action corresponding to the reason code is:
+	<dl>
+	<dt class="dlterm">1</dt>
+	
+	<dd class="dlentry">Check if the user name supplied as the
+	console name has more than 8 characters.
+	</dd>
+	
+	
+	<dt class="dlterm">2</dt>
+	
+	<dd class="dlentry">Check if the operator command is more than
+	126 characters in length.
+	</dd>
+	
+	
+	<dt class="dlterm">3</dt>
+	
+	<dd class="dlentry">Provide the required read authority to the
+	resource MVS.MCSOPER.*, where * is the name
+	of the console.
+	</dd>
+	
+	
+	<dt class="dlterm">4</dt>
+	
+	<dd class="dlentry">Ensure that the extended console you want to
+	activate is not active.
+	</dd>
+	
+	
+	</dl>
+	</div>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22220N">SQL22220N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The DB2 Administration Server encountered a script error. Script error code <var class="keyword varname vartype=quotedString varnumber=1">error-code</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>A script error was encountered while the DB2 Administration server was executing the
+	script. The script exited with error code <var class="keyword varname">error-code</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Verify that the script is correct.</p>
+	
+	<p>If you continue to receive this error message after attempting the
+	suggested response, refer to the DB2 Administration Server's First Failure
+	Data Capture Log for additional information or contact IBM Support.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22221N">SQL22221N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The scheduler is not active. Reason code <var class="keyword varname vartype=quotedString varnumber=1">reason-code</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<div class="p">The scheduler was unable to handle the request because the scheduler is not active
+	for one of the following reasons:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">The scheduler is not enabled.</li>
+	
+	<li class="cds--list__item">The scheduler is not configured properly.</li>
+	
+	</ol>
+	</div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<div class="p">Check the following:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">Verify that the scheduler has been enabled. The scheduler is enabled using the
+	SCHED_ENABLE DB2 Administration Server configuration parameter. Verify the current
+	setting of the SCHED_ENABLE parameter by viewing the DB2 Administration Server configuration
+	parameters using the GET ADMIN CONFIGURATION command. To modify the value of any
+	configuration parameter, use the UPDATE ADMIN CONFIGURATION command.</li>
+	
+	<li class="cds--list__item">Verify that the scheduler is properly configured. To configure the scheduler, refer to
+	the section on the DB2 administration server in the DB2 Administration Guide.</li>
+	
+	</ol>
+	</div>
+	
+	<p>If you continue to receive this error message after attempting the suggested
+	response, refer to the DB2 Administration Server's First Failure Data Capture
+	Log for additional information or contact IBM Support.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22222N">SQL22222N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The logon user account for the Scheduler is invalid.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The scheduler requires a valid logon account to connect to the tools
+	catalog database if the tools catalog database is remote to the DB2
+	Administration Server. This error is caused by the account not being setup,
+	or the logon user account does not contain a valid DB2 user ID. </p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<div class="p">If a logon user account has been set up, then ensure that the account uses a valid DB2 user ID.
+	You can set up the logon user account for the Scheduler by using the following command:
+	<div class="cds--snippet docs--snippet-v10 cds--snippet--multi cds--snippet--expand"><div class="cds--snippet-container" tabindex="0" aria-label="Code snippet"><pre class="codeblock"><code class="hljs language-plaintext-ibm">DB2ADMIN SETSCHEDID &lt;userid&gt; &lt;password&gt;
+	</code></pre></div><div class="docs--copy-btn"><div class="cds--layout-constraint--size__default-md cds--layout-constraint--size__max-lg"><span class="cds--popover-container cds--popover--caret cds--popover--high-contrast cds--popover--left cds--tooltip cds--icon-tooltip"><div class="cds--tooltip-trigger__wrapper"><button aria-labelledby="tooltip-:r1tr:" class="cds--btn--icon-only cds--copy-btn cds--copy cds--btn cds--btn--sm cds--layout--size-sm cds--btn--primary" type="button"><svg focusable="false" preserveAspectRatio="xMidYMid meet" fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true" class="cds--snippet__icon" xmlns="http://www.w3.org/2000/svg"><path d="M28,10V28H10V10H28m0-2H10a2,2,0,0,0-2,2V28a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V10a2,2,0,0,0-2-2Z"></path><path d="M4,18H2V4A2,2,0,0,1,4,2H18V4H4Z"></path></svg></button></div><span aria-hidden="true" id="tooltip-:r1tr:" role="tooltip" class="cds--popover"><span class="cds--popover-content cds--tooltip-content">Copy to clipboard</span><span class="cds--popover-caret"></span></span></span></div></div></div></div>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22223N">SQL22223N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The instance <var class="keyword varname vartype=quotedString varnumber=1">instance-name</var> does not exist on host <var class="keyword varname vartype=quotedString varnumber=2">hostname</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The DB2 Administration Server on host <var class="keyword varname">hostname</var> failed to execute a
+	request because the instance <var class="keyword varname">instance-name</var> provided in the request
+	does not exist on the host. </p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<div class="p">Verify the following:
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">The remote instance field of the node entry in the local node directory corresponding
+	to the instance <var class="keyword varname">instance-name</var> is correct.</li>
+	
+	<li class="cds--list__item">The instance <var class="keyword varname">instance-name</var> exists on host <var class="keyword varname">hostname</var>.</li>
+	
+	</ul>
+	</div>
+	
+	<p>If you continue to receive this error message after attempting the suggested
+	response, refer to the DB2 Administration Server's First Failure Data Capture
+	Log for additional information or contact IBM Support.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22230N">SQL22230N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The data set <var class="keyword varname vartype=quotedString varnumber=1">dataset</var> could not be located on the system.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<div class="p">One of the following reasons may apply:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">The data set has not been cataloged.</li>
+	
+	<li class="cds--list__item">The volume on which the data set is located is not mounted.</li>
+	
+	<li class="cds--list__item">The data set does not exist on the volume specified in the catalog.</li>
+	
+	<li class="cds--list__item">A data set or PDS/E member name required for this operation was not specified.</li>
+	
+	<li class="cds--list__item">The data set or PDS/E member name contains invalid characters or is longer than the maximum length allowed by the system.</li>
+	
+	</ol>
+	</div>
+	
+	<p>For more information on the first three of these reasons refer to the MVS system messages IGW01021T, IGW01508T and IGW01511E.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Ensure that the name of the data set is entered correctly, that the data set has been cataloged and that the volume on which it is located is mounted on the system.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22231N">SQL22231N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The requested operation is not supported for the data set <var class="keyword varname vartype=quotedString varnumber=1">dataset</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>Certain properties of the specified data set prevent it from being used in conjunction with the requested operation, which may include an inapplicable record format or data set type. For example, a member name cannot be specified for a PS data set.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Ensure that the data set has properties that are appropriate for the selected operation. Refer to the DB2 Administration Server's (DAS) First Failure Data Capture Log for additional information.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22232N">SQL22232N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The job ID <var class="keyword varname vartype=quotedString varnumber=1">jobid</var> was not found on the Job Entry Subsystem (JES).</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<div class="p">Possible reasons include:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">The job with the specified job ID has not been submitted to the JES.</li>
+	
+	<li class="cds--list__item">The job with the specified job ID has been purged from the JES.</li>
+	
+	</ol>
+	</div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Ensure that the job ID belongs to a job that has been submitted to the JES and that has not been purged yet.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22236N">SQL22236N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>A file I/O error occurred. Reason code <var class="keyword varname vartype=quotedString varnumber=1">reason-code</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<div class="p">An error occurred while accessing the file system. The reasons codes are as
+	follows:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">An invalid directory was specified.</li>
+	
+	<li class="cds--list__item">An attempt was made to open a non-existent file.</li>
+	
+	<li class="cds--list__item">An attempt was made to create an existing file.</li>
+	
+	</ol>
+	</div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<div class="p">The action is based on the reason code as follows.
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">Specify a valid directory.</li>
+	
+	<li class="cds--list__item">Specify a file that exists.</li>
+	
+	<li class="cds--list__item">Specify a file that does not already exist.</li>
+	
+	</ol>
+	</div>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22237N">SQL22237N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>A file system error occurred when performing an operation on path <var class="keyword varname vartype=quotedString varnumber=1">path</var>. Reason code = <var class="keyword varname vartype=quotedString varnumber=2">reason-code</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<div class="p">An error occurred while accessing the file system. The explanation corresponding to the reason code is:
+	<dl>
+	<dt class="dlterm">1</dt>
+	
+	<dd class="dlentry">The specified path already exists.
+	</dd>
+	
+	
+	<dt class="dlterm">2</dt>
+	
+	<dd class="dlentry">The specified path does not exist.
+	</dd>
+	
+	
+	<dt class="dlterm">3</dt>
+	
+	<dd class="dlentry">An attempt was made to modify the specified file or directory which is currently read-only.
+	</dd>
+	
+	
+	<dt class="dlterm">4</dt>
+	
+	<dd class="dlentry">An attempt was made to modify or delete the specified file or directory which is currently in use by another application.
+	</dd>
+	
+	
+	<dt class="dlterm">5</dt>
+	
+	<dd class="dlentry">The specified file or directory is not accessible.
+	</dd>
+	
+	
+	<dt class="dlterm">6</dt>
+	
+	<dd class="dlentry">The specified path or device is not available.
+	</dd>
+	
+	
+	<dt class="dlterm">7</dt>
+	
+	<dd class="dlentry">The specified non-empty directory was mentioned in an inappropriate context.  For example trying to non-recursively delete a non-empty directory.
+	</dd>
+	
+	
+	<dt class="dlterm">8</dt>
+	
+	<dd class="dlentry">The specified path does not refer to a directory.
+	</dd>
+	
+	
+	<dt class="dlterm">9</dt>
+	
+	<dd class="dlentry">The specified path is invalid.
+	</dd>
+	
+	
+	<dt class="dlterm">10</dt>
+	
+	<dd class="dlentry">The specified path name is too long.
+	</dd>
+	
+	
+	<dt class="dlterm">11</dt>
+	
+	<dd class="dlentry">There is no more space available on the file-system.
+	</dd>
+	
+	
+	<dt class="dlterm">12</dt>
+	
+	<dd class="dlentry">The maximum number of files that can be open has been reached.
+	</dd>
+	
+	
+	<dt class="dlterm">13</dt>
+	
+	<dd class="dlentry">The end of the specified file has been reached.
+	</dd>
+	
+	
+	<dt class="dlterm">14</dt>
+	
+	<dd class="dlentry">A physical I/O error occurred.
+	</dd>
+	
+	
+	<dt class="dlterm">15</dt>
+	
+	<dd class="dlentry">An unidentified error occurred.
+	</dd>
+	
+	
+	<dt class="dlterm">16</dt>
+	
+	<dd class="dlentry">A directory with the new directory name already exists.
+	</dd>
+	
+	
+	</dl>
+	</div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<div class="p">The user response corresponding to the reason code is:
+	<dl>
+	<dt class="dlterm">1</dt>
+	
+	<dd class="dlentry">Specify a path that does not exist.
+	</dd>
+	
+	
+	<dt class="dlterm">2</dt>
+	
+	<dd class="dlentry">Specify a path that does exist.
+	</dd>
+	
+	
+	<dt class="dlterm">3</dt>
+	
+	<dd class="dlentry">Verify the specified file or directory is not read-only.
+	</dd>
+	
+	
+	<dt class="dlterm">4</dt>
+	
+	<dd class="dlentry">Verify the specified file or directory is not in use by any other applications.
+	</dd>
+	
+	
+	<dt class="dlterm">5</dt>
+	
+	<dd class="dlentry">Verify the specified file or directory is accessible to the current user.
+	</dd>
+	
+	
+	<dt class="dlterm">6</dt>
+	
+	<dd class="dlentry">Verify the specified path or device is still available.
+	</dd>
+	
+	
+	<dt class="dlterm">7</dt>
+	
+	<dd class="dlentry">Verify the specified directory is empty.
+	</dd>
+	
+	
+	<dt class="dlterm">8</dt>
+	
+	<dd class="dlentry">Verify the specified path refers to a directory. </dd>
+	
+	
+	<dt class="dlterm">9</dt>
+	
+	<dd class="dlentry">Verify the specified path is valid.
+	</dd>
+	
+	
+	<dt class="dlterm">10</dt>
+	
+	<dd class="dlentry">Verify the specified path is within the maximum limit for path names on the specific operating system.
+	</dd>
+	
+	
+	<dt class="dlterm">11</dt>
+	
+	<dd class="dlentry">Verify there is space available on the file-system.
+	</dd>
+	
+	
+	<dt class="dlterm">12</dt>
+	
+	<dd class="dlentry">Close one or more files and re-try the operation.
+	</dd>
+	
+	
+	<dt class="dlterm">13</dt>
+	
+	<dd class="dlentry">Verify the operation is not trying to read or seek beyond the end of file.
+	</dd>
+	
+	
+	<dt class="dlterm">14</dt>
+	
+	<dd class="dlentry">Retry the operation.  If the problem persists, contact IBM Support.
+	</dd>
+	
+	
+	<dt class="dlterm">15</dt>
+	
+	<dd class="dlentry">Retry the operation.  If the problem persists, contact IBM Support.
+	</dd>
+	
+	
+	<dt class="dlterm">16</dt>
+	
+	<dd class="dlentry">Specify a directory name that does not exist.
+	</dd>
+	
+	
+	</dl>
+	</div>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22245N">SQL22245N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>JCL generation failed. Reason (code[, token]) = <var class="keyword varname vartype=quotedString varnumber=1">reason-code</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<div class="p">JCL generation failed as indicated by the following reason code:
+	<dl>
+	<dt class="dlterm">01</dt>
+	
+	<dd class="dlentry">A card with the reserved JCL skeleton parameter &amp;JOB is not found or is misplaced
+	in the main JCL skeleton. This card should be the first non-comment card in the main
+	JCL skeleton after the TEMPLATE card.
+	</dd>
+	
+	
+	<dt class="dlterm">02</dt>
+	
+	<dd class="dlentry">Incorrect use of a reserved JCL skeleton parameter. The token in this message contains the name of the parameter that caused the problem.
+	</dd>
+	
+	
+	<dt class="dlterm">03</dt>
+	
+	<dd class="dlentry">There are more occurrences of the reserved JCL skeleton parameter &amp;CTLSTMT in the main JCL skeleton than expected. The token in this message is set to the expected number of the &amp;CTLSTMT parameters.
+	</dd>
+	
+	
+	<dt class="dlterm">04</dt>
+	
+	<dd class="dlentry">There are more occurrences of the reserved JCL skeleton parameter &amp;STEPLIB in the main JCL skeleton than expected. The token in this message is set to the expected number of the &amp;STEPLIB parameters.
+	</dd>
+	
+	
+	<dt class="dlterm">05</dt>
+	
+	<dd class="dlentry">The main JCL skeleton does not begin with the TEMPLATE statement. This statement should be the first non-comment statement in the main JCL skeleton.
+	</dd>
+	
+	
+	<dt class="dlterm">06</dt>
+	
+	<dd class="dlentry">The jobname or stepname  in the JCL skeleton does not contain the JCL skeleton built-in function &amp;SEQ required for job or step sequencing. The JCL skeleton built-in function &amp;SEQ should be specified in the jobname or stepname of the JCL skeleton. The token in this message contains a fragment of the incorrect JCL statement.
+	</dd>
+	
+	
+	<dt class="dlterm">07</dt>
+	
+	<dd class="dlentry">The keyword JOB is not found in the first non-comment statement in the JCL skeleton for //JOB-statement. It might be commented out, mistyped, or missed delimiting spaces, especially after the keyword.
+	</dd>
+	
+	
+	<dt class="dlterm">08</dt>
+	
+	<dd class="dlentry">The main JCL skeleton is incomplete or has incorrect structure. The required standard JCL statements may be commented out, missed or misplaced, especially if in-stream JCL procedures are being used in this JCL skeleton. </dd>
+	
+	
+	<dt class="dlterm">09</dt>
+	
+	<dd class="dlentry">The syntax of  jobname, stepname, or ddname in the JCL skeleton is invalid. Possible reasons for this: incorrect length of the name field, or the field includes some non-alphanumerical characters. The token in this message contains a fragment of the incorrect JCL statement.
+	</dd>
+	
+	
+	<dt class="dlterm">10</dt>
+	
+	<dd class="dlentry">An incorrect use of ampersand in the JCL skeleton. The JCL skeleton contains one or more stand-alone ampersand characters. An ampersand is the first symbol of any JCL skeleton parameter and should not be used without an accompanying identifier. The token in this message contains a fragment of the incorrect JCL statement.
+	</dd>
+	
+	
+	<dt class="dlterm">11</dt>
+	
+	<dd class="dlentry">The reserved JCL skeleton parameter &amp;OBJECT was not found in the JCL skeleton.    </dd>
+	
+	
+	<dt class="dlterm">12</dt>
+	
+	<dd class="dlentry">A user-defined JCL skeleton parameter should not appear in the JCL skeleton.  The token in this message contains the name of the JCL skeleton parameter that caused the problem.
+	</dd>
+	
+	
+	<dt class="dlterm">13</dt>
+	
+	<dd class="dlentry">A reserved JCL skeleton parameter should not appear in the JCL skeleton. The token in this message contains the name of the reserved JCL skeleton parameter that caused the problem.
+	</dd>
+	
+	
+	<dt class="dlterm">14</dt>
+	
+	<dd class="dlentry">The generated JCL is too long and the buffer for it cannot be allocated. The token in this message contains requested size that caused the problem. To avoid this problem, decrease the number of database objects selected for processing. </dd>
+	
+	
+	</dl>
+	</div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Correct the problem according to the given explanation.  If the problem persists, contact your
+	Database Administrator or IBM Support.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22247N">SQL22247N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The known discovery operation failed.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>Discovery is disabled on the target DB2 Administration Server.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Enable discovery by modifying the value of the DISCOVER configuration parameter on
+	the DB2 Administration Server. Change the value to KNOWN if you only want known discovery enabled.
+	Change the value to SEARCH if you want both known and search discovery enabled.
+	To modify the value of the configuration parameter, use the UPDATE ADMIN CONFIGURATION command.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22250N">SQL22250N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Usage: DASMIGR is a utility to migrate the DB2 Administration Server to run under the DB2 Copy from which the utility was invoked.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<div class="p">The DASMIGR command syntax is:
+	<div class="cds--snippet docs--snippet-v10 cds--snippet--multi cds--snippet--expand"><div class="cds--snippet-container" tabindex="0" aria-label="Code snippet"><pre class="codeblock"><code class="hljs language-plaintext-ibm">  DASMIGR [-h | -p [DAS Profile Path]]
+	</code></pre></div><div class="docs--copy-btn"><div class="cds--layout-constraint--size__default-md cds--layout-constraint--size__max-lg"><span class="cds--popover-container cds--popover--caret cds--popover--high-contrast cds--popover--left cds--tooltip cds--icon-tooltip"><div class="cds--tooltip-trigger__wrapper"><button aria-labelledby="tooltip-:r1tu:" class="cds--btn--icon-only cds--copy-btn cds--copy cds--btn cds--btn--sm cds--layout--size-sm cds--btn--primary" type="button"><svg focusable="false" preserveAspectRatio="xMidYMid meet" fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true" class="cds--snippet__icon" xmlns="http://www.w3.org/2000/svg"><path d="M28,10V28H10V10H28m0-2H10a2,2,0,0,0-2,2V28a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V10a2,2,0,0,0-2-2Z"></path><path d="M4,18H2V4A2,2,0,0,1,4,2H18V4H4Z"></path></svg></button></div><span aria-hidden="true" id="tooltip-:r1tu:" role="tooltip" class="cds--popover"><span class="cds--popover-content cds--tooltip-content">Copy to clipboard</span><span class="cds--popover-caret"></span></span></span></div></div></div></div>
+	
+	<div class="p">The command options are:
+	<dl>
+	<dt class="dlterm">-h</dt>
+	
+	<dd class="dlentry">Prints this message.
+	</dd>
+	
+	
+	<dt class="dlterm">-p</dt>
+	
+	<dd class="dlentry">Moves the DAS working directory under the install directory of the current DB2 Copy.
+	</dd>
+	
+	
+	<dt class="dlterm">DAS Profile Path</dt>
+	
+	<dd class="dlentry">Overrides the default location where the DAS working directory is to be moved.
+	This option takes affect only if "-p" option is specified.
+	</dd>
+	
+	
+	</dl>
+	</div>
+	
+	<div class="p">Example:
+	<div class="cds--snippet docs--snippet-v10 cds--snippet--multi cds--snippet--expand"><div class="cds--snippet-container" tabindex="0" aria-label="Code snippet"><pre class="codeblock"><code class="hljs language-plaintext-ibm">	dasmigr -p "C:\DB2 PROFILES"
+	</code></pre></div><div class="docs--copy-btn"><div class="cds--layout-constraint--size__default-md cds--layout-constraint--size__max-lg"><span class="cds--popover-container cds--popover--caret cds--popover--high-contrast cds--popover--left cds--tooltip cds--icon-tooltip"><div class="cds--tooltip-trigger__wrapper"><button aria-labelledby="tooltip-:r1u1:" class="cds--btn--icon-only cds--copy-btn cds--copy cds--btn cds--btn--sm cds--layout--size-sm cds--btn--primary" type="button"><svg focusable="false" preserveAspectRatio="xMidYMid meet" fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true" class="cds--snippet__icon" xmlns="http://www.w3.org/2000/svg"><path d="M28,10V28H10V10H28m0-2H10a2,2,0,0,0-2,2V28a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V10a2,2,0,0,0-2-2Z"></path><path d="M4,18H2V4A2,2,0,0,1,4,2H18V4H4Z"></path></svg></button></div><span aria-hidden="true" id="tooltip-:r1u1:" role="tooltip" class="cds--popover"><span class="cds--popover-content cds--tooltip-content">Copy to clipboard</span><span class="cds--popover-caret"></span></span></span></div></div></div></div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Issue the DASMIGR command with one of the valid
+	command options.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22251N">SQL22251N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Migration of the DB2 Administration Server from <var class="keyword varname vartype=quotedString varnumber=1">source-dasname</var> to <var class="keyword varname vartype=quotedString varnumber=2">target-dasname</var> failed. Reason code <var class="keyword varname vartype=quotedString varnumber=3">reason-code</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<div class="p">The DB2 Administration Server <var class="keyword varname">source-dasname</var> could not be migrated for
+	one of the following reasons:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">The Tools Catalog Database has not been created at the target DB2 Administration Server.</li>
+	
+	<li class="cds--list__item">The Tools Catalog Database has been configured improperly at the target DB2 Administration Server.</li>
+	
+	</ol>
+	</div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<div class="p">Attempt the following at the target DB2 Administration Server <var class="keyword varname">target-dasname</var>:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">Verify that the Tools Catalog Database exists.</li>
+	
+	<li class="cds--list__item">Verify the TOOLSCAT_DB and TOOLSCAT_SCHEMA DB2 Administration Server configuration
+	parameters are correct. They should be set to the name and schema of the Tools Catalog
+	Database. View the current settings of TOOLSCAT_DB and TOOLSCAT_SCHEMA using the
+	GET ADMIN CONFIGURATION command. To modify the value of any DB2 Administration Server
+	configuration parameter, use the UPDATE ADMIN CONFIGURATION command</li>
+	
+	</ol>
+	</div>
+	
+	<p>If you continue to receive this error message after attempting the suggested response, please contact
+	IBM Support.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22252N">SQL22252N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>DAS migration failed with reason code <var class="keyword varname vartype=quotedString varnumber=1">reason-code</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<div class="p">An error has occurred while migrating the DB2 Administration Server.
+	The reason codes are as follows:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">The system resources available were insufficient to complete the migration.</li>
+	
+	<li class="cds--list__item">The DB2 Administration Server's configuration parameters do not identify
+	a valid tools catalog.</li>
+	
+	<li class="cds--list__item">A non-severe error occurred during migration.</li>
+	
+	</ol>
+	</div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<div class="p">
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">Verify that enough system resources are available for DAS migration.</li>
+	
+	<li class="cds--list__item">Verify that a tools catalog is created and is identified correctly by the
+	DB2 Administration Server's configuration parameters.</li>
+	
+	<li class="cds--list__item">Refer to the DB2 Administration Server's First Failure Data Capture Log for
+	additional information.</li>
+	
+	</ol>
+	</div>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22255W">SQL22255W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Usage: dasauto [-h|-?] -on|-off</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<div class="p">An incorrect argument was entered.  Valid arguments for this command are:
+	<dl>
+	<dt class="dlterm">-h|-?</dt>
+	
+	<dd class="dlentry">display the usage information </dd>
+	
+	
+	<dt class="dlterm">-on|-off</dt>
+	
+	<dd class="dlentry">enables or disables autostarting of the DB2 Administration Server
+	</dd>
+	
+	
+	</dl>
+	</div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Enter the command again as follows:
+	<br><br>dasauto [-h|-?] -on|-off<br><br> </p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22256W">SQL22256W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The dasauto command was successful.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>All processing completed normally. </p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No further action is required. </p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22260I">SQL22260I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The DB2 Administration Server has been updated successfully.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22261N">SQL22261N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The DB2 Administration Server update command has encountered an unexpected error.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>An unexpected error occurred while attempting to update the DB2 Administration
+	Server.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Contact IBM Support and, if possible supply a trace file.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22262N">SQL22262N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Update of the DB2 Administration Server between major releases is not supported.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>You can only update the DB2 Administration Server between minor releases of DB2.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Please Use DB2 Administration Server migrate command (dasmigr) to update
+	between major releases.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22263I">SQL22263I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The DB2 Administration Server has been migrated successfully.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22264N">SQL22264N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The DB2 Administration Server migrate command has encountered an unexpected error.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>An unexpected error occurred while attempting to migrate the DB2 Administration Server.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Contact IBM Support and, if possible supply a trace file.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22265N">SQL22265N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Migration of the DB2 Administration Server between minor releases is not supported.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>You can only migrate the DB2 Administration Server between major releases of DB2.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Use DB2 Administration Server update command (dasupdt) to update between minor releases.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22266N">SQL22266N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The DB2 Administration Server is already installed under the current DB2 Copy.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The DB2 Administration Server is already installed under the DB2 Copy from which the DB2 Administration Server update command was run.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Run the DB2 Administration Server update command from the DB2 Copy to which you would like the DB2 Administration Server to be moved.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22267W">SQL22267W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Usage: DASUPDT is a utility to update the DB2 Administration Server to run under the DB2 Copy from which the utility was invoked.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<div class="p">The DASUPDT command syntax is:
+	<div class="cds--snippet docs--snippet-v10 cds--snippet--multi cds--snippet--expand"><div class="cds--snippet-container" tabindex="0" aria-label="Code snippet"><pre class="codeblock"><code class="hljs language-plaintext-ibm">  DASUPDT [-h | -p [DAS Profile Path]]
+	</code></pre></div><div class="docs--copy-btn"><div class="cds--layout-constraint--size__default-md cds--layout-constraint--size__max-lg"><span class="cds--popover-container cds--popover--caret cds--popover--high-contrast cds--popover--left cds--tooltip cds--icon-tooltip"><div class="cds--tooltip-trigger__wrapper"><button aria-labelledby="tooltip-:r1u4:" class="cds--btn--icon-only cds--copy-btn cds--copy cds--btn cds--btn--sm cds--layout--size-sm cds--btn--primary" type="button"><svg focusable="false" preserveAspectRatio="xMidYMid meet" fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true" class="cds--snippet__icon" xmlns="http://www.w3.org/2000/svg"><path d="M28,10V28H10V10H28m0-2H10a2,2,0,0,0-2,2V28a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V10a2,2,0,0,0-2-2Z"></path><path d="M4,18H2V4A2,2,0,0,1,4,2H18V4H4Z"></path></svg></button></div><span aria-hidden="true" id="tooltip-:r1u4:" role="tooltip" class="cds--popover"><span class="cds--popover-content cds--tooltip-content">Copy to clipboard</span><span class="cds--popover-caret"></span></span></span></div></div></div></div>
+	
+	<div class="p">The command options are:
+	<dl>
+	<dt class="dlterm">-h</dt>
+	
+	<dd class="dlentry">Prints this message.
+	</dd>
+	
+	
+	<dt class="dlterm">-p</dt>
+	
+	<dd class="dlentry">Moves the DAS working directory under the install directory of the current DB2 Copy.
+	</dd>
+	
+	
+	<dt class="dlterm">DAS Profile Path</dt>
+	
+	<dd class="dlentry">Overrides the default location where the DAS working directory is to be moved.
+	This option takes affect only if "-p" option is specified.
+	</dd>
+	
+	
+	</dl>
+	</div>
+	
+	<div class="p">Example:
+	<div class="cds--snippet docs--snippet-v10 cds--snippet--multi cds--snippet--expand"><div class="cds--snippet-container" tabindex="0" aria-label="Code snippet"><pre class="codeblock"><code class="hljs language-plaintext-ibm">	dasupdt -p "C:\DB2 PROFILES"
+	</code></pre></div><div class="docs--copy-btn"><div class="cds--layout-constraint--size__default-md cds--layout-constraint--size__max-lg"><span class="cds--popover-container cds--popover--caret cds--popover--high-contrast cds--popover--left cds--tooltip cds--icon-tooltip"><div class="cds--tooltip-trigger__wrapper"><button aria-labelledby="tooltip-:r1u7:" class="cds--btn--icon-only cds--copy-btn cds--copy cds--btn cds--btn--sm cds--layout--size-sm cds--btn--primary" type="button"><svg focusable="false" preserveAspectRatio="xMidYMid meet" fill="currentColor" width="16" height="16" viewBox="0 0 32 32" aria-hidden="true" class="cds--snippet__icon" xmlns="http://www.w3.org/2000/svg"><path d="M28,10V28H10V10H28m0-2H10a2,2,0,0,0-2,2V28a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V10a2,2,0,0,0-2-2Z"></path><path d="M4,18H2V4A2,2,0,0,1,4,2H18V4H4Z"></path></svg></button></div><span aria-hidden="true" id="tooltip-:r1u7:" role="tooltip" class="cds--popover"><span class="cds--popover-content cds--tooltip-content">Copy to clipboard</span><span class="cds--popover-caret"></span></span></span></div></div></div></div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Issue the DASUPDAT command with one of the valid
+	command options.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22270N">SQL22270N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The contact, or contact group, with name <var class="keyword varname vartype=quotedString varnumber=1">name</var> cannot be added to the contact list.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The contact, or contact group, already exists in the contact list.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Create a new contact, or contact group, with a unique name.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22271N">SQL22271N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The contact, or contact group, information with name <var class="keyword varname vartype=quotedString varnumber=1">name</var> could not be found.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The contact, or contact group, could not be found in the contact list.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p> Check and correct the name, and try again.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22272N">SQL22272N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The record with key <var class="keyword varname vartype=quotedString varnumber=1">key</var> cannot be inserted.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The system tried to insert a record and the new record's key <var class="keyword varname">key</var> already exists in the system.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Remove the duplicate from the system; or, insert a new record with another key.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22273N">SQL22273N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The record with key <var class="keyword varname vartype=quotedString varnumber=1">key</var> could not be found.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The record with key <var class="keyword varname">key</var> could not be found because the record  does not exist.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Check and correct the key, and try again.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22280N">SQL22280N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>This action cannot be performed because the scheduler is quiesced.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>No action can be performed until the scheduler is activated again.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Activate the scheduler.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22281N">SQL22281N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The scheduler is already active.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The scheduler cannot be made active because it is already active.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No further action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22282N">SQL22282N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The scheduler is unable to access the Tools Catalog Database. Reason code = <var class="keyword varname vartype=quotedString varnumber=1">reason-code</var> and  SQLCODE <var class="keyword varname vartype=quotedString varnumber=2">sqlcode</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<div class="p">The scheduler function cannot be processed because the scheduler is unable to
+	access the Tools Catalog Database for the reason specified by the
+	<var class="keyword varname">reason-code</var> as follows:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">The given user ID, or password, is incorrect.</li>
+	
+	<li class="cds--list__item">Incorrect Tools Catalog Database configuration in the DB2 Administration Server
+	configuration parameters. One or more of the following DB2 Administration Server
+	configuration parameters is incorrect:
+	<ul class="cds--list--unordered cds--list--nested">
+	<li class="cds--list__item">TOOLSCAT_DB</li>
+	
+	<li class="cds--list__item">TOOLSCAT_SCHEMA</li>
+	
+	</ul>
+	</li>
+	
+	<li class="cds--list__item">The Tools Catalog Database is already being used by another scheduler on the same system.</li>
+	
+	<li class="cds--list__item">The Tools Catalog Database is only supported through TCP/IP as a communication protocol.</li>
+	
+	<li class="cds--list__item">Unexpected errors. Refer to SQLCODE <var class="keyword varname">sqlcode</var> for more details.</li>
+	
+	</ol>
+	</div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<div class="p">The action corresponding to the reason code is:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">Check your user ID and password and try again.</li>
+	
+	<li class="cds--list__item">Verify that the DB2 Administration Server TOOLSCAT_DB and TOOLSCAT_SCHEMA
+	configuration parameters have been set correctly. View the current settings of
+	TOOLSCAT_DB and TOOLSCAT_SCHEMA using the GET ADMIN CONFIGURATION command.
+	To modify the value of any DB2 Administration Server configuration parameter,
+	use the UPDATE ADMIN CONFIGURATION command.
+	If you continue to receive this error message after attempting the suggested
+	response, please contact IBM Support.</li>
+	
+	<li class="cds--list__item">Contact your system administrator.</li>
+	
+	<li class="cds--list__item">Attempt the following:
+	<ul class="cds--list--unordered cds--list--nested">
+	<li class="cds--list__item">If the tools catalog database is local to the scheduler, then set up the
+	instance specified by the DB2 Administration Server configuration parameter
+	toolscat_inst to use TCP/IP communications.</li>
+	
+	<li class="cds--list__item">If the tools catalog database is remote to the scheduler, then ensure that
+	the node used by the toolscat_db admin configuration parameter supports TCP/IP as the
+	communication protocol.</li>
+	
+	</ul>
+	</li>
+	
+	<li class="cds--list__item">Refer to the DB2 Administration Server's First Failure Data Capture Log for
+	additional information.</li>
+	
+	</ol>
+	</div>
+	
+	<p>Contact IBM Support if you continue to receive this message after attempting the
+	suggested solutions.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22283N">SQL22283N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Task <var class="keyword varname vartype=quotedString varnumber=1">taskid</var>.<var class="keyword varname vartype=quotedString varnumber=2">suffix</var> does not exist in the Tools Catalog Database.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The scheduler cannot retrieve the task from the Tools Catalog Database.
+	The task might have been removed from the Tools Catalog Database or never
+	existed.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Check for the existence of the task using the Task Center.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22284N">SQL22284N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Task <var class="keyword varname vartype=quotedString varnumber=1">taskid</var>.<var class="keyword varname vartype=quotedString varnumber=2">suffix</var> is not scheduled.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The requested action, Run a scheduled task now,  cannot be performed because
+	the task is not currently scheduled to run.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<div class="p">Attempt one of the following:
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">Perform a Run now instead</li>
+	
+	<li class="cds--list__item">Activate all of the task's schedules and perform Run a scheduled task now again.</li>
+	
+	</ul>
+	</div>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22285N">SQL22285N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The scheduler is unable to get the corresponding hostname from the partitioned database on partition number <var class="keyword varname vartype=quotedString varnumber=1">partition-number</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The requested partition number does not exist in the partitioned database.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Verify that the partition number exists by displaying the list of nodes
+	using the LIST DBPARTITIONNUMS command.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22286N">SQL22286N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Unable to execute the required task.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The scheduler failed to run the task because an unexpected error occurred.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Refer to the DB2 Administration Server's First Failure Data Capture Log
+	for additional information.</p>
+	
+	<p>If trace was active, invoke the Independent Trace Facility at the operating
+	system command prompt.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22287N">SQL22287N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>User <var class="keyword varname vartype=quotedString varnumber=1">userid</var> does not have permission to execute Task <var class="keyword varname vartype=quotedString varnumber=2">taskid</var>.<var class="keyword varname vartype=quotedString varnumber=3">suffix</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The task failed to execute because the user does not have sufficient
+	authority to run the task.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Users must be granted run permission by the owner of the task before they
+	can run the task.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22295N">SQL22295N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Unable to communicate successfully with the SMTP server at host <var class="keyword varname vartype=quotedString varnumber=1">host-name</var> using port <var class="keyword varname vartype=quotedString varnumber=2">port-number</var>. Reason code = <var class="keyword varname vartype=quotedString varnumber=3">reason-code</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The SMTP server at host <var class="keyword varname">host-name</var> using port <var class="keyword varname">port-number</var> failed to successfully negotiate the protocol to send mail. An explanation of the error is indicated by the following reason code:</p>
+	
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">There is no SMTP server running at <var class="keyword varname">host-name</var> on port <var class="keyword varname">port-number</var>.</li>
+	
+	<li class="cds--list__item">An unexpected error was encountered while communicating with the SMTP server.</li>
+	
+	</ol>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">Verify that the SMTP server name is specified correctly and that the SMTP port specified in the services file corresponds to the port number being used by the SMTP server.</li>
+	
+	<li class="cds--list__item">Invoke the Independent Trace Facility at the operating system command prompt. Contact IBM Support if the problem persists.</li>
+	
+	</ol>
+	
+	<p><strong>sqlcode</strong>:  -22295</p>
+	
+	<p><strong>sqlstate</strong>:  08001</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22296N">SQL22296N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Unable to send mail using the SMTP protocol due to invalid recipient addresses.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The SMTP server failed to successfully negotiate the send mail protocol for
+	all the specified recipients.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Verify that the recipient addresses are specified correctly. </p>
+	
+	<p>This error might also be returned if the SMTP server is unable to reach
+	the recipient addresses. This can be independently verified by using any
+	other  mail client to send mail to the recipients using the same SMTP
+	server. If this is successful, invoke the Independent Trace Facility at the
+	operating system command prompt.
+	Contact IBM Support if the problem persists.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22297I">SQL22297I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Configuration changes will not be effective until the DB2 Administration Server is restarted.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The DB2 Administration Server has been successfully configured, but the changes
+	will not take effect immediately. The changes will take effect when the
+	DB2 Administration Server is restarted.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>To have the change take effect at the next DB2 Administration Server restart,
+	no further action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22400N">SQL22400N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The function or feature name <var class="keyword varname vartype=quotedString varnumber=1">function-or-feature-name</var> is not valid.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The function or feature name <var class="keyword varname">function-or-feature-name</var> is not valid. For valid function and feature names, search the documentation.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Specify a valid function or feature name, then try the request again.</p>
+	
+	<p><strong>sqlcode</strong>: -22400</p>
+	
+	<p><strong>sqlstate</strong>: 5U001</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22401N">SQL22401N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The application with agent ID <var class="keyword varname vartype=quotedString varnumber=1">agent-ID</var> does not exist.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The application with agent ID <var class="keyword varname">agent-ID</var> does not currently exist. To see all active database applications, use LIST APPLICATIONS command.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Specify an agent ID for an active application, then try the request again.</p>
+	
+	<p><strong>sqlcode</strong>: -22401</p>
+	
+	<p><strong>sqlstate</strong>: 5U002</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22402N">SQL22402N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>No activity monitor reports can be found.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>No activity monitor reports can be found because either the report ID or the report type specified is invalid.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Specify a valid report ID or a valid report type, then try the request again.</p>
+	
+	<p><strong>sqlcode</strong>: -22402</p>
+	
+	<p><strong>sqlstate</strong>: 5U003</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22403N">SQL22403N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>One or more values provided when saving or dropping the monitoring task <var class="keyword varname vartype=quotedString varnumber=1">monitoring-task-name</var> are invalid. Reason code: <var class="keyword varname vartype=quotedString varnumber=2">code</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>One or more values provided when saving the monitoring task <var class="keyword varname">monitoring-task-name</var> are invalid for the reason given by reason code <var class="keyword varname">code</var>. The possible reason codes are as follows:</p>
+	
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">The action mode <var class="keyword varname">action-mode</var> is invalid.</li>
+	
+	<li class="cds--list__item">The request to create the monitoring task failed because the specified monitoring task name <var class="keyword varname">monitoring-task-name</var> is not valid.</li>
+	
+	<li class="cds--list__item">The request to create the monitoring task failed because another monitoring task with the same name <var class="keyword varname">monitoring-task-name</var> was found.</li>
+	
+	<li class="cds--list__item">The request to save the monitoring task failed because the value specified for the availability of application lock chains is not valid.</li>
+	
+	<li class="cds--list__item">The request to save the monitoring task failed. One or more report IDs in <var class="keyword varname">report-IDs</var> are invalid because there are no associated reports.</li>
+	
+	<li class="cds--list__item">The request to modify or drop the monitoring task failed because the specified monitoring task ID <var class="keyword varname">monitoring-task-ID</var> is not valid. The associated monitoring task either does not exist or is a built-in monitoring task. A built-in monitoring task cannot be modified or dropped.</li>
+	
+	</ul>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>The action corresponding to the reason code is:</p>
+	
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">To create a new monitoring task, specify action mode C. To modify an existing monitoring task, specify action mode M. Try the request again.</li>
+	
+	<li class="cds--list__item">A monitoring task name cannot be null, blank, or exceed 128 characters in length. Specify a valid monitoring task name, then try the request again.</li>
+	
+	<li class="cds--list__item">Monitoring tasks must have unique names. Specify a unique name for the new monitoring task, then try the request again.</li>
+	
+	<li class="cds--list__item">To make application lock chains available for this monitoring task, specify 'Y'; otherwise, specify 'N'. Try the request again.</li>
+	
+	<li class="cds--list__item">Specify one or more IDs for activity monitor reports that exist, then try the request again.</li>
+	
+	<li class="cds--list__item">Specify an existing user-defined monitoring task ID, then try the request again.</li>
+	
+	</ul>
+	
+	<p><strong>sqlcode</strong>:  -22403</p>
+	
+	<p><strong>sqlstate</strong>:  5U004</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22404N">SQL22404N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The action mode <var class="keyword varname vartype=quotedString varnumber=1">action-mode</var> specified when creating or dropping the database objects for function or feature <var class="keyword varname vartype=quotedString varnumber=2">function-or-feature-name</var> is not valid.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The action mode <var class="keyword varname">action-mode</var> is invalid. To create the database objects for <var class="keyword varname">function-or-feature-name</var>, specify action mode C. To drop the database objects for <var class="keyword varname">function-or-feature-name</var>, specify action mode D.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Specify a valid action mode, then try the request again.</p>
+	
+	<p><strong>sqlcode</strong>: -22404</p>
+	
+	<p><strong>sqlstate</strong>: 5U005</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL22405N">SQL22405N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The Activity Monitor is unable to collect the required snapshot data because the monitor switch <var class="keyword varname vartype=quotedString varnumber=1">monitor-switch</var> is not turned on at the database manager level.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The Activity Monitor is unable to collect the required snapshot data because the monitor switch <var class="keyword varname">monitor-switch</var> is not turned on at the database manager level.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Turn on the specified monitor switch using the monitor switch database manager configuration parameter, then try the request again.</p>
+	
+	<p><strong>sqlcode</strong>: -22405</p>
+	
+	<p><strong>sqlstate</strong>: 5U006</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27902N">SQL27902N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>LOAD RESTART/TERMINATE is not allowed on a table that is not in LOAD PENDING state.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>No RESTART or TERMINATE is necessary. The RESTART and TERMINATE modes of
+	the LOAD utility should be used to resume or cancel
+	a previously failed/interrupted LOAD operation. They are only supported
+	on tables where a previous load operation failed and
+	the table is in LOAD PENDING state. For tables that are not in LOAD PENDING
+	state, only the INSERT and REPLACE modes of
+	the LOAD utility are supported.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>To populate the table with the contents of the input source re-issue your
+	LOAD command using the INSERT or REPLACE mode.
+	You can use the LOAD QUERY utility to find out the current state of the table.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27903I">SQL27903I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p><var class="keyword varname vartype=quotedString varnumber=1">agenttype</var> has started on partition <var class="keyword varname vartype=quotedString varnumber=2">partitionnumber</var> at time <var class="keyword varname vartype=quotedString varnumber=3">timestamp</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This is an informational message indicating that a DB2 agent is about to begin on a given partition.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27904I">SQL27904I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The input file was not found. Using standard input as the input.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This is an informational message indicating that an DB2 agent is about to begin on a given partition.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27905W">SQL27905W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The  column compression dictionary was built. However, the dictionary might not be optimal due to insufficient utility heap memory.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The load utility analyzes the input data to determine the best encoding schemes for building column compression dictionaries. To build the best dictionaries and get the maximum possible compression, the entire set of data should be loaded at one time and enough utility heap memory should be available.</p>
+	
+	<p>These message is return when the LOAD operation completed successfully but the compression dictionary that was built is not optimal for compression because of insufficient utility heap memory.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Increase the  utility heap size before invoking the Load utility.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27906N">SQL27906N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The load operation was not performed because the specified parameters are not supported with the type of the target table.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>You can efficiently move a large amount of data into a table by using the load utility.</p>
+	
+	<p>In a partitioned database environment, you can perform a load operation on only a subset of the database partitions on which the table is defined by specifying the PARTITIONED DB CONFIG parameter with the LOAD command.</p>
+	
+	<p>You can cause the load utility to build a new dictionary for the table by specifying one of the following parameters with the LOAD command: RESETDICTIONARY, RESETDICTIONARYONLY.</p>
+	
+	<p>This message is returned when an attempt is made to load data into a column-organized table with the following unsupported combination of parameters passed to the LOAD command:</p>
+	
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">The PARTITIONED DB CONFIG parameter is specified with a value of OUTPUT_DBPARTNUMS</li>
+	
+	<li class="cds--list__item">And either the RESETDICTIONARY parameter or the RESETDICTIONARYONLY parameter is specified</li>
+	
+	</ul>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">To load data into a column-organized table, using only a subset of database partitions, issue the LOAD command specifying the KEEPDICTIONARY parameter.</li>
+	
+	<li class="cds--list__item">To load data into a column-organized table and create a new dictionary, issue the LOAD command without specifying OUTPUT_DBPARTNUMS with the PARTITIONED DB CONFIG parameter.</li>
+	
+	</ul>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27907I">SQL27907I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Maximum input record length <var class="keyword varname vartype=quotedString varnumber=1">record-length</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This is an informational message indicating the record length used for the Load operation.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27908I">SQL27908I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The utility is running with check level: <var class="keyword varname vartype=quotedString varnumber=1">check-level</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This is an informational message indicating whether truncation checking is enabled or not.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27909I">SQL27909I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Tracing <var class="keyword varname vartype=quotedString varnumber=1">numberofrecords</var> non-delimited record(s).</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This is an informational message indicating that tracing is enabled for the first <var class="keyword varname">numofrecords</var>
+	record(s).</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27910I">SQL27910I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The string delimiter is <var class="keyword varname vartype=quotedString varnumber=1">chardel</var>, the column delimiter is <var class="keyword varname vartype=quotedString varnumber=2">coldel</var>, and the decimal point is <var class="keyword varname vartype=quotedString varnumber=3">decept</var>. Tracing <var class="keyword varname vartype=quotedString varnumber=4">numofrecords</var> delimited record(s).</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This is an informational message indicating  what delimiters are used for string, column and decimal point.  In addition, this message also shows tracing is enabled for the first <var class="keyword varname">numofrecords</var> record(s).</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27911I">SQL27911I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The input partition map file <var class="keyword varname vartype=quotedString varnumber=1">filename</var> was opened successfully for reading.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This informational message indicates the input partition map file was opened successfully for reading.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27912I">SQL27912I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Reading of input partitioning map is in progress.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This informational message indicates that reading of the input partition map file is in progress.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27913I">SQL27913I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Input partitioning map was successfully read.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This informational message indicates that the input partition map file was successfully read.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27914I">SQL27914I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The mode of operation is <var class="keyword varname vartype=quotedString varnumber=1">mode</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This informational message indicates the mode of operation for the partitioning agent.</p>
+	
+	<div class="p">There are two different modes of operation:
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">Partition</li>
+	
+	<li class="cds--list__item">Analyze</li>
+	
+	</ul>
+	</div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27915I">SQL27915I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Output partitioning map file not used.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This is an informational message indicating that  the output partitioning map file is not used.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27916I">SQL27916I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The output partitioning map file <var class="keyword varname vartype=quotedString varnumber=1">filename</var> was opened successfully.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This is an informational message indicating that  the output partitioning map file was opened successfully.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27917N">SQL27917N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The LOAD command was not executed because a previous load operation on the table failed and the parameters that were specified with the LOAD command are not supported after a failed load operation on this type of table.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>You can cause the load utility to build a new dictionary for a table by specifying one of the following parameters with the LOAD command: RESETDICTIONARY, RESETDICTIONARYONLY.  If no dictionary exist, then any LOAD command with either the INSERT parameter or the REPLACE parameter will build one.</p>
+	
+	<p>This message is returned when the following sequence of events occurs:</p>
+	
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">The LOAD command is issued against a column-organized table that causes a new dictionary to be built.</li>
+	
+	<li class="cds--list__item">The load operation fails.</li>
+	
+	<li class="cds--list__item">The LOAD command is reissued for the same table, with one of the following parameter combinations specified:
+	<ul class="cds--list--unordered cds--list--nested">
+	<li class="cds--list__item">The KEEPDICTIONARY parameter</li>
+	
+	<li class="cds--list__item">The TERMINATE parameter in combination with the DBPARTNUM parameter</li>
+	
+	</ul>
+	</li>
+	
+	</ol>
+	
+	<p>If the LOAD command is issued against a column-organized table, that causes a new dictionary to be built, and the operation fails, then the LOAD command may be reissued for the same table, but with the following restrictions:</p>
+	
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">The KEEPDICTIONARY parameter may not be specified</li>
+	
+	<li class="cds--list__item">The TERMINATE parameter may not be specified in combination with the DBPARTNUM parameter</li>
+	
+	</ul>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Reissue the LOAD command without specifying either of the following parameter combinations:</p>
+	
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">The KEEPDICTIONARY parameter</li>
+	
+	<li class="cds--list__item">The TERMINATE parameter in combination with the DBPARTNUM parameter</li>
+	
+	</ul>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27918I">SQL27918I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Distribution file name: <var class="keyword varname vartype=quotedString varnumber=1">filename</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This is an informational message indicating the name of the distribution file used in the utility.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27919I">SQL27919I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The distribution file <var class="keyword varname vartype=quotedString varnumber=1">filename</var> was opened successfully for writing.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This informational message indicates the distribution file was opened successfully for writing.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27920I">SQL27920I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>This utility is using <var class="keyword varname vartype=quotedString varnumber=1">numkeys</var> partitioning keys.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This informational message indicates the number of partitioning keys used in the utility.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27921I">SQL27921I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p><var class="keyword varname vartype=quotedString varnumber=1">keyname</var>  Start:<var class="keyword varname vartype=quotedString varnumber=2">index</var>  Len:<var class="keyword varname vartype=quotedString varnumber=3">length</var>  Position:<var class="keyword varname vartype=quotedString varnumber=4">position</var>  Type:<var class="keyword varname vartype=quotedString varnumber=5">type</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This informational message describes attributes of a partitioning key.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27922I">SQL27922I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Output data files are not created because the run type is ANALYZE.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This is an informational message indicating that the output data files are not created because the mode of operation is ANALYZE.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27923W">SQL27923W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The value in row <var class="keyword varname vartype=quotedString varnumber=1">row-number</var> and column <var class="keyword varname vartype=quotedString varnumber=2">column-number</var> could not be converted to a Boolean value, so a null value was loaded instead.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The inability to convert the value might be due to a data type mismatch, such as trying to load a date into a Boolean column.</p>
+	
+	<p>If the source of the value that could not be converted is:</p>
+	
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">A delimited ASCII (DEL) file, the indicated column number identifies the ordinal position of the field that contains that value</li>
+	
+	<li class="cds--list__item">An ASCII file, the indicated column number identifies the byte location of the beginning of the field that contains that value</li>
+	
+	</ul>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Examine the input data. If necessary, take one of the following actions:</p>
+	
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">Correct the input data and resubmit the command.</li>
+	
+	<li class="cds--list__item">In the output table, manually replace the null with the correct value.</li>
+	
+	</ul>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27924W">SQL27924W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The value in row <var class="keyword varname vartype=quotedString varnumber=1">row-number</var> and column <var class="keyword varname vartype=quotedString varnumber=2">column-number</var> could not be converted to a Boolean value, and the target column is not nullable, so the row was not loaded.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The inability to convert the value might be due to a data type mismatch, such as trying to load a date into a Boolean column.</p>
+	
+	<p>If the source of the value that could not be converted is:</p>
+	
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">A delimited ASCII (DEL) file, the indicated column number identifies the ordinal position of the field that contains that value</li>
+	
+	<li class="cds--list__item">An ASCII file, the indicated column number identifies the byte location of the beginning of the field that contains that value</li>
+	
+	</ul>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Examine the input data. If necessary, take one of the following actions:</p>
+	
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">Correct the input data and resubmit the command.</li>
+	
+	<li class="cds--list__item">In the output table, manually insert a row containing the correct values.</li>
+	
+	</ul>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27926I">SQL27926I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Output data for partition <var class="keyword varname vartype=quotedString varnumber=1">partitionnum</var> will be sent to standard output.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This is an informational message indicating that the output data on partition <var class="keyword varname">partitionnum</var> will be sent to standard output.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27927I">SQL27927I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Processed <var class="keyword varname vartype=quotedString varnumber=1">numofrecords</var> records (or lines).</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This is an informational message indicating that  <var class="keyword varname">numofrecords</var> records (or lines) were processed.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27928I">SQL27928I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Processing record number <var class="keyword varname vartype=quotedString varnumber=1">num</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This informational message indicates which record is being processed.  This message will only be reported when the TRACE option is specified.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27929I">SQL27929I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Partitioning number returned from hash function: <var class="keyword varname vartype=quotedString varnumber=1">hexvalue</var> (hex) <var class="keyword varname vartype=quotedString varnumber=2">decvalue</var> (decimal).</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This informational message reports the result of the hashing function in both hex and decimal format.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27930N">SQL27930N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>A record was rejected during partitioning with reason  code <var class="keyword varname vartype=quotedString varnumber=1">reason-code</var> and partition-relative record number  <var class="keyword varname vartype=quotedString varnumber=2">rec-num</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>A record was rejected during load while attempting to determine what partition the record belongs to. If the 'dumpfile' load modifier was specified, the rejected record can be found in the partition-relative dumpfile at the partition-relative record number <var class="keyword varname">rec-num</var> listed in this message.</p>
+	
+	<p>An explanation of the error specified by the <var class="keyword varname">reason-code</var> is as follows:</p>
+	
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">The string representation of the data type of a partitioning column is invalid. Either the syntax is invalid or the value is out of range.</li>
+	
+	<li class="cds--list__item">The column values corresponding to the partitioning keys are not contained within the first 32K of the record.</li>
+	
+	<li class="cds--list__item">The record is empty (all space characters).</li>
+	
+	<li class="cds--list__item">The record length does not match the expected length.</li>
+	
+	<li class="cds--list__item">The record is incomplete.</li>
+	
+	<li class="cds--list__item">An error occurred while processing a generated column value.</li>
+	
+	</ol>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>The action corresponding to the <var class="keyword varname">reason-code</var> is:</p>
+	
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">Ensure that the string representation or the datatype is correct.</li>
+	
+	<li class="cds--list__item">The column values comprising the partitioning keys must be contained within the first 32KB of the record.</li>
+	
+	<li class="cds--list__item">If you are concerned that the record is empty, check your data for correctness.</li>
+	
+	<li class="cds--list__item">Ensure the record length is not larger or smaller than the expected length.</li>
+	
+	<li class="cds--list__item">Ensure the input data file is complete.</li>
+	
+	<li class="cds--list__item">Ensure the generated column value is correct and compliant.</li>
+	
+	</ol>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27931I">SQL27931I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Writing output partition map to file <var class="keyword varname vartype=quotedString varnumber=1">filename</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This is an informational message indicating that the output partition map is written to <var class="keyword varname">filename</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27932I">SQL27932I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Writing distribution map to <var class="keyword varname vartype=quotedString varnumber=1">filename</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This is an informational message indicating that the distribution map is written to <var class="keyword varname">filename</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27935I">SQL27935I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p><var class="keyword varname vartype=quotedString varnumber=1">agenttype</var> has ended on partition <var class="keyword varname vartype=quotedString varnumber=2">partitionnumber</var> at time <var class="keyword varname vartype=quotedString varnumber=3">timestamp</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This is an informational message indicating that an DB2 agent has just completed operation on a given partition.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27936I">SQL27936I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Elapsed time: <var class="keyword varname vartype=quotedString varnumber=1">hr</var> hours, <var class="keyword varname vartype=quotedString varnumber=2">min</var> minutes, <var class="keyword varname vartype=quotedString varnumber=3">sec</var> seconds.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This informational message reports the total time elapsed.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27937I">SQL27937I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Throughput: <var class="keyword varname vartype=quotedString varnumber=1">throughput</var> records/sec.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This is an informational message indicating the throughput of a given DB2 agent.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27939I">SQL27939I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Record counts for output partitions: partition number <var class="keyword varname vartype=quotedString varnumber=1">partitionnum</var>. Record count: <var class="keyword varname vartype=quotedString varnumber=2">numofrecords</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This informational message indicates the number of records processed for a given partition.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27941I">SQL27941I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Program terminated abnormally.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This informational message indicates the utility program has terminated abnormally.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27942I">SQL27942I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>There are <var class="keyword varname vartype=quotedString varnumber=1">number-of-warnings</var> warning message(s) and <var class="keyword varname vartype=quotedString varnumber=2">number-of-rejected-records</var> rejected records.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This informational message reports there are <var class="keyword varname">number-of-warnings</var> warning message(s) and
+	<var class="keyword varname">number-of-rejected-records</var> rejected record(s) encountered during the operation.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27945I">SQL27945I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Key Index: <var class="keyword varname vartype=quotedString varnumber=1">index</var>. Data: <var class="keyword varname vartype=quotedString varnumber=2">data1</var> <var class="keyword varname vartype=quotedString varnumber=3">data2</var> <var class="keyword varname vartype=quotedString varnumber=4">data3</var> <var class="keyword varname vartype=quotedString varnumber=5">data4</var> <var class="keyword varname vartype=quotedString varnumber=6">data5</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This informational message reports the attributes of a given partition key.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27947I">SQL27947I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The input data file specified at line <var class="keyword varname vartype=quotedString varnumber=1">linenum</var> of the configuration file is ignored.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The input data file specified at line <var class="keyword varname">linenum</var> of the configuration file is ignored.  The command line option will be used if it is specified; otherwise, the first specification of input data file in the configuration file will be used.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27948I">SQL27948I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The output data file specified at line <var class="keyword varname vartype=quotedString varnumber=1">linenum</var> of the configuration file is ignored.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The output data file specified at line <var class="keyword varname">linenum</var> of the configuration file is ignored.  The command line option will be used if it is specified; otherwise, the first specification of output data in the configuration file will be used.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27949I">SQL27949I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The distribution data file specified at line <var class="keyword varname vartype=quotedString varnumber=1">linenum</var> of the configuration file is ignored.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The distribution file specified at line <var class="keyword varname">linenum</var> of the configuration file is ignored.  The command line option will be used if it is specified; otherwise, the first specification of distribution file in the configuration file will be used.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27950I">SQL27950I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The type of the input data file is <var class="keyword varname vartype=quotedString varnumber=1">filetype</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<div class="p">This is an informational message indicating that the format of the input data is <var class="keyword varname">filetype</var>.
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">0-ASC</li>
+	
+	<li class="cds--list__item">1-DEL</li>
+	
+	<li class="cds--list__item">2-BIN</li>
+	
+	<li class="cds--list__item">3-CUR</li>
+	
+	</ul>
+	</div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27951I">SQL27951I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The NEWLINE flag is ignored in case of binary or delimited input data files.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This informational message reports that the NEWLINE flag is ignored for binary or delimited input data files.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27952I">SQL27952I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The NEWLINE flag is turned on.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This informational message reports that the NEWLINE flag is in effect.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27953I">SQL27953I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Usage: db2split [-c configuration-file-name] [-d distribution-file-name] [-i input-file-name] [-o output-file-name] [-h help message]</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<div class="p">
+	<dl>
+	<dt class="dlterm">-c</dt>
+	
+	<dd class="dlentry">option will run this program using a user specified configuration file
+	</dd>
+	
+	
+	<dt class="dlterm">-d</dt>
+	
+	<dd class="dlentry">option specifies the distribution file
+	</dd>
+	
+	
+	<dt class="dlterm">-i</dt>
+	
+	<dd class="dlentry">option specifies the input file
+	</dd>
+	
+	
+	<dt class="dlterm">-o</dt>
+	
+	<dd class="dlentry">option specifies the output file
+	</dd>
+	
+	
+	<dt class="dlterm">-h</dt>
+	
+	<dd class="dlentry">option will generate the help message
+	</dd>
+	
+	
+	</dl>
+	</div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27959N">SQL27959N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The partitioned database configuration option <var class="keyword varname vartype=quotedString varnumber=1">option-name</var> is invalid. Reason code = <var class="keyword varname vartype=quotedString varnumber=2">reason-code</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The partitioned database configuration option named in the error message is incorrectly specified or is incompatible with one of the other load options specified.</p>
+	
+	<p>The possible reason codes are as follows:</p>
+	
+	<dl>
+	
+	<dt class="dlterm">1</dt>
+	
+	<dd class="dlentry">
+	<p>Partitioned database configuration options cannot be specified in a non-partitioned database environment or when the DB2_PARTITIONEDLOAD_DEFAULT registry variable is set to OFF.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">2</dt>
+	
+	<dd class="dlentry">
+	<p>Partitioned database configuration options may not be specified more than once.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">3</dt>
+	
+	<dd class="dlentry">
+	<p>Invalid pointer detected in the piPartLoadInfoIn input structure passed to the db2Load API.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">4</dt>
+	
+	<dd class="dlentry">
+	<p>Invalid pointer detected in the poPartLoadInfoOut output structure passed to the db2Load API.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">5</dt>
+	
+	<dd class="dlentry">
+	<p>The argument supplied to the MODE option must be one of the following:</p>
+	
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">PARTITION_AND_LOAD</li>
+	
+	<li class="cds--list__item">PARTITION_ONLY</li>
+	
+	<li class="cds--list__item">LOAD_ONLY</li>
+	
+	<li class="cds--list__item">LOAD_ONLY_VERIFY_PART</li>
+	
+	<li class="cds--list__item">ANALYZE</li>
+	
+	</ul>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">6</dt>
+	
+	<dd class="dlentry">
+	<p>The maximum number of partitioning agents must be less than or equal to the maximum number of partitions allowable in a cluster.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">7</dt>
+	
+	<dd class="dlentry">
+	<p>The maximum number of partition numbers in a partition list must be less than or equal to the maximum number of partitions allowable in a cluster.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">8</dt>
+	
+	<dd class="dlentry">
+	<p>The arguments supplied to the ISOLATE_PART_ERRS option must be one of the following:</p>
+	
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">SETUP_ERRS_ONLY</li>
+	
+	<li class="cds--list__item">LOAD_ERRS_ONLY</li>
+	
+	<li class="cds--list__item">SETUP_AND_LOAD_ERRS</li>
+	
+	<li class="cds--list__item">NO_ISOLATION</li>
+	
+	</ul>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">9</dt>
+	
+	<dd class="dlentry">
+	<p>The value supplied to the STATUS_INTERVAL option must be in the range 1-4000.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">10</dt>
+	
+	<dd class="dlentry">
+	<p>The maximum port number must be greater than or equal to the minimum port number.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">11</dt>
+	
+	<dd class="dlentry">
+	<p>The only legal arguments for the CHECK_TRUNCATION, NEWLINE and OMIT_HEADER options are TRUE and FALSE.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">12</dt>
+	
+	<dd class="dlentry">
+	<p>The argument supplied to RUN_STAT_DBPARTNUM must be a legal partition number.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">13</dt>
+	
+	<dd class="dlentry">
+	<p>If the mode is ANALYZE, the MAP_FILE_OUTPUT option must be specified.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">14</dt>
+	
+	<dd class="dlentry">
+	<p>If the mode is PARTITION_ONLY or LOAD_ONLY and a remote client is being used, then the PART_FILE_LOCATION option must be specified. If the mode is PARTITION_ONLY or LOAD_ONLY then if the file type is CURSOR, the PART_FILE_LOCATION option must be used and must specify a file name.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">15</dt>
+	
+	<dd class="dlentry">
+	<p>The load actions RESTART and TERMINATE can only be used when the mode is PARTITION_AND_LOAD, LOAD_ONLY or LOAD_ONLY_VERIFY_PART.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">16</dt>
+	
+	<dd class="dlentry">
+	<p>The HOSTNAME option cannot be specified unless the FILE_TRANSFER_CMD option is also specified.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">17</dt>
+	
+	<dd class="dlentry">
+	<p>The partition isolation error modes LOAD_ERRS_ONLY and SETUP_AND_LOAD_ERRS cannot be used when both the ALLOW READ ACCESS or COPY YES options of the load command are used.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">18</dt>
+	
+	<dd class="dlentry">
+	<p>The LOAD_ONLY and LOAD_ONLY_VERIFY_PART modes are not compatible with the CLIENT option of the load command.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">18</dt>
+	
+	<dd class="dlentry">
+	<p>The partitioned database configuration option is not allowed on a random distribution table using the random by generation method.</p>
+	
+	</dd>
+	
+	
+	</dl>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Resubmit the LOAD command with the correct partitioned database configuration options.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27960N">SQL27960N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>PART_FILE_LOCATION must specify a fully qualified base filename when the file type is CURSOR.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>When loading from an input file of type CURSOR, the PART_FILE_LOCATION option must specify a fully qualified base filename instead of a directory.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Resubmit the LOAD command with a proper argument for the PART_FILE_LOCATION partitioned database configuration option.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27961N">SQL27961N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>ROWCOUNT cannot be specified in a partitioned database environment unless the mode is ANALYZE.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The ROWCOUNT option of the load command is not supported except when the mode is ANALYZE.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Resubmit the load command without the ROWCOUNT option.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27965N">SQL27965N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The DB2_LOAD_COPY_NO_OVERRIDE registry variable value <var class="keyword varname vartype=quotedString varnumber=1">value</var> is not valid.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>A Load was issued with the COPY NO parameter, but the value of the DB2_LOAD_COPY_NO_OVERRIDE registry variable was not valid.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Set the DB2_LOAD_COPY_NO_OVERRIDE registry variable to a valid value, or unset the registry variable to stop overriding Loads which have the COPY NO parameter.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27966W">SQL27966W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The DB2_LOAD_COPY_NO_OVERRIDE registry variable value <var class="keyword varname vartype=quotedString varnumber=1">value</var> overrides the COPY NO parameter specified in the Load.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>A Load command was issued with the COPY NO parameter, however the DB2_LOAD_COPY_NO_OVERRIDE registry variable overrides the parameter.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Set the DB2_LOAD_COPY_NO_OVERRIDE registry variable to a valid value or unset the registry variable to stop overriding Loads which have the COPY NO parameter.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27967W">SQL27967W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The COPY NO recoverability parameter of the Load has been converted to NONRECOVERABLE within the HADR environment.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The COPY NO recoverability parameter of the Load has been converted to NONRECOVERABLE. This occurred because the Load was issued within an HADR environment and the DB2_LOAD_COPY_NO_OVERRIDE registry variable was not set.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>The COPY NO Load parameter is not valid within an HADR environment. The DB2_LOAD_COPY_NO_OVERRIDE registry variable can be set to override the COPY NO parameter or you can accept that the COPY NO parameter will be converted to NONRECOVERABLE.  </p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27970N">SQL27970N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>An incompatible combination of import options is specified. Reason code = <var class="keyword varname vartype=quotedString varnumber=1">reason-code</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>An incompatible combination of import options is specified by the user.</p>
+	
+	<p> The command cannot be processed.</p>
+	
+	<div class="p">An explanation of the error specified by the <var class="keyword varname">reason-code</var> is as follows:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">The SKIPCOUNT and RESTARTCOUNT options are mutually exclusive.</li>
+	
+	<li class="cds--list__item">Online import mode (ALLOW WRITE ACCESS) is not compatible with the REPLACE, CREATE and REPLACE_CREATE import options.</li>
+	
+	<li class="cds--list__item">Online import mode (ALLOW WRITE ACCESS) was specified for the import command using buffered inserts.</li>
+	
+	<li class="cds--list__item">Online import mode (ALLOW WRITE ACCESS) was specified for the import command inserting into a view.</li>
+	
+	<li class="cds--list__item">Online import mode (ALLOW WRITE ACCESS) was specified for the target table using table lock size.</li>
+	
+	<li class="cds--list__item">Commitcount AUTOMATIC was specified for the import command using buffered inserts.</li>
+	
+	<li class="cds--list__item">Commitcount AUTOMATIC was specified for the import command, but the server does not support this option. The servers supporting automatic commitcount are DB2 UDB on Linux, Unix and Windows V8.1 FixPak 4 and higher DB2 versions.</li>
+	
+	<li class="cds--list__item">Online import mode (ALLOW WRITE ACCESS) was specified for the import command, but the server does not support this option. The servers supporting online import are Linux, Unix and Windows, zSeries and iSeries.</li>
+	
+	</ol>
+	</div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<div class="p">The action corresponds to the following reason codes:
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">Reissue the command using either the SKIPCOUNT or RESTARTCOUNT option.</li>
+	
+	<li class="cds--list__item">Reissue the command without specifying ALLOW WRITE ACCESS, or use INSERT or INSERT_UPDATE import option.</li>
+	
+	<li class="cds--list__item">Reissue the command without specifying ALLOW WRITE ACCESS, or rebind the import packages (bind files db2uimtb.bnd and db2uimpm.bnd) without using the INSERT BUF option.</li>
+	
+	<li class="cds--list__item">Reissue the command without specifying ALLOW WRITE ACCESS.</li>
+	
+	<li class="cds--list__item">Reissue the command without specifying ALLOW WRITE ACCESS, or alter the table using LOCKSIZE ROW.</li>
+	
+	<li class="cds--list__item">Reissue the command without specifying automatic commitcount, or rebind the import packages (bind files db2uimtb.bnd and db2uimpm.bnd) without using the INSERT BUF option.</li>
+	
+	<li class="cds--list__item">Do not attempt to use this command option against an incompatible server.</li>
+	
+	<li class="cds--list__item">Do not attempt to use this command option against an incompatible server.</li>
+	
+	</ol>
+	</div>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27971N">SQL27971N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The target table has changed since the start of the import utility.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>This message can be returned for several reasons.  For example, this message could be returned if application dropped the target table and created a new table with the same name while an online import was running.</p>
+	
+	<p>The utility stops processing.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>If desired, rerun the operation.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27972N">SQL27972N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>A range of rows from the input file, starting at <var class="keyword varname vartype=quotedString varnumber=1">first-failed-row</var> and ending at <var class="keyword varname vartype=quotedString varnumber=2">last-failed-row</var>, was not inserted into the table. SQLCODE = <var class="keyword varname vartype=quotedString varnumber=3">sqlcode</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The atomic compound database operation failed to insert a sequence of rows of data read from the input file. One or more of the fields in the input file is not compatible with the database field where the field is being inserted.  </p>
+	
+	<p>Processing continues with the next row of input data.  </p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Examine the input file and the database contents. If desired, modify the database or modify the input file and rerun the operation.  </p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27980W">SQL27980W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The utility encountered attached or detached data partitions in the target table or the source table.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>Some of the data partitions are in the attached or detached state. The utility treats these data partitions as invisible. Any input source records belonging to those data partitions will be rejected by the import utility or the load utility. The rows rejected by the load utility can be recovered from the exception table, if one was specified. The export utility will not process any data that might exist in those data partitions.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27981W">SQL27981W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The utility could not verify presence of attached or detached data partitions in the target table or the source table.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>Some of the data partitions might be in the attached or detached state, but the utility was unable to confirm this. The utility treats these data partitions as invisible. Any input source records belonging to those data partitions will be rejected by the import utility or the load utility. The rows rejected by the load utility can be recovered from the exception table, if one was specified. The export utility will not process any data that might exist in those data partitions.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>No action is required.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27982N">SQL27982N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Vendor Load API (sqluvtld) is no longer supported.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>Vendor Load API (sqluvtld) is no longer supported. DB2 Load utility is the only supported bulk loader. DB2 Load utility can be executed via db2Load API.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Do not use the sqluvtld API or any applications that invoke it.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27983N">SQL27983N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The LOAD utility is unable to rebuild the index.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The LOAD target table has detached data partitions and has dependent materialized query tables or dependent staging tables that have not been incrementally refreshed with respect to the detached data  partition. This condition prevents the LOAD utility running in insert mode or restart mode from rebuilding a unique index.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Do not specify indexing mode REBUILD with LOAD insert until the dependent materialized query tables or dependent staging tables are refreshed. Use a different LOAD indexing mode, or execute the SET INTEGRITY statement with the IMMEDIATE CHECKED option to maintain the dependent materialized query tables or dependent staging tables with respect to the detached data partition. If a LOAD restart cannot incrementally maintain indexes, the previously failed LOAD operation must be terminated before dependent materialized query tables or dependent staging tables can be refreshed.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27984W">SQL27984W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The export command completed successfully. However, some information that would be required to recreate one or more tables has not been saved to the output file. The file will not be able to be used by the IMPORT command to create or replace tables. Reason code: <var class="keyword varname vartype=quotedString varnumber=1">reason-code</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>You can export data from a database to a file by using the export utility. You can then import the data from that file to recreate those tables by using the import utility.</p>
+	
+	<p>This message is returned when the export utility is unable to export all of the information for one or more tables, which means that the output file that the export utility created would not be able to be used by the import utility to create or recreate the tables.</p>
+	
+	<p>The reason code indicates the type of information that was not exported:</p>
+	
+	<dl>
+	
+	<dt class="dlterm">1</dt>
+	
+	<dd class="dlentry">
+	<p>Index information has not been saved because the index column names contain hexadecimal values of 0x2B or 0x2D.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">2</dt>
+	
+	<dd class="dlentry">
+	<p>XML column definitions have not been saved.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">3</dt>
+	
+	<dd class="dlentry">
+	<p>Multidimensional clustered table (MDC) key definitions have not been saved.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">4</dt>
+	
+	<dd class="dlentry">
+	<p>Table partitioning key definitions have not been saved.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">5</dt>
+	
+	<dd class="dlentry">
+	<p>Index names have been truncated due to code page conversion.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">6</dt>
+	
+	<dd class="dlentry">
+	<p>Information about protected tables has not been saved.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">7</dt>
+	
+	<dd class="dlentry">
+	<p>Action strings other than 'SELECT * FROM &lt;TABLE-NAME&gt;' have not been saved.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">8</dt>
+	
+	<dd class="dlentry">
+	<p>Column names specified with the METHOD N parameter were not used because the METHOD N parameter is not supported when hierarchical data is being exported.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">9</dt>
+	
+	<dd class="dlentry">
+	<p>A column name that was too long for the Integration Exchange Format (IXF) format has been truncated.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">10</dt>
+	
+	<dd class="dlentry">
+	<p>A user-defined type name that was too long for the IXF format has been truncated.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">11</dt>
+	
+	<dd class="dlentry">
+	<p>Typed table information has been truncated due to codepage conversion.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">12</dt>
+	
+	<dd class="dlentry">
+	<p>The name of a schema that is associated with a user-defined type was too long for the IXF format. The schema name has been truncated.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">13</dt>
+	
+	<dd class="dlentry">
+	<p>Decimal floating-point column definitions have not been saved.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">14</dt>
+	
+	<dd class="dlentry">
+	<p>Hidden columns information has not been saved.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">15</dt>
+	
+	<dd class="dlentry">
+	<p>Information about indexes with random ordering was not saved.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">16</dt>
+	
+	<dd class="dlentry">
+	<p>Table column orientation in column-organized tables has not been saved.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">17</dt>
+	
+	<dd class="dlentry">
+	<p>Information about expression-based indexes</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">18</dt>
+	
+	<dd class="dlentry">
+	<p>Indexes created with the BUSINESS_TIME WITHOUT OVERLAPS clause have not been saved.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">19</dt>
+	
+	<dd class="dlentry">
+	<p>Information about columns where STRINGUNITS has been specified as CODEUNITS32 has not been saved.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">20</dt>
+	
+	<dd class="dlentry">
+	<p>BINARY or VARBINARY column definitions have not been saved.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">21</dt>
+	
+	<dd class="dlentry">
+	<p>Information that the table was created as a random distribution table was not saved.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">22</dt>
+	
+	<dd class="dlentry">
+	<p>Information that the table was created with row modification tracking enabled was not saved.</p>
+	
+	</dd>
+	
+	
+	</dl>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>For reason codes 1, 3, 4, 5, 7, 8, 9, 11, 14, 17, and 18:</p>
+	
+	<ul class="cds--list--unordered">
+	<li class="cds--list__item">To force the import utility to create the tables despite the fact that some information is missing, specify the FORCECREATE parameter when you issue the IMPORT command with the CREATE parameter or the REPLACE_CREATE parameter.</li>
+	
+	</ul>
+	
+	<p>For reason codes 2, 6, 10, 12, 13, 15, 16, 19, 20, 21 and 22, perform the following steps:</p>
+	
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">Use the db2look command to extract table information and create the table.</li>
+	
+	<li class="cds--list__item">Issue the IMPORT command with the INSERT or REPLACE parameter with the exported file.</li>
+	
+	</ol>
+	
+	<p><strong>sqlcode</strong>:  +27984</p>
+	
+	<p><strong>sqlstate</strong>:  5U059</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27985N">SQL27985N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Autoloader executable (db2atld) is no longer supported.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>Autoloader executable (db2atld) is no longer supported. The Load utility is
+	the only supported bulk loader. The Load utility is executed via a db2Load API,
+	LOAD CLP command, or SYSPROC.ADMIN_CMD stored procedure.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Do not use the db2atld executable.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27986W">SQL27986W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>A column name has been truncated in the PC/IXF file during Export. This file will not be supported in Import using Method N.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>Data has not been affected during Export but the file cannot be used in Import with Method N because some column information is missing.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>If Method N will not be used in Import, then no action is necessary.  If Method N will be used, then export using Method N again, but explicitly specify shorter column names.  Even though the PC/IXF file will contain the shorter column names, this will not affect the import of the data into an existing table.  Alternatively, rename the columns in the original table to be shorter and export the data again.</p>
+	
+	<p><strong>sqlcode</strong>:  +27986</p>
+	
+	<p><strong>sqlstate</strong>:  5U036</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27987N">SQL27987N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>This PC/IXF file is not supported in Import using Method N.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>Data has not been affected during Export but the file cannot be used in Import using Method N since some column information is missing.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Import using another Method other than N. Alternatively, export using Method N again, but explicitly specify shorter column names. Even though the PC/IXF file will contain the shorter column names, this will not affect the import of the data into an existing table.  Alternatively, rename the columns in the original table to be shorter and export the data again.</p>
+	
+	<p><strong>sqlcode</strong>:  -27987</p>
+	
+	<p><strong>sqlstate</strong>:  5U015</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27990W">SQL27990W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>During loading, at least one row was found to be on the wrong partition.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>When loading a partitioned database using the load utility with LOAD_ONLY_VERIFY_PART mode, any rows in the input file that are found to be on the wrong partition will be discarded.  If the "dumpfile" modifier is specified, the discarded rows will be saved to the dump file.  This message will appear only once per partition per load job, even when there are multiple partition violations present.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>If the discarded rows are saved to a dump file, they can be loaded to the correct partition by simply issuing another load command with the MODE option set to PARTITION_AND_LOAD.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27991W">SQL27991W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Too many partitioning agents specified in the load command.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>Too many partitioning agents have been specified
+	in the PARTITIONING_DBPARTNUMS partitioned
+	database configuration option of the load command.
+	The maximum number of partitioning agents is specified by the MAX_NUM_PART_AGENTS load option,
+	which defaults to 25 if not specified.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Resubmit the command with the correct number of partitioning agents.  Alternatively, the PARTITIONING_DBPARTNUMS option can be omitted and the load utility will automatically select an appropriate number of partitioning agents.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27992N">SQL27992N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The data file contains a valid partitioning map, but the load mode is not LOAD_ONLY.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>Load has detected a valid partitioning map at the beginning of
+	the file. The Load mode specified would cause the utility to treat
+	this as user data, possibly causing undesired results.  </p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>If the reason the data file begins with a partitioning map header is that
+	the data in the file has already been partitioned, then use LOAD_ONLY mode
+	to load the file.  In this case it will also be necessary to use the
+	OUTPUT_DBPARTNUMS option to specify the single partition to which the data
+	should be loaded.</p>
+	
+	<p>If the partitioning map detected by load at the beginning of the file is
+	actually user data, then use the IGNOREHEADER
+	modifier to disable the partition map detection and load the entire data file.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27993W">SQL27993W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The STATISTICS USE PROFILE option of the Load utility was specified, however, a statistics profile does not exist.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The statistics profile does not exist in the catalog table SYSIBM.SYSTABLES. The statistics profile must be created before the load is executed.</p>
+	
+	<p>The load utility continues processing.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>To create a statistics profile, use the SET PROFILE or SET PROFILE ONLY options of the RUNSTATS utility. Refer to the RUNSTATS documentation for a detailed description of the utility options.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27994W">SQL27994W</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The length of a special register default column is smaller than the target column length. Load may truncate the values corresponding to this column (<var class="keyword varname vartype=quotedString varnumber=1">column-num</var>).</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The clause SESSION_USER, CURRENT_USER, SYSTEM_USER, or CURRENT_SCHEMA has been specified for column <var class="keyword varname">column-num</var>, but this column was either defined with a length that is less than 128 bytes (SESSION_USER only) or the column-value inserted into this column may exceed the target length after codepage conversion. Load may truncate the column-value.   </p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>If your system standards would not allow a user ID (SESSION_USER) to exceed the length of the column, then this warning may be ignored. To prevent this warning from occurring, the length of the column must be at least 128 bytes. If codepage conversion resulted in the growth of this register default column, increase the length of the column to accommodate the growth.  </p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL27999N">SQL27999N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The requested IMPORT operation into a remote target (nickname) cannot be performed.  Reason code = <var class="keyword varname vartype=quotedString varnumber=1">reason-code</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The target of the requested IMPORT operation resides in a remote database and is referenced locally by a nickname. The options specified for the IMPORT command do not meet the constraints required to allow the operation.  The operation was rejected.</p>
+	
+	<p>The explanation corresponding to the reason code is:</p>
+	
+	<dl>
+	
+	<dt class="dlterm">1</dt>
+	
+	<dd class="dlentry">
+	<p>The federated wrapper which manages the operations on the nickname is non-relational.  Only nicknames managed by relational wrappers are supported. The ODBC wrapper is also not supported.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">2</dt>
+	
+	<dd class="dlentry">
+	<p>The DATALINK SPECIFICATION clause was specified, but is not supported.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">3</dt>
+	
+	<dd class="dlentry">
+	<p>One of the following unsupported filetype modifiers was specified: indexixf  or indexschema.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">4</dt>
+	
+	<dd class="dlentry">
+	<p>The dldelfiletype modifier, which is unsupported, was specified.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">5</dt>
+	
+	<dd class="dlentry">
+	<p>One of the following unsupported filetype modifiers was specified: nodefaults or usedefaults.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">6</dt>
+	
+	<dd class="dlentry">
+	<p>The no_type_idfiletype modifier, which is unsupported, was specified.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">7</dt>
+	
+	<dd class="dlentry">
+	<p>One of the following unsupported filetype modifiers was specified: generatedignore, generatedmissing, identityignore, identitymissing, periodignore, periodmissing, transactioidignore, or transactionidmissing.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">8</dt>
+	
+	<dd class="dlentry">
+	<p>The COMMITCOUNT clause was not specified or was specified with the value AUTOMATIC.  If the COMMITCOUNT clause is used, a non zero number must be specified.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">9</dt>
+	
+	<dd class="dlentry">
+	<p>The ALLOW WRITE ACCESS clause, which is required, was not specified.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">10</dt>
+	
+	<dd class="dlentry">
+	<p>An unsupported filetype was specified.  Only files of type IXF, ASC, or DEL are supported.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">11</dt>
+	
+	<dd class="dlentry">
+	<p>An unsupported import action was specified.  Only the INSERT INTO or INSERT_UPDATE INTO actions are supported.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">12</dt>
+	
+	<dd class="dlentry">
+	<p>Target table contains one of unsupported column types: LOB columns, XML columns, generated columns, datalink columns, or target table is a hierarchy table (typed table).</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">13</dt>
+	
+	<dd class="dlentry">
+	<p>The lobsinfile filetype modifier, which is unsupported, was specified.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">14</dt>
+	
+	<dd class="dlentry">
+	<p>Either the remote target is not a table, or insufficient privileges prevent the utility from accessing the nickname. Import operation is only permitted when nickname is defined on a table, and PASSTHRU privilege is granted on the user.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">15</dt>
+	
+	<dd class="dlentry">
+	<p>The necessary stored procedures do not exist against the target database. Update the the database system catalog and cause built-in SQL routines and views to be recreated by calling the version of the db2updv* command that is appropriate for the recently installed fix pack.</p>
+	
+	</dd>
+	
+	
+	
+	<dt class="dlterm">16</dt>
+	
+	<dd class="dlentry">
+	<p>The target table is a random distribution table using the random by generation method, which is unsupported.</p>
+	
+	</dd>
+	
+	
+	</dl>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Correct the options specified and retry the IMPORT command.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL29006N">SQL29006N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>A Java exception <var class="keyword varname vartype=quotedString varnumber=1">exception-string</var> was encountered.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>Java exception <var class="keyword varname">exception-string</var> was thrown.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>If the problem persists contact your technical service
+	representative.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL29007N">SQL29007N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Unable to communicate with the Query Controller.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The Query Controller may not be running or the communication has timed out.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Request that the database administrator start the Query Controller.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL29008N">SQL29008N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Error encountered during job sequence number generation.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>An error was encountered during job sequence number generation.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>If the problem persists contact your technical service
+	representative.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL29009N">SQL29009N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The query has been rejected. Reason code <var class="keyword varname vartype=quotedString varnumber=1">reason-code</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The query has been rejected. The reason codes are as follows:</p>
+	
+	<ol class="cds--list--ordered--temporary">
+	<li class="cds--list__item">DB2 does not allow the query to generate result set, or the query contains host variables, parameter markers, special registers, created temporary tables, declared temporary tables, session variables, IDENTITY_VAL_LOCAL function, NEXT VALUE expression,  and/or PREVIOUS VALUE expression. Therefore the query cannot be put on hold or run in the background, as the state might not be valid at the time the query is actually executed.</li>
+	
+	<li class="cds--list__item">The query would update a DB2 table, therefore it cannot be put on hold or run in background, as the state might no longer be valid at the time the query is actually executed.</li>
+	
+	<li class="cds--list__item">The query cannot be queued because it contains nested routines.</li>
+	
+	<li class="cds--list__item">The query cannot be put on hold or run in the background because it contains nested routines.</li>
+	
+	<li class="cds--list__item">DB2 does not allow this query to be queued. This may occur when the query contains array inserts.</li>
+	
+	<li class="cds--list__item">DB2 does not allow a query to be queued when the concentrator is turned on.</li>
+	
+	<li class="cds--list__item">DB2 does not allow a query to be queued when the REOPT ALWAYS option is enabled for the query.</li>
+	
+	</ol>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Contact the database administrator to examine the reason code and increase the appropriate cost threshold accordingly.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL29010N">SQL29010N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The query submission has been cancelled.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The user has cancelled the query submission. No query was submitted.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL29011I">SQL29011I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Query <var class="keyword varname vartype=quotedString varnumber=1">query-ID</var> will be run in the background.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The user has chosen to run the query in the background.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL29013I">SQL29013I</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Query <var class="keyword varname vartype=quotedString varnumber=1">query-ID</var> has been held.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The query has been put in held state by Query Patroller.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Contact the database administrator to have the query released.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL29014N">SQL29014N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>The value specified for DB2 registry variable <var class="keyword varname vartype=quotedString varnumber=1">registry-variable</var> is invalid.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<div class="p">The value specified for <var class="keyword varname">registry-variable</var>
+	is invalid because of the following restrictions by
+	<var class="keyword varname">registry-variable</var>:
+	<dl>
+	<dt class="dlterm">DQP_NTIER</dt>
+	
+	<dd class="dlentry">The value must be one of OFF, RUN[:timeout],
+	or CHECK[:timeout].
+	</dd>
+	
+	
+	<dt class="dlterm">DQP_LAST_RESULT_DEST</dt>
+	
+	<dd class="dlentry">The length must not exceed 32 characters.
+	</dd>
+	
+	
+	<dt class="dlterm">DQP_TRACEFILE</dt>
+	
+	<dd class="dlentry">The length must not exceed 256 characters.
+	</dd>
+	
+	
+	</dl>
+	</div>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Correct the value of the DB2 registry variable
+	<var class="keyword varname">registry-variable</var> with the db2set
+	command and resubmit the query.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL29015N">SQL29015N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Error encountered during job cancellation. Reason code = <var class="keyword varname vartype=quotedString varnumber=1">reason-code</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>An error was encountered while trying to cancel a job.
+	The reason code maps to an SQL or DB2 message.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Examine the reason code, correct the error,
+	and retry the action again.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL29017N">SQL29017N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>Query <var class="keyword varname vartype=quotedString varnumber=1">query-id</var> has been cancelled.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The user has cancelled the query.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL29020N">SQL29020N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>An internal error has occurred. Error = <var class="keyword varname vartype=quotedString varnumber=1">error</var>.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>An error has occurred during internal processing.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Contact IBM Support and provide the db2diag log file and the qpdiag.log file.</p>
+	</td></tr><tr><td headers="sqlmsg__sqlmsg__entry__1 " class="ncol">
+	<p id="sqlmsg__SQL29021N">SQL29021N</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__2 " class="ncol">
+	<p>User <var class="keyword varname vartype=quotedString varnumber=1">user-ID</var> is suspended.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__3 " class="ncol">
+	<p>The user <var class="keyword varname">user-ID</var> is suspended from submitting a query to the database.</p>
+	</td><td headers="sqlmsg__sqlmsg__entry__4 " class="ncol">
+	<p>Contact the database administrator to have the user's submitter profile
+	reactivated.</p>
+	</td></tr></tbody></table>
