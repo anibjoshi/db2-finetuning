@@ -53,16 +53,6 @@ logs/
 *.ckpt
 wandb/
 
-# Data
-data/raw/
-data/processed/
-*.db
-*.sqlite
-*.json
-*.jsonl
-*.csv
-*.tsv
-
 # Model artifacts
 models/
 *.model
@@ -92,3 +82,7 @@ db2_docs/
 training_cache/
 lora_weights/
 evaluation_results/
+
+# Model files
+src/model/*
+!src/model/.gitkeep
