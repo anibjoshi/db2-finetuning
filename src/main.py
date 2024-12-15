@@ -11,6 +11,7 @@ from finetuning.LoRA_training import (
     Db2Trainer,
     train_db2_model
 )
+from finetuning.inference import generate_db2_response
 
 def setup_logging(log_file: Optional[str] = "training.log") -> None:
     """Configure global logging with both file and console output.
@@ -85,15 +86,56 @@ def train_model(config: Db2FineTuningConfig, data_path: Path) -> None:
         logger.error("Training failed", exc_info=True)
         raise RuntimeError(f"Training failed: {str(e)}")
 
+def run_inference(
+    question: str, 
+    model_path: Path, 
+    db2_version: str = "12.1",
+    use_base_model: bool = False
+) -> None:
+    """Run inference using either base or fine-tuned model.
+    
+    Args:
+        question: User's DB2 related question
+        model_path: Path to model directory
+        db2_version: DB2 version to consider (default: 12.1)
+        use_base_model: If True, use base model instead of fine-tuned
+        
+    Raises:
+        RuntimeError: If inference fails
+    """
+    logger = logging.getLogger("inference")
+    
+    try:
+        logger.info(f"Generating response using {'base' if use_base_model else 'fine-tuned'} model")
+        logger.info(f"Question: {question}")
+        
+        response = generate_db2_response(
+            question=question,
+            model_path=model_path,
+            db2_version=db2_version,
+            use_base_model=use_base_model
+        )
+        
+        if not response:
+            logger.warning("Empty response received")
+            print("\nNo response generated")
+        else:
+            print("\nResponse:", response)
+            logger.info("Response generated successfully")
+        
+    except Exception as e:
+        logger.error("Inference failed", exc_info=True)
+        raise RuntimeError(f"Inference failed: {str(e)}")
+
 def main() -> None:
     """Main entry point with command line argument parsing."""
     parser = argparse.ArgumentParser(
-        description="Db2 Documentation Processing and Model Training"
+        description="Db2 Documentation Processing, Model Training and Inference"
     )
     parser.add_argument(
         'action',
-        choices=['generate', 'train', 'all'],
-        help='Action to perform: generate data, train model, or both'
+        choices=['generate', 'train', 'infer', 'all'],
+        help='Action to perform: generate data, train model, run inference, or generate+train'
     )
     parser.add_argument(
         '--input-path',
@@ -113,6 +155,29 @@ def main() -> None:
         default="training.log",
         help='Path to log file'
     )
+    parser.add_argument(
+        '--model-path',
+        type=Path,
+        default=Path("src/model/base_model"),
+        help='Path to model directory'
+    )
+    parser.add_argument(
+        '--question',
+        type=str,
+        help='DB2 question for inference'
+    )
+    parser.add_argument(
+        '--db2-version',
+        type=str,
+        default="12.1",
+        choices=["11.1", "11.5", "12.1"],
+        help='DB2 version for inference'
+    )
+    parser.add_argument(
+        '--use-base-model',
+        action='store_true',
+        help='Use base model instead of fine-tuned model for inference'
+    )
     
     args = parser.parse_args()
     setup_logging(args.log_file)
@@ -127,6 +192,17 @@ def main() -> None:
             logger.info("Starting model training...")
             config = Db2FineTuningConfig()
             train_model(config, args.output_path)
+            
+        if args.action == 'infer':
+            if not args.question:
+                raise ValueError("--question argument is required for inference")
+            logger.info("Starting inference...")
+            run_inference(
+                question=args.question,
+                model_path=args.model_path,
+                db2_version=args.db2_version,
+                use_base_model=args.use_base_model
+            )
             
     except Exception as e:
         logger.error("Process failed", exc_info=True)

@@ -2,162 +2,193 @@ from typing import Optional, Dict, Any
 import torch
 from pathlib import Path
 import logging
-from transformers import LlamaForCausalLM, LlamaTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer
 import json
-import subprocess
 
-class Db2ModelInference:
-    """Handles inference for fine-tuned Db2 model."""
+logger = logging.getLogger(__name__)
+
+class DB2ModelInference:
+    """Handles inference for DB2 question answering using either base or fine-tuned model."""
     
     def __init__(
         self,
-        model_path: str = "src/model/db2_llama_finetuned",
-        base_model_path: str = "/Users/aniruddhajoshi/.llama/checkpoints/Llama3.1-8B-Instruct",
-        max_length: int = 200,
+        model_path: Path,
+        use_base_model: bool = False,
+        max_length: int = 512,
     ):
-        self.logger = logging.getLogger("Db2Inference")
-        self.model_path = Path(model_path)
-        self.base_model_path = Path(base_model_path)
-        self.max_length = max_length
-        self.setup_model()
+        """Initialize the inference model.
         
-    def setup_model(self) -> None:
-        """Initialize the model and tokenizer."""
+        Args:
+            model_path: Path to model directory
+            use_base_model: Whether to use base model or fine-tuned model
+            max_length: Maximum length for generated responses
+            
+        Raises:
+            ValueError: If model path doesn't exist
+        """
+        self.model_path = Path(model_path)
+        if not self.model_path.exists():
+            raise ValueError(f"Model path does not exist: {self.model_path}")
+            
+        self.max_length = max_length
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        logger.info(f"Using device: {self.device}")
+        
+        self.load_model()
+        
+    def load_model(self) -> None:
+        """Load the model and tokenizer."""
         try:
-            self.logger.info(f"Loading model from {self.model_path}")
+            logger.info(f"Loading model from {self.model_path}")
             
-            # Handle base model path conversion if needed
-            base_model_path = Path(self.base_model_path)
-            if (base_model_path / "consolidated.00.pth").exists():
-                converted_path = base_model_path / "hf_converted"
-                if not converted_path.exists():
-                    # Use transformers-cli for conversion
-                    print("Converting model to Hugging Face format...")
-                    subprocess.run([
-                        "transformers-cli",
-                        "convert",
-                        "--model_type", "llama",
-                        "--input_dir", str(base_model_path),
-                        "--output_dir", str(converted_path),
-                        "--model_size", "8B"
-                    ], check=True)
-                base_model_path = converted_path
+            # Load tokenizer
+            self.tokenizer = AutoTokenizer.from_pretrained(
+                self.model_path,
+                trust_remote_code=True
+            )
+            if self.tokenizer.pad_token is None:
+                self.tokenizer.pad_token = self.tokenizer.eos_token
+                
+            # Load model
+            self.model = AutoModelForCausalLM.from_pretrained(
+                self.model_path,
+                device_map="auto",
+                torch_dtype=torch.float16,
+                trust_remote_code=True
+            )
             
-            # First try loading the fine-tuned model
-            try:
-                self.tokenizer = LlamaTokenizer.from_pretrained(
-                    self.model_path,
-                    local_files_only=True
-                )
-                self.model = LlamaForCausalLM.from_pretrained(
-                    self.model_path,
-                    device_map="auto",
-                    local_files_only=True
-                )
-            except Exception as e:
-                # If fine-tuned model not found, load base model
-                self.logger.warning(f"Fine-tuned model not found, loading base model: {str(e)}")
-                self.tokenizer = LlamaTokenizer.from_pretrained(
-                    str(base_model_path),
-                    local_files_only=True
-                )
-                self.model = LlamaForCausalLM.from_pretrained(
-                    str(base_model_path),
-                    device_map="auto",
-                    local_files_only=True
-                )
-            
-            self.logger.info("Model loaded successfully")
+            logger.info("Model loaded successfully")
             
         except Exception as e:
-            self.logger.error(f"Failed to load model: {str(e)}")
+            logger.error(f"Failed to load model: {str(e)}")
             raise
             
-    def format_prompt(self, query: str, db2_version: Optional[str] = None) -> str:
-        """Format the input prompt for Db2 queries."""
-        if db2_version:
-            return f"user: For Db2 version {db2_version}, {query}\nassistant:"
-        return f"user: {query}\nassistant:"
-    
     def generate_response(
         self,
-        query: str,
+        question: str,
         db2_version: Optional[str] = None,
-    ) -> Dict[str, Any]:
-        """Generate response for Db2 query."""
+    ) -> str:
+        """Generate response for a DB2 question.
+        
+        Args:
+            question: The DB2-related question
+            db2_version: Optional DB2 version context
+            
+        Returns:
+            Generated response text
+            
+        Raises:
+            RuntimeError: If generation fails
+        """
         try:
             # Format prompt
-            prompt = self.format_prompt(query, db2_version)
+            if db2_version:
+                prompt = f"For DB2 version {db2_version}, {question}"
+            else:
+                prompt = question
+                
+            # Add system context
+            full_prompt = (
+                "You are a DB2 database expert assistant. "
+                "Provide clear and accurate answers to DB2 related questions.\n\n"
+                f"User: {prompt}\n"
+                "Assistant:"
+            )
             
-            # Encode input
-            inputs = self.tokenizer(prompt, return_tensors="pt")
+            logger.info(f"Generated prompt: {full_prompt}")
             
-            # Generate response
+            # Tokenize
+            inputs = self.tokenizer(
+                full_prompt,
+                return_tensors="pt",
+                truncation=True,
+                max_length=self.max_length
+            ).to(self.device)
+            
+            # Generate
             with torch.no_grad():
                 outputs = self.model.generate(
                     **inputs,
                     max_length=self.max_length,
+                    temperature=0.7,
+                    top_p=0.9,
+                    do_sample=True,
+                    pad_token_id=self.tokenizer.pad_token_id,
+                    eos_token_id=self.tokenizer.eos_token_id,
                 )
+                
+            # Decode
+            response = self.tokenizer.decode(
+                outputs[0],
+                skip_special_tokens=True,
+                clean_up_tokenization_spaces=True
+            )
             
-            # Decode response
-            response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+            # Clean up response
+            response = response.split("Assistant:", 1)[-1].strip()
+            logger.info(f"Generated response: {response}")
             
-            return {
-                "query": query,
-                "db2_version": db2_version,
+            return response
+            
+        except Exception as e:
+            logger.error(f"Generation failed: {str(e)}")
+            raise RuntimeError(f"Failed to generate response: {str(e)}")
+            
+    def save_conversation(
+        self,
+        question: str,
+        response: str,
+        db2_version: Optional[str],
+        output_file: Path
+    ) -> None:
+        """Save the conversation to a file.
+        
+        Args:
+            question: The original question
+            response: The generated response
+            db2_version: DB2 version if specified
+            output_file: Path to output file
+        """
+        try:
+            conversation = {
+                "question": question,
                 "response": response,
-                "full_prompt": prompt
+                "db2_version": db2_version
             }
             
-        except Exception as e:
-            self.logger.error(f"Generation failed: {str(e)}")
-            raise RuntimeError(f"Failed to generate response: {str(e)}")
-    
-    def save_response(self, response_data: Dict[str, Any], output_file: Path) -> None:
-        """Save response to file."""
-        try:
             with open(output_file, 'a') as f:
-                json.dump(response_data, f)
+                json.dump(conversation, f)
                 f.write('\n')
+                
         except Exception as e:
-            self.logger.error(f"Failed to save response: {str(e)}")
+            logger.error(f"Failed to save conversation: {str(e)}")
 
-def main():
-    """CLI interface for model inference."""
-    import argparse
+def generate_db2_response(
+    question: str,
+    model_path: Path,
+    db2_version: Optional[str] = None,
+    use_base_model: bool = False
+) -> str:
+    """Generate a response for a DB2 query.
     
-    parser = argparse.ArgumentParser(description="Db2 Model Inference")
-    parser.add_argument("query", help="Db2 query or question")
-    parser.add_argument("--version", help="Db2 version")
-    parser.add_argument(
-        "--model-path", 
-        default="src/model/db2_llama_finetuned",
-        help="Path to fine-tuned model"
-    )
-    parser.add_argument("--output", type=Path, help="Save response to file")
-    
-    args = parser.parse_args()
-    
-    # Setup logging
-    logging.basicConfig(level=logging.INFO)
-    
+    Args:
+        question: The DB2-related question
+        model_path: Path to model directory
+        db2_version: Optional DB2 version
+        use_base_model: Whether to use base model
+        
+    Returns:
+        Generated response text
+        
+    Raises:
+        RuntimeError: If generation fails
+    """
     try:
-        # Initialize inference
-        inference = Db2ModelInference(model_path=args.model_path)
+        inference = DB2ModelInference(
+            model_path=model_path,
+            use_base_model=use_base_model
+        )
+        return inference.generate_response(question, db2_version)
         
-        # Generate response
-        response = inference.generate_response(args.query, args.version)
-        
-        # Print response
-        print("\nResponse:", response["response"])
-        
-        # Save if output specified
-        if args.output:
-            inference.save_response(response, args.output)
-            
     except Exception as e:
-        logging.error(f"Inference failed: {str(e)}")
-        raise
-
-if __name__ == "__main__":
-    main() 
+        raise RuntimeError(f"Failed to generate response: {str(e)}") 
