@@ -90,7 +90,8 @@ class DB2ModelInference:
             # Add system context
             full_prompt = (
                 "You are a DB2 database expert assistant. "
-                "Provide clear and accurate answers to DB2 related questions.\n\n"
+                "Provide clear and accurate answers to DB2 related questions. "
+                "Give a single, complete response.\n\n"
                 f"User: {prompt}\n"
                 "Assistant:"
             )
@@ -105,14 +106,18 @@ class DB2ModelInference:
                 max_length=self.max_length
             ).to(self.device)
             
-            # Generate
+            # Generate with modified parameters
             with torch.no_grad():
                 outputs = self.model.generate(
                     **inputs,
                     max_length=self.max_length,
+                    min_length=50,  # Add minimum length
                     temperature=0.7,
                     top_p=0.9,
+                    repetition_penalty=1.2,  # Add repetition penalty
+                    no_repeat_ngram_size=3,  # Prevent repeating trigrams
                     do_sample=True,
+                    num_return_sequences=1,  # Ensure single sequence
                     pad_token_id=self.tokenizer.pad_token_id,
                     eos_token_id=self.tokenizer.eos_token_id,
                 )
@@ -124,8 +129,15 @@ class DB2ModelInference:
                 clean_up_tokenization_spaces=True
             )
             
-            # Clean up response
-            response = response.split("Assistant:", 1)[-1].strip()
+            # Clean up response - take only the assistant's response
+            parts = response.split("Assistant:", 1)
+            if len(parts) > 1:
+                response = parts[1].strip()
+                # Remove any repeated User: or Assistant: markers
+                response = response.split("User:")[0].split("Assistant:")[0].strip()
+            else:
+                response = response.strip()
+                
             logger.info(f"Generated response: {response}")
             
             return response
