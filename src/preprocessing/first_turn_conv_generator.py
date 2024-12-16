@@ -5,8 +5,37 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
+
+interactions = [
+    # Direct queries about the SQL code
+    {"user": "What is {sql_code}?", "assistant": "{sql_code} means {message}"},
+    {"user": "Explain {sql_code}.", "assistant": "{sql_code} means {message}"},
+    {"user": "What does {sql_code} mean?", "assistant": "{sql_code} means {message}"},
+    {"user": "Can you provide details about {sql_code}?", "assistant": "{sql_code} means {message}"},
+    {"user": "I'm seeing {sql_code}.What does it mean?", "assistant": "{sql_code} means {message}"},
+
+    # Queries combining the SQL code and its message
+    {"user": "{sql_code} {message} What does this mean?", "assistant": "The code '{sql_code} {message}' indicates: {explanation}"},
+    {"user": "Can you explain the message: '{sql_code} {message}'?", "assistant": "The code '{sql_code} {message}' indicates: {explanation}"},
+    {"user": "What should I understand from {sql_code} {message}?", "assistant": "The code '{sql_code} {message}' indicates: {explanation}"},
+
+    # Resolution-focused queries
+    {"user": "How do I resolve {sql_code}?", "assistant": "{response}"},
+    {"user": "What steps should I take to fix {sql_code}?", "assistant": "{response}"},
+    {"user": "What is the recommended response for {sql_code}?", "assistant": "{response}"},
+
+    # Explanation-related queries
+    {"user": "What does the explanation mean for {sql_code}?", "assistant": "{explanation}"},
+    {"user": "Can you provide more details on the explanation for {sql_code}?", "assistant": "{explanation}"},
+    {"user": "Can you break down the explanation of {sql_code} for me?", "assistant": "{explanation}"},
+]
+
+
 def generate_first_turn_conversations(input_path: str, output_path: str) -> None:
     """Generate first-turn conversations from SQL code data in JSONL format.
+    
+    For each SQL code, generates multiple conversation variations using predefined
+    interaction templates. Each template is filled with the SQL code's details.
     
     Args:
         input_path: Path to input JSONL file containing SQL codes
@@ -35,40 +64,55 @@ def generate_first_turn_conversations(input_path: str, output_path: str) -> None
         conversations = []
         for code in sql_codes:
             # Extract fields from the code documentation
-            message_id = code.get("id")
-            message = code.get("message")
-            explanation = code.get("explanation")
-            user_response = code.get("response")
+            sql_code = code.get("id")
+            message = code.get("message", "")
+            explanation = code.get("explanation", "")
+            response = code.get("response", "")
             
             # Skip if required fields are missing
-            if not all([message_id, message, explanation, user_response]):
-                logger.warning(f"Skipping code with missing fields: {code}")
+            if not sql_code:
+                logger.warning(f"Skipping code with missing ID: {code}")
                 continue
             
-            # User's input (real-world query format)
-            user_query = f"{message_id} {message}"
-            
-            # Assistant response
-            assistant_response = (
-                f"The code '{user_query}' indicates: {explanation} "
-                f"{user_response}"
-            )
+            # Generate variations using interaction templates
+            for interaction in interactions:
+                try:
+                    # Format the user query and assistant response using the template
+                    user_content = interaction["user"].format(
+                        sql_code=sql_code,
+                        message=message,
+                        explanation=explanation
+                    )
+                    
+                    assistant_content = interaction["assistant"].format(
+                        sql_code=sql_code,
+                        message=message,
+                        explanation=explanation,
+                        response=response
+                    )
 
-            # Create the single-turn conversation
-            conversation = {
-                "dialogue": [
-                    {"role": "user", "content": user_query},
-                    {"role": "assistant", "content": assistant_response}
-                ]
-            }
-            conversations.append(conversation)
+                    # Create the conversation
+                    conversation = {
+                        "dialogue": [
+                            {"role": "user", "content": user_content},
+                            {"role": "assistant", "content": assistant_content}
+                        ]
+                    }
+                    conversations.append(conversation)
+                    
+                except KeyError as e:
+                    logger.warning(f"Failed to format interaction for code {sql_code}: {e}")
+                    continue
 
         # Write conversations in JSONL format
         with open(output_path, "w") as f:
             for conversation in conversations:
                 f.write(json.dumps(conversation) + "\n")
 
-        logger.info(f"Generated {len(conversations)} conversations from {len(sql_codes)} SQL codes")
+        logger.info(
+            f"Generated {len(conversations)} conversations "
+            f"({len(sql_codes)} SQL codes × {len(interactions)} templates)"
+        )
 
     except json.JSONDecodeError as e:
         logger.error(f"JSON parsing error: {e}")

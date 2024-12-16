@@ -82,7 +82,10 @@ db2_docs/
 training_cache/
 lora_weights/
 evaluation_results/
+src/data/processed/
 
 # Model files
 src/model/*
 !src/model/.gitkeep
+
+
