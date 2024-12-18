@@ -5,7 +5,8 @@ from transformers import (
     AutoTokenizer, 
     TrainingArguments, 
     Trainer,
-    DataCollatorForLanguageModeling
+    DataCollatorForLanguageModeling,
+    EvalPrediction
 )
 from datasets import load_dataset, Dataset
 from peft import LoraConfig, get_peft_model, TaskType, prepare_model_for_kbit_training
@@ -13,57 +14,8 @@ from accelerate import Accelerator
 import logging
 import os
 from pathlib import Path
-from config import (
-    BASE_MODEL_DIR,
-    FINETUNED_MODEL_DIR,
-    BEST_MODEL_DIR,
-    LOGS_DIR
-)
-
-class Db2FineTuningConfig:
-    """Configuration for Db2-specific LoRA fine-tuning.
-    
-    Attributes:
-        model_name (str): Base model identifier
-        lora_r (int): Rank of LoRA adaptations
-        lora_alpha (int): LoRA scaling factor
-        lora_dropout (float): Dropout probability for LoRA layers
-        learning_rate (float): Training learning rate
-        batch_size (int): Per-device batch size
-        max_length (int): Maximum sequence length
-        num_epochs (int): Number of training epochs
-        gradient_accumulation_steps (int): Number of steps to accumulate gradients
-        warmup_steps (int): Number of steps to warm up learning rate
-        load_in_8bit (bool): Whether to load model in 8-bit
-        use_gradient_checkpointing (bool): Whether to use gradient checkpointing
-    """
-    def __init__(
-        self,
-        model_name: str = str(BASE_MODEL_DIR),
-        lora_r: int = 32,
-        lora_alpha: int = 16,
-        lora_dropout: float = 0.1,
-        learning_rate: float = 2e-5,
-        batch_size: int = 8,
-        max_length: int = 512,
-        num_epochs: int = 2,
-        gradient_accumulation_steps: int = 4,
-        warmup_steps: int = 100,
-        load_in_8bit: bool = True,
-        use_gradient_checkpointing: bool = True
-    ):
-        self.model_name = model_name
-        self.lora_r = lora_r
-        self.lora_alpha = lora_alpha
-        self.lora_dropout = lora_dropout
-        self.learning_rate = learning_rate
-        self.batch_size = batch_size
-        self.max_length = max_length
-        self.num_epochs = num_epochs
-        self.gradient_accumulation_steps = gradient_accumulation_steps
-        self.warmup_steps = warmup_steps
-        self.load_in_8bit = load_in_8bit
-        self.use_gradient_checkpointing = use_gradient_checkpointing
+from config import TrainingConfig, FINETUNED_MODEL_DIR, BEST_MODEL_DIR, LOGS_DIR
+import math
 
 def tokenize_function(examples: Dict[str, Any], tokenizer: AutoTokenizer, max_length: int) -> Dict[str, Any]:
     """Tokenize and format Db2 dialogue data.
@@ -110,18 +62,17 @@ class Db2Trainer:
     - Model checkpointing and saving
     
     Attributes:
-        config (Db2FineTuningConfig): Configuration for model training
+        config (TrainingConfig): Configuration for model training
         logger (Logger): Training-specific logger instance
         model (PreTrainedModel): The model being fine-tuned
         tokenizer (AutoTokenizer): Tokenizer for the model
     """
     
-    def __init__(self, config: Db2FineTuningConfig):
+    def __init__(self, config: TrainingConfig):
         """Initialize trainer with configuration.
         
         Args:
-            config: Training configuration including model parameters,
-                   learning rates, and other hyperparameters
+            config: Training configuration parameters
         """
         self.config = config
         self.logger = logging.getLogger("Db2Trainer")
@@ -214,7 +165,7 @@ class Db2Trainer:
         """Load and prepare training and validation datasets.
         
         Loads data from the specified path, splits it into training and validation
-        sets (90/10 split), and applies tokenization to both sets.
+        sets (90/10 split), applies shuffling, and tokenizes both sets.
         
         Args:
             data_path: Path to the training data file
@@ -229,26 +180,66 @@ class Db2Trainer:
         if not data_path.exists():
             raise FileNotFoundError(f"Training data not found: {data_path}")
             
-        # Load and split dataset
+        # Load dataset and shuffle before splitting
         dataset = load_dataset("json", data_files={"train": str(data_path)})["train"]
-        dataset_dict = dataset.train_test_split(test_size=0.1, seed=42)
+        dataset = dataset.shuffle(seed=self.config.seed)
+        
+        # Split into train/validation with shuffling
+        dataset_dict = dataset.train_test_split(
+            test_size=self.config.validation_split,
+            seed=self.config.seed,
+            shuffle=True
+        )
         
         # Create tokenization function
-        tokenize = lambda examples: tokenize_function(examples, self.tokenizer, self.config.max_length)
-        
-        # Process both splits
-        return (
-            dataset_dict["train"].map(
-                tokenize,
-                batched=True,
-                remove_columns=dataset_dict["train"].column_names
-            ),
-            dataset_dict["test"].map(
-                tokenize,
-                batched=True,
-                remove_columns=dataset_dict["test"].column_names
-            )
+        tokenize = lambda examples: tokenize_function(
+            examples, 
+            self.tokenizer, 
+            self.config.max_length
         )
+        
+        # Process and shuffle both splits
+        train_dataset = dataset_dict["train"].map(
+            tokenize,
+            batched=True,
+            remove_columns=dataset_dict["train"].column_names
+        ).shuffle(seed=self.config.seed)
+        
+        val_dataset = dataset_dict["test"].map(
+            tokenize,
+            batched=True,
+            remove_columns=dataset_dict["test"].column_names
+        ).shuffle(seed=self.config.seed)
+        
+        return train_dataset, val_dataset
+    
+    def compute_metrics(self, eval_pred: EvalPrediction) -> Dict[str, float]:
+        """
+        Compute evaluation metrics including perplexity.
+        
+        Args:
+            eval_pred: Evaluation predictions and labels
+            
+        Returns:
+            Dictionary containing computed metrics
+        """
+        metrics = {}
+        
+        # Get the loss from eval predictions
+        if hasattr(eval_pred, 'metrics') and 'eval_loss' in eval_pred.metrics:
+            loss = eval_pred.metrics['eval_loss']
+        else:
+            # Calculate loss if not provided in metrics
+            logits = eval_pred.predictions
+            labels = eval_pred.label_ids
+            loss = self.compute_loss(logits, labels)
+            
+        # Calculate perplexity from loss
+        perplexity = math.exp(min(loss, 100))  # Cap loss to avoid inf perplexity
+        metrics["perplexity"] = perplexity
+        metrics["loss"] = loss
+        
+        return metrics
     
     def train(self, data_path: Path) -> None:
         """Execute the complete training process.
@@ -274,7 +265,7 @@ class Db2Trainer:
             self.load_model_and_tokenizer()
             train_dataset, val_dataset = self.prepare_datasets(data_path)
             
-            # Configure training arguments
+            # Configure training arguments using config
             training_args = TrainingArguments(
                 output_dir=str(FINETUNED_MODEL_DIR),
                 learning_rate=self.config.learning_rate,
@@ -285,13 +276,17 @@ class Db2Trainer:
                 warmup_steps=self.config.warmup_steps,
                 fp16=True,
                 logging_dir=str(LOGS_DIR),
-                eval_strategy="epoch",
-                save_strategy="epoch",
-                save_total_limit=3,
+                evaluation_strategy=self.config.eval_strategy,
+                save_strategy=self.config.save_strategy,
+                save_total_limit=self.config.save_total_limit,
                 load_best_model_at_end=True,
-                metric_for_best_model="eval_loss",
-                greater_is_better=False,
-                report_to="tensorboard"
+                metric_for_best_model=self.config.metric_for_best_model,
+                greater_is_better=self.config.greater_is_better,
+                report_to="tensorboard",
+                # Randomization settings
+                seed=self.config.seed,
+                data_seed=self.config.data_seed,
+                group_by_length=self.config.group_by_length
             )
 
             # Initialize and run trainer
@@ -301,7 +296,8 @@ class Db2Trainer:
                 train_dataset=train_dataset,
                 eval_dataset=val_dataset,
                 tokenizer=self.tokenizer,
-                data_collator=DataCollatorForLanguageModeling(self.tokenizer, mlm=False)
+                data_collator=DataCollatorForLanguageModeling(self.tokenizer, mlm=False),
+                compute_metrics=self.compute_metrics
             )
 
             trainer.train()
@@ -317,6 +313,6 @@ class Db2Trainer:
 
 
 if __name__ == "__main__":
-    config = Db2FineTuningConfig()
+    config = TrainingConfig()
     trainer = Db2Trainer(config)
     trainer.train(Path("src/data/processed/SQL0000-0999_first_turn_conversations.jsonl"))
