@@ -2,13 +2,32 @@ from typing import Optional, Dict, Any
 import torch
 from pathlib import Path
 import logging
-from transformers import AutoModelForCausalLM, AutoTokenizer
 import json
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from config import (
+    LOGS_DIR,
+    DEFAULT_DB2_VERSION,
+    SUPPORTED_DB2_VERSIONS
+)
 
 logger = logging.getLogger(__name__)
 
 class DB2ModelInference:
-    """Handles inference for DB2 question answering using either base or fine-tuned model."""
+    """Handles inference for DB2 question answering using either base or fine-tuned model.
+    
+    This class manages the complete inference pipeline including:
+    - Model and tokenizer loading with error handling
+    - Input processing and prompt formatting
+    - Response generation with configurable parameters
+    - Response cleaning and formatting
+    
+    Attributes:
+        model_path (Path): Path to the model directory
+        max_length (int): Maximum sequence length for generation
+        device (torch.device): Device to run inference on
+        model (AutoModelForCausalLM): Loaded model instance
+        tokenizer (AutoTokenizer): Model tokenizer instance
+    """
     
     def __init__(
         self,
@@ -37,11 +56,19 @@ class DB2ModelInference:
         self.load_model()
         
     def load_model(self) -> None:
-        """Load the model and tokenizer."""
+        """Load the model and tokenizer.
+        
+        Loads the model and tokenizer from the specified path, handling
+        tokenizer configuration and model loading with appropriate settings
+        for inference.
+        
+        Raises:
+            RuntimeError: If model or tokenizer loading fails
+        """
         try:
             logger.info(f"Loading model from {self.model_path}")
             
-            # Load tokenizer
+            # Load tokenizer with padding token configuration
             self.tokenizer = AutoTokenizer.from_pretrained(
                 self.model_path,
                 trust_remote_code=True
@@ -49,11 +76,11 @@ class DB2ModelInference:
             if self.tokenizer.pad_token is None:
                 self.tokenizer.pad_token = self.tokenizer.eos_token
                 
-            # Load model
+            # Load model with optimized settings for inference
             self.model = AutoModelForCausalLM.from_pretrained(
                 self.model_path,
-                device_map="auto",
-                torch_dtype=torch.float16,
+                device_map="auto",  # Automatically handle device placement
+                torch_dtype=torch.float16,  # Use half precision for efficiency
                 trust_remote_code=True
             )
             
@@ -66,9 +93,12 @@ class DB2ModelInference:
     def generate_response(
         self,
         question: str,
-        db2_version: Optional[str] = None,
+        db2_version: Optional[str] = DEFAULT_DB2_VERSION,
     ) -> str:
         """Generate response for a DB2 question.
+        
+        Processes the input question, formats it with DB2 version context,
+        and generates a response using the loaded model.
         
         Args:
             question: The DB2-related question
@@ -78,16 +108,21 @@ class DB2ModelInference:
             Generated response text
             
         Raises:
+            ValueError: If unsupported DB2 version provided
             RuntimeError: If generation fails
         """
         try:
-            # Format prompt
+            # Validate DB2 version against supported versions
+            if db2_version and db2_version not in SUPPORTED_DB2_VERSIONS:
+                raise ValueError(f"Unsupported DB2 version: {db2_version}. Must be one of {SUPPORTED_DB2_VERSIONS}")
+                
+            # Format prompt with version context if provided
             if db2_version:
                 prompt = f"For DB2 version {db2_version}, {question}"
             else:
                 prompt = question
                 
-            # Add system context
+            # Add system context for better responses
             full_prompt = (
                 "You are a DB2 database expert assistant. "
                 "Provide clear and accurate answers to DB2 related questions. "
@@ -98,7 +133,7 @@ class DB2ModelInference:
             
             logger.info(f"Generated prompt: {full_prompt}")
             
-            # Tokenize
+            # Tokenize input with appropriate padding and truncation
             inputs = self.tokenizer(
                 full_prompt,
                 return_tensors="pt",
@@ -106,40 +141,40 @@ class DB2ModelInference:
                 max_length=self.max_length
             ).to(self.device)
             
-            # Generate with modified parameters
+            # Generate response with carefully tuned parameters
             with torch.no_grad():
                 outputs = self.model.generate(
                     **inputs,
                     max_length=self.max_length,
-                    min_length=50,  # Add minimum length
-                    temperature=0.7,
-                    top_p=0.9,
-                    repetition_penalty=1.2,  # Add repetition penalty
-                    no_repeat_ngram_size=3,  # Prevent repeating trigrams
-                    do_sample=True,
-                    num_return_sequences=1,  # Ensure single sequence
+                    min_length=50,  # Ensure substantive responses
+                    temperature=0.7,  # Balance between creativity and focus
+                    top_p=0.9,  # Nucleus sampling for natural text
+                    repetition_penalty=1.3,  # Discourage repetition
+                    no_repeat_ngram_size=3,  # Prevent repeating phrases
+                    length_penalty=1.0,  # Balanced length control
+                    early_stopping=True,  # Efficient generation
+                    do_sample=True,  # Enable sampling for natural text
+                    num_return_sequences=1,
                     pad_token_id=self.tokenizer.pad_token_id,
                     eos_token_id=self.tokenizer.eos_token_id,
                 )
                 
-            # Decode
+            # Decode and clean up the generated response
             response = self.tokenizer.decode(
                 outputs[0],
                 skip_special_tokens=True,
                 clean_up_tokenization_spaces=True
             )
             
-            # Clean up response - take only the assistant's response
+            # Extract only the assistant's response
             parts = response.split("Assistant:", 1)
             if len(parts) > 1:
                 response = parts[1].strip()
-                # Remove any repeated User: or Assistant: markers
                 response = response.split("User:")[0].split("Assistant:")[0].strip()
             else:
                 response = response.strip()
                 
             logger.info(f"Generated response: {response}")
-            
             return response
             
         except Exception as e:

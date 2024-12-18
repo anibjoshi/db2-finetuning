@@ -12,7 +12,7 @@ interactions = [
     {"user": "Explain {sql_code}.", "assistant": "{sql_code} means {message}"},
     {"user": "What does {sql_code} mean?", "assistant": "{sql_code} means {message}"},
     {"user": "Can you provide details about {sql_code}?", "assistant": "{sql_code} means {message}"},
-    {"user": "I'm seeing {sql_code}.What does it mean?", "assistant": "{sql_code} means {message}"},
+    {"user": "I'm seeing {sql_code}. What does it mean?", "assistant": "{sql_code} means {message}"},
 
     # Queries combining the SQL code and its message
     {"user": "{sql_code} {message} What does this mean?", "assistant": "The code '{sql_code} {message}' indicates: {explanation}"},

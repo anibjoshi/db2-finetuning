@@ -1,4 +1,4 @@
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, Tuple
 import torch
 from transformers import (
     AutoModelForCausalLM, 
@@ -13,6 +13,12 @@ from accelerate import Accelerator
 import logging
 import os
 from pathlib import Path
+from config import (
+    BASE_MODEL_DIR,
+    FINETUNED_MODEL_DIR,
+    BEST_MODEL_DIR,
+    LOGS_DIR
+)
 
 class Db2FineTuningConfig:
     """Configuration for Db2-specific LoRA fine-tuning.
@@ -33,14 +39,14 @@ class Db2FineTuningConfig:
     """
     def __init__(
         self,
-        model_name: str = "src/model/base_model",
-        lora_r: int = 16,
-        lora_alpha: int = 32,
+        model_name: str = str(BASE_MODEL_DIR),
+        lora_r: int = 32,
+        lora_alpha: int = 16,
         lora_dropout: float = 0.1,
-        learning_rate: float = 5e-5,
-        batch_size: int = 4,
+        learning_rate: float = 2e-5,
+        batch_size: int = 8,
         max_length: int = 512,
-        num_epochs: int = 3,
+        num_epochs: int = 2,
         gradient_accumulation_steps: int = 4,
         warmup_steps: int = 100,
         load_in_8bit: bool = True,
@@ -70,9 +76,6 @@ def tokenize_function(examples: Dict[str, Any], tokenizer: AutoTokenizer, max_le
     Returns:
         Tokenized and formatted examples
     """
-    # Print an example to debug the data structure
-    print("Example data structure:", examples)
-    
     # Handle both single strings and dialogue format
     texts = []
     for example in examples['text'] if 'text' in examples else examples['dialogue']:
@@ -95,214 +98,225 @@ def tokenize_function(examples: Dict[str, Any], tokenizer: AutoTokenizer, max_le
         return_tensors="pt"
     )
 
-def train_db2_model(config: Db2FineTuningConfig, dataset: Optional[Dataset] = None) -> None:
-    """Train Db2-specific model using LoRA fine-tuning.
+class Db2Trainer:
+    """Manages DB2-specific LoRA fine-tuning process.
     
-    Args:
-        config: Training configuration
-        dataset: Optional pre-processed dataset. If None, loads from default path
-        
-    Raises:
-        RuntimeError: If training fails
-        MemoryError: If GPU memory is exceeded
+    This class handles the complete training pipeline for fine-tuning a language model
+    on DB2 documentation using LoRA (Low-Rank Adaptation). It manages:
+    - GPU resource checking and optimization
+    - Model and tokenizer loading with 8-bit quantization support
+    - Dataset preparation and validation split
+    - Training configuration and execution
+    - Model checkpointing and saving
+    
+    Attributes:
+        config (Db2FineTuningConfig): Configuration for model training
+        logger (Logger): Training-specific logger instance
+        model (PreTrainedModel): The model being fine-tuned
+        tokenizer (AutoTokenizer): Tokenizer for the model
     """
-    accelerator = Accelerator()
     
-    try:
-        tokenizer = AutoTokenizer.from_pretrained(
-            config.model_name,
+    def __init__(self, config: Db2FineTuningConfig):
+        """Initialize trainer with configuration.
+        
+        Args:
+            config: Training configuration including model parameters,
+                   learning rates, and other hyperparameters
+        """
+        self.config = config
+        self.logger = logging.getLogger("Db2Trainer")
+        self.model = None
+        self.tokenizer = None
+        
+    def check_gpu(self) -> bool:
+        """Check GPU availability and adjust training parameters accordingly.
+        
+        Checks available GPU memory and adjusts batch size and gradient
+        accumulation steps to prevent out-of-memory errors. For GPUs with
+        less than 24GB memory, reduces batch size and increases gradient
+        accumulation steps.
+        
+        Returns:
+            bool: True if GPU is available, False if training on CPU
+        """
+        if not torch.cuda.is_available():
+            self.logger.warning("No GPU available - training will be slow")
+            return False
+            
+        gpu_memory = torch.cuda.get_device_properties(0).total_memory / 1024**3
+        if gpu_memory < 24:
+            self.config.batch_size = min(self.config.batch_size, 2)
+            self.config.gradient_accumulation_steps *= 2
+            self.logger.warning(
+                f"Limited GPU memory ({gpu_memory:.1f}GB) - adjusted batch size: {self.config.batch_size}"
+            )
+        return True
+        
+    def load_model_and_tokenizer(self) -> None:
+        """Load and prepare the model and tokenizer for training.
+        
+        Attempts to load the model in 8-bit quantization first for memory efficiency.
+        Falls back to 16-bit if 8-bit loading fails. Configures the tokenizer and
+        applies LoRA adaptation to the model.
+        
+        Raises:
+            RuntimeError: If model loading fails
+        """
+        # Load tokenizer and set padding token
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            self.config.model_name,
             local_files_only=True,
             trust_remote_code=True
         )
+        self.tokenizer.pad_token = self.tokenizer.pad_token or self.tokenizer.eos_token
         
-        if tokenizer.pad_token is None:
-            tokenizer.pad_token = tokenizer.eos_token
-        
-        # Try loading in 8-bit first, fall back to 16-bit if bitsandbytes is not available
+        # Try 8-bit loading first, fall back to 16-bit
         try:
-            if config.load_in_8bit:
-                model = AutoModelForCausalLM.from_pretrained(
-                    config.model_name,
+            if self.config.load_in_8bit:
+                self.model = AutoModelForCausalLM.from_pretrained(
+                    self.config.model_name,
                     local_files_only=True,
                     trust_remote_code=True,
                     device_map="auto",
                     load_in_8bit=True,
                     torch_dtype=torch.float16
                 )
-                model = prepare_model_for_kbit_training(model)
+                self.model = prepare_model_for_kbit_training(self.model)
             else:
-                raise ImportError("8-bit loading disabled by config")
+                raise ImportError("8-bit loading disabled")
         except (ImportError, RuntimeError) as e:
-            print(f"Warning: 8-bit quantization failed ({str(e)}), falling back to 16-bit")
-            config.load_in_8bit = False
-            model = AutoModelForCausalLM.from_pretrained(
-                config.model_name,
+            self.logger.warning(f"8-bit loading failed, using 16-bit: {e}")
+            self.model = AutoModelForCausalLM.from_pretrained(
+                self.config.model_name,
                 local_files_only=True,
                 trust_remote_code=True,
                 device_map="auto",
                 torch_dtype=torch.float16
             )
             
-    except Exception as e:
-        raise RuntimeError(f"Failed to load model: {str(e)}")
-
-    # Print model architecture to identify correct target modules
-    print("Model architecture:")
-    for name, _ in model.named_modules():
-        print(name)
-
-    # Load and process dataset
-    try:
-        if dataset is None:
-            # Use default dataset path if none provided
-            dataset = load_dataset(
-                "json", 
-                data_files={"train": "src/data/processed/SQL0000-0999_first_turn_conversations.jsonl"}
-            )
-            dataset = dataset["train"]
-        
-        # Create a Dataset object with the correct format
-        if not isinstance(dataset, Dataset):
-            raise ValueError("Dataset must be a HuggingFace Dataset object")
-        
-        # Ensure dataset is in the correct format with a 'train' split
-        if isinstance(dataset, dict) and "train" in dataset:
-            dataset = dataset["train"]
-        
-        tokenized_dataset = dataset.map(
-            lambda x: tokenize_function(x, tokenizer, config.max_length),
-            batched=True,
-            remove_columns=dataset.column_names
+        # Configure and apply LoRA adaptation
+        lora_config = LoraConfig(
+            task_type=TaskType.CAUSAL_LM,
+            r=self.config.lora_r,
+            lora_alpha=self.config.lora_alpha,
+            lora_dropout=self.config.lora_dropout,
+            target_modules=["q_proj", "k_proj", "v_proj", "o_proj"],
+            bias="none",
+            inference_mode=False
         )
-    except Exception as e:
-        raise RuntimeError(f"Failed to load or process dataset: {str(e)}")
-
-    # Update LoRA config with correct target modules
-    lora_config = LoraConfig(
-        task_type=TaskType.CAUSAL_LM,
-        r=config.lora_r,
-        lora_alpha=config.lora_alpha,
-        lora_dropout=config.lora_dropout,
-        # Update target modules based on model architecture
-        target_modules=[
-            "q_proj",
-            "k_proj",
-            "v_proj",
-            "o_proj"
-        ],
-        bias="none",
-        inference_mode=False
-    )
-    
-    model = get_peft_model(model, lora_config)
-    
-    if config.use_gradient_checkpointing:
-        model.gradient_checkpointing_enable()
-
-    training_args = TrainingArguments(
-        output_dir="./db2_llama_finetuned",
-        evaluation_strategy="no",
-        learning_rate=config.learning_rate,
-        per_device_train_batch_size=config.batch_size,
-        gradient_accumulation_steps=config.gradient_accumulation_steps,
-        num_train_epochs=config.num_epochs,
-        warmup_steps=config.warmup_steps,
-        logging_dir="./logs",
-        save_strategy="steps",
-        save_steps=500,
-        fp16=True,
-        gradient_checkpointing=config.use_gradient_checkpointing,
-        report_to="tensorboard",
-        optim="adamw_torch",
-        lr_scheduler_type="cosine",
-        group_by_length=True,
-        remove_unused_columns=False
-    )
-
-    trainer = Trainer(
-        model=model,
-        args=training_args,
-        train_dataset=tokenized_dataset,
-        tokenizer=tokenizer,
-        data_collator=DataCollatorForLanguageModeling(tokenizer, mlm=False)
-    )
-
-    try:
-        trainer.train()
-        model.save_pretrained("./db2_llama_finetuned")
-        print("Fine-tuned model saved successfully")
-    except Exception as e:
-        print(f"Training failed: {str(e)}")
-        raise
-
-class Db2Trainer:
-    """Manages Db2-specific LoRA fine-tuning process."""
-    
-    def __init__(self, config: Db2FineTuningConfig):
-        self.config = config
-        self.setup_logging()
+        self.model = get_peft_model(self.model, lora_config)
         
-    def setup_logging(self) -> None:
-        """Configure training-specific logging."""
-        self.logger = logging.getLogger("Db2Trainer")
+        # Enable gradient checkpointing if configured
+        if self.config.use_gradient_checkpointing:
+            self.model.gradient_checkpointing_enable()
     
-    def check_gpu(self) -> bool:
-        """Check GPU availability and adjust config if needed."""
-        if torch.cuda.is_available():
-            self.logger.info(f"GPU available: {torch.cuda.get_device_name(0)}")
-            gpu_memory = torch.cuda.get_device_properties(0).total_memory / 1024**3
-            if gpu_memory < 24:
-                self.config.batch_size = min(self.config.batch_size, 2)
-                self.logger.warning(f"Reduced batch size to {self.config.batch_size} due to GPU memory constraints")
-            return True
-        self.logger.warning("No GPU available, training will be slow on CPU")
-        return False
-    
-    def prepare_training(self) -> None:
-        """Prepare for training by setting up directories and checking data."""
-        # Create output directory in src/model
-        model_dir = Path("src/model/db2_llama_finetuned")
-        model_dir.mkdir(parents=True, exist_ok=True)
+    def prepare_datasets(self, data_path: Path) -> Tuple[Dataset, Dataset]:
+        """Load and prepare training and validation datasets.
         
-        # Log configuration
-        self.logger.info("Training configuration:")
-        for key, value in vars(self.config).items():
-            self.logger.info(f"  {key}: {value}")
-    
-    def train(self, data_path: Path) -> None:
-        """Execute the training process.
+        Loads data from the specified path, splits it into training and validation
+        sets (90/10 split), and applies tokenization to both sets.
         
         Args:
-            data_path: Path to training data file
+            data_path: Path to the training data file
+            
+        Returns:
+            Tuple containing (training_dataset, validation_dataset)
             
         Raises:
-            FileNotFoundError: If training data not found
-            RuntimeError: If training fails
+            FileNotFoundError: If training data file not found
+            RuntimeError: If dataset processing fails
         """
         if not data_path.exists():
-            raise FileNotFoundError(f"Training data not found at {data_path}")
+            raise FileNotFoundError(f"Training data not found: {data_path}")
             
+        # Load and split dataset
+        dataset = load_dataset("json", data_files={"train": str(data_path)})["train"]
+        dataset_dict = dataset.train_test_split(test_size=0.1, seed=42)
+        
+        # Create tokenization function
+        tokenize = lambda examples: tokenize_function(examples, self.tokenizer, self.config.max_length)
+        
+        # Process both splits
+        return (
+            dataset_dict["train"].map(
+                tokenize,
+                batched=True,
+                remove_columns=dataset_dict["train"].column_names
+            ),
+            dataset_dict["test"].map(
+                tokenize,
+                batched=True,
+                remove_columns=dataset_dict["test"].column_names
+            )
+        )
+    
+    def train(self, data_path: Path) -> None:
+        """Execute the complete training process.
+        
+        Orchestrates the entire training pipeline:
+        1. Checks GPU availability and adjusts parameters
+        2. Creates output directories
+        3. Loads and prepares model and tokenizer
+        4. Prepares training and validation datasets
+        5. Configures and executes training
+        6. Saves the best model
+        
+        Args:
+            data_path: Path to the training data file
+            
+        Raises:
+            RuntimeError: If any part of the training process fails
+        """
         try:
             self.check_gpu()
-            self.prepare_training()
+            FINETUNED_MODEL_DIR.mkdir(parents=True, exist_ok=True)
             
-            # Start training process
-            self.logger.info("Starting model training")
-            train_db2_model(self.config)  # Your existing training function
+            self.load_model_and_tokenizer()
+            train_dataset, val_dataset = self.prepare_datasets(data_path)
             
-            # Save model to src/model directory
-            model_save_path = Path("src/model/db2_llama_finetuned")
-            self.model.save_pretrained(model_save_path)
-            self.tokenizer.save_pretrained(model_save_path)
-            self.logger.info(f"Model saved to {model_save_path}")
+            # Configure training arguments
+            training_args = TrainingArguments(
+                output_dir=str(FINETUNED_MODEL_DIR),
+                learning_rate=self.config.learning_rate,
+                per_device_train_batch_size=self.config.batch_size,
+                per_device_eval_batch_size=self.config.batch_size,
+                gradient_accumulation_steps=self.config.gradient_accumulation_steps,
+                num_train_epochs=self.config.num_epochs,
+                warmup_steps=self.config.warmup_steps,
+                fp16=True,
+                logging_dir=str(LOGS_DIR),
+                eval_strategy="epoch",
+                save_strategy="epoch",
+                save_total_limit=3,
+                load_best_model_at_end=True,
+                metric_for_best_model="eval_loss",
+                greater_is_better=False,
+                report_to="tensorboard"
+            )
+
+            # Initialize and run trainer
+            trainer = Trainer(
+                model=self.model,
+                args=training_args,
+                train_dataset=train_dataset,
+                eval_dataset=val_dataset,
+                tokenizer=self.tokenizer,
+                data_collator=DataCollatorForLanguageModeling(self.tokenizer, mlm=False)
+            )
+
+            trainer.train()
             
-            self.logger.info("Training completed successfully")
+            # Save the best model
+            BEST_MODEL_DIR.mkdir(parents=True, exist_ok=True)
+            self.model.save_pretrained(BEST_MODEL_DIR)
+            self.logger.info(f"Best model saved to {BEST_MODEL_DIR}")
             
         except Exception as e:
-            self.logger.error(f"Training failed: {str(e)}", exc_info=True)
-            raise
+            self.logger.error(f"Training failed: {e}", exc_info=True)
+            raise RuntimeError(f"Training failed: {e}")
+
 
 if __name__ == "__main__":
     config = Db2FineTuningConfig()
     trainer = Db2Trainer(config)
-    trainer.train(Path("first_turn_conversations.jsonl"))
+    trainer.train(Path("src/data/processed/SQL0000-0999_first_turn_conversations.jsonl"))

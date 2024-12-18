@@ -7,9 +7,24 @@ from data.processor import DataProcessor
 from training.training_manager import TrainingManager
 from inference.inference_manager import InferenceManager
 from training.LoRA_training import Db2FineTuningConfig
+from config import (
+    RAW_DATA_DIR, 
+    PROCESSED_DATA_DIR, 
+    BEST_MODEL_DIR,
+    DEFAULT_LOG_FILE,
+    SUPPORTED_DB2_VERSIONS,
+    DEFAULT_DB2_VERSION
+)
 
 def setup_logging(log_file: Optional[str] = "training.log") -> None:
-    """Configure logging."""
+    """Configure application-wide logging.
+    
+    Sets up logging to both console and file with timestamp, logger name,
+    and log level. Creates a new log file or appends to existing one.
+    
+    Args:
+        log_file: Path to log file. If None, only logs to console
+    """
     handlers = [logging.StreamHandler()]
     if log_file:
         handlers.append(logging.FileHandler(log_file))
@@ -21,7 +36,21 @@ def setup_logging(log_file: Optional[str] = "training.log") -> None:
     )
 
 def parse_args() -> argparse.Namespace:
-    """Parse and validate command line arguments."""
+    """Parse and validate command line arguments.
+    
+    Configures argument parser with three main actions:
+    1. generate: Process raw DB2 documentation into training data
+    2. train: Fine-tune the model on processed data
+    3. infer: Run inference using the trained model
+    
+    Returns:
+        Parsed command line arguments
+        
+    Example:
+        python main.py generate --raw-dir data/raw --output-dir data/processed
+        python main.py train --data-dir data/processed
+        python main.py infer "How do I create a database?" --version 12.1
+    """
     parser = argparse.ArgumentParser(
         description="DB2 Documentation Processing, Training and Inference"
     )
@@ -34,13 +63,13 @@ def parse_args() -> argparse.Namespace:
     gen_parser.add_argument(
         '--raw-dir',
         type=Path,
-        default=Path("src/data/raw"),
+        default=RAW_DATA_DIR,
         help='Directory containing raw DB2 documentation'
     )
     gen_parser.add_argument(
         '--output-dir',
         type=Path,
-        default=Path("src/data/processed"),
+        default=PROCESSED_DATA_DIR,
         help='Directory for processed training data'
     )
     
@@ -49,7 +78,7 @@ def parse_args() -> argparse.Namespace:
     train_parser.add_argument(
         '--data-dir',
         type=Path,
-        default=Path("src/data/processed"),
+        default=PROCESSED_DATA_DIR,
         help='Directory containing processed training data'
     )
     
@@ -63,8 +92,8 @@ def parse_args() -> argparse.Namespace:
     infer_parser.add_argument(
         '--version',
         type=str,
-        default="12.1",
-        choices=["11.1", "11.5", "12.1"],
+        default=DEFAULT_DB2_VERSION,
+        choices=SUPPORTED_DB2_VERSIONS,
         help='DB2 version'
     )
     
@@ -72,35 +101,53 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         '--log-file',
         type=str,
-        default="db2_assistant.log",
+        default=DEFAULT_LOG_FILE,
         help='Path to log file'
     )
     
     return parser.parse_args()
 
 def main() -> None:
-    """Main entry point."""
+    """Main entry point for the DB2 Assistant application.
+    
+    Orchestrates the complete workflow based on command line arguments:
+    1. Data Generation: Process raw DB2 documentation into training format
+    2. Training: Fine-tune the model using processed data
+    3. Inference: Generate responses to DB2 questions
+    
+    The function handles all high-level error cases and ensures proper
+    logging of any failures.
+    
+    Raises:
+        SystemExit(1): If any stage of the process fails
+    """
     args = parse_args()
     setup_logging(args.log_file)
     logger = logging.getLogger("main")
     
     try:
         if args.action == 'generate':
+            # Process raw DB2 documentation into training data
             processor = DataProcessor(args.raw_dir, args.output_dir)
             processor.process_all()
         
         elif args.action == 'train':
-            trainer = TrainingManager(Db2FineTuningConfig())
+            # Initialize training configuration and start training
+            config = Db2FineTuningConfig()
+            trainer = TrainingManager(config)
+            
+            # Process single file or directory of files
             trainer.train(args.data_dir)
             
         elif args.action == 'infer':
-            model_path = Path("src/model/db2_model")  # Use a sensible default
-            inferencer = InferenceManager(model_path)
+            # Load model and generate response
+            inferencer = InferenceManager(BEST_MODEL_DIR)
             response = inferencer.generate_response(
                 question=args.question,
                 db2_version=args.version
             )
             
+            # Display response
             if response:
                 print("\nResponse:", response)
             else:
