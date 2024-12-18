@@ -13,7 +13,7 @@ from config import (
 logger = logging.getLogger(__name__)
 
 class DB2ModelInference:
-    """Handles inference for DB2 question answering using either base or fine-tuned model.
+    """Handles inference for Db2 question answering using either base or fine-tuned model.
     
     This class manages the complete inference pipeline including:
     - Model and tokenizer loading with error handling
@@ -95,30 +95,30 @@ class DB2ModelInference:
         question: str,
         db2_version: Optional[str] = DEFAULT_DB2_VERSION,
     ) -> str:
-        """Generate response for a DB2 question.
+        """Generate response for a Db2 question.
         
-        Processes the input question, formats it with DB2 version context,
+        Processes the input question, formats it with Db2 version context,
         and generates a response using the loaded model.
         
         Args:
-            question: The DB2-related question
-            db2_version: Optional DB2 version context
+            question: The Db2-related question
+            db2_version: Optional Db2 version context
             
         Returns:
             Generated response text
             
         Raises:
-            ValueError: If unsupported DB2 version provided
+            ValueError: If unsupported Db2 version provided
             RuntimeError: If generation fails
         """
         try:
-            # Validate DB2 version against supported versions
+            # Validate Db2 version against supported versions
             if db2_version and db2_version not in SUPPORTED_DB2_VERSIONS:
-                raise ValueError(f"Unsupported DB2 version: {db2_version}. Must be one of {SUPPORTED_DB2_VERSIONS}")
+                raise ValueError(f"Unsupported Db2 version: {db2_version}. Must be one of {SUPPORTED_DB2_VERSIONS}")
                 
             # Format prompt with version context if provided
             if db2_version:
-                prompt = f"For DB2 version {db2_version}, {question}"
+                prompt = f"For Db2 version {db2_version}, {question}"
             else:
                 prompt = question
                 
@@ -193,7 +193,7 @@ class DB2ModelInference:
         Args:
             question: The original question
             response: The generated response
-            db2_version: DB2 version if specified
+            db2_version: Db2 version if specified
             output_file: Path to output file
         """
         try:
@@ -216,12 +216,12 @@ def generate_db2_response(
     db2_version: Optional[str] = None,
     use_base_model: bool = False
 ) -> str:
-    """Generate a response for a DB2 query.
+    """Generate a response for a Db2 query.
     
     Args:
-        question: The DB2-related question
+        question: The Db2-related question
         model_path: Path to model directory
-        db2_version: Optional DB2 version
+        db2_version: Optional Db2 version
         use_base_model: Whether to use base model
         
     Returns:

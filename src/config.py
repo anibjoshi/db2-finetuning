@@ -23,6 +23,6 @@ FIRST_TURN_CONV_FILE = PROCESSED_DATA_DIR / "SQL0000-0999_first_turn_conversatio
 # Log files
 DEFAULT_LOG_FILE = "db2_assistant.log"
 
-# DB2 versions
+# Db2 versions
 SUPPORTED_DB2_VERSIONS = ["11.1", "11.5", "12.1"]
 DEFAULT_DB2_VERSION = "12.1" 

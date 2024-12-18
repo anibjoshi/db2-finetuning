@@ -6,7 +6,7 @@ from training.LoRA_training import Db2FineTuningConfig, Db2Trainer
 logger = logging.getLogger(__name__)
 
 class TrainingManager:
-    """Manages high-level training operations for DB2 model fine-tuning."""
+    """Manages high-level training operations for Db2 model fine-tuning."""
     
     def __init__(self, config: Db2FineTuningConfig):
         """Initialize training manager.

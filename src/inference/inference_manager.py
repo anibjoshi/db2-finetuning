@@ -10,10 +10,10 @@ from config import (
 logger = logging.getLogger(__name__)
 
 class InferenceManager:
-    """Manages high-level inference operations for DB2 question answering.
+    """Manages high-level inference operations for Db2 question answering.
     
     This class provides a simplified interface for generating responses to
-    DB2 questions, handling model selection, error management, and logging.
+    Db2 questions, handling model selection, error management, and logging.
     
     Attributes:
         model_path (Path): Path to the model directory
@@ -33,7 +33,7 @@ class InferenceManager:
         db2_version: str = DEFAULT_DB2_VERSION,
         use_base_model: bool = False
     ) -> Optional[str]:
-        """Generate response for DB2 question.
+        """Generate response for Db2 question.
         
         Coordinates the response generation process, including:
         - Model selection (base vs. fine-tuned)
@@ -41,8 +41,8 @@ class InferenceManager:
         - Error handling and logging
         
         Args:
-            question: The DB2-related question to answer
-            db2_version: Target DB2 version for context
+            question: The Db2-related question to answer
+            db2_version: Target Db2 version for context
             use_base_model: Whether to use base model instead of fine-tuned
             
         Returns:

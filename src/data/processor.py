@@ -6,7 +6,7 @@ from preprocessing.first_turn_conv_generator import generate_first_turn_conversa
 logger = logging.getLogger(__name__)
 
 class DataProcessor:
-    """Handles all data processing operations for DB2 documentation."""
+    """Handles all data processing operations for Db2 documentation."""
     
     def __init__(self, input_path: Path, output_path: Path):
         self.input_path = input_path

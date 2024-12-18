@@ -52,7 +52,7 @@ def parse_args() -> argparse.Namespace:
         python main.py infer "How do I create a database?" --version 12.1
     """
     parser = argparse.ArgumentParser(
-        description="DB2 Documentation Processing, Training and Inference"
+        description="Db2 Documentation Processing, Training and Inference"
     )
     
     # Create subparsers for different actions
@@ -64,7 +64,7 @@ def parse_args() -> argparse.Namespace:
         '--raw-dir',
         type=Path,
         default=RAW_DATA_DIR,
-        help='Directory containing raw DB2 documentation'
+        help='Directory containing raw Db2 documentation'
     )
     gen_parser.add_argument(
         '--output-dir',
@@ -87,14 +87,14 @@ def parse_args() -> argparse.Namespace:
     infer_parser.add_argument(
         'question',
         type=str,
-        help='DB2 question to answer'
+        help='Db2 question to answer'
     )
     infer_parser.add_argument(
         '--version',
         type=str,
         default=DEFAULT_DB2_VERSION,
         choices=SUPPORTED_DB2_VERSIONS,
-        help='DB2 version'
+        help='Db2 version'
     )
     
     # Global arguments
@@ -108,12 +108,12 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 def main() -> None:
-    """Main entry point for the DB2 Assistant application.
+    """Main entry point for the Db2 Assistant application.
     
     Orchestrates the complete workflow based on command line arguments:
-    1. Data Generation: Process raw DB2 documentation into training format
+    1. Data Generation: Process raw Db2 documentation into training format
     2. Training: Fine-tune the model using processed data
-    3. Inference: Generate responses to DB2 questions
+    3. Inference: Generate responses to Db2 questions
     
     The function handles all high-level error cases and ensures proper
     logging of any failures.
@@ -127,7 +127,7 @@ def main() -> None:
     
     try:
         if args.action == 'generate':
-            # Process raw DB2 documentation into training data
+            # Process raw Db2 documentation into training data
             processor = DataProcessor(args.raw_dir, args.output_dir)
             processor.process_all()
         

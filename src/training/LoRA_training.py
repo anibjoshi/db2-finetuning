@@ -99,10 +99,10 @@ def tokenize_function(examples: Dict[str, Any], tokenizer: AutoTokenizer, max_le
     )
 
 class Db2Trainer:
-    """Manages DB2-specific LoRA fine-tuning process.
+    """Manages Db2-specific LoRA fine-tuning process.
     
     This class handles the complete training pipeline for fine-tuning a language model
-    on DB2 documentation using LoRA (Low-Rank Adaptation). It manages:
+    on Db2 documentation using LoRA (Low-Rank Adaptation). It manages:
     - GPU resource checking and optimization
     - Model and tokenizer loading with 8-bit quantization support
     - Dataset preparation and validation split
