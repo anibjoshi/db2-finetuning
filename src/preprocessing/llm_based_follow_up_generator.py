@@ -1,8 +1,14 @@
 from openai import OpenAI
 import json
+import os
+from dotenv import load_dotenv
+from pathlib import Path
 
-# Initialize the OpenAI client
-client = OpenAI(api_key='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')
+# Load environment variables
+load_dotenv()
+
+# Initialize the OpenAI client with API key from environment
+client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 def generate_follow_up(conversation: dict) -> str:
     """Generate a follow-up question based on the entire conversation JSON.
@@ -17,7 +23,7 @@ def generate_follow_up(conversation: dict) -> str:
         completion = client.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": "You are a user troubleshooting a Db2 database error, looking for guidance from an Db2 focusedAI assistant."},
+                {"role": "system", "content": "You are a user troubleshooting a Db2 database error, looking for guidance from an Db2 focused AI assistant."},
                 {"role": "user", "content": f"""
                     Based on the following conversation, generate a follow-up question from the perspective of a user who is still trying to troubleshoot the issue. 
                     The question should ask for clarification or additional guidance from the AI assistant. Do not assume the user knows advanced troubleshooting steps or system-level configurations. 
@@ -29,7 +35,6 @@ def generate_follow_up(conversation: dict) -> str:
             max_tokens=50,
             temperature=0.5
         )
-
 
         follow_up_question = completion.choices[0].message.content.strip()
         return follow_up_question
@@ -44,6 +49,8 @@ def process_conversations(file_path: str, limit: int = 3):
         file_path: Path to the JSONL file containing conversations.
         limit: Number of lines to process.
     """
+    if not os.getenv('OPENAI_API_KEY'):
+        raise ValueError("OpenAI API key not found in environment variables")
 
     with open(file_path, 'r') as file:
         for i, line in enumerate(file):

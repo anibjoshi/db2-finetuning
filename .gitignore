@@ -87,5 +87,3 @@ src/data/processed/
 # Model files
 src/model/*
 !src/model/.gitkeep
-
-
