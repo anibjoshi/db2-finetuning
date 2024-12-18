@@ -14,7 +14,7 @@ import logging
 from pathlib import Path
 from config import FINETUNED_MODEL_DIR, BEST_MODEL_DIR, LOGS_DIR
 from .training_config import TrainingConfig
-import math
+from .metrics_manager import MetricsManager
 
 def tokenize_function(examples: Dict[str, Any], tokenizer: AutoTokenizer, max_length: int) -> Dict[str, Any]:
     """Tokenize and format Db2 dialogue data.
@@ -77,6 +77,7 @@ class Db2Trainer:
         self.logger = logging.getLogger("Db2Trainer")
         self.model = None
         self.tokenizer = None
+        self.metrics_manager = None  # Will initialize after tokenizer is loaded
         
     def check_gpu(self) -> bool:
         """Check GPU availability and adjust training parameters accordingly.
@@ -156,9 +157,11 @@ class Db2Trainer:
         )
         self.model = get_peft_model(self.model, lora_config)
         
-        # Enable gradient checkpointing if configured
-        if self.config.use_gradient_checkpointing:
-            self.model.gradient_checkpointing_enable()
+        # Enable gradient checkpointing by default for memory efficiency
+        self.model.gradient_checkpointing_enable()
+        
+        # Initialize metrics manager after tokenizer is loaded
+        self.metrics_manager = MetricsManager(self.tokenizer)
     
     def prepare_datasets(self, data_path: Path) -> Tuple[Dataset, Dataset]:
         """Load and prepare training and validation datasets.
@@ -213,46 +216,24 @@ class Db2Trainer:
         return train_dataset, val_dataset
     
     def compute_metrics(self, eval_pred: EvalPrediction) -> Dict[str, float]:
-        """
-        Compute evaluation metrics including perplexity.
-        
-        Args:
-            eval_pred: Evaluation predictions and labels
-            
-        Returns:
-            Dictionary containing computed metrics
-        """
-        metrics = {}
-        
-        # Get the loss from eval predictions
-        if hasattr(eval_pred, 'metrics') and 'eval_loss' in eval_pred.metrics:
-            loss = eval_pred.metrics['eval_loss']
-        else:
-            # Calculate loss if not provided in metrics
-            logits = eval_pred.predictions
-            labels = eval_pred.label_ids
-            loss = self.compute_loss(logits, labels)
-            
-        # Calculate perplexity from loss
-        perplexity = math.exp(min(loss, 100))  # Cap loss to avoid inf perplexity
-        metrics["perplexity"] = perplexity
-        metrics["loss"] = loss
-        
-        return metrics
+        """Compute evaluation metrics using metrics manager."""
+        return self.metrics_manager.compute_metrics(eval_pred)
     
-    def train(self, data_path: Path) -> None:
+    def train(self, data_path: Path) -> Dict[str, float]:
         """Execute the complete training process.
         
-        Orchestrates the entire training pipeline:
-        1. Checks GPU availability and adjusts parameters
-        2. Creates output directories
-        3. Loads and prepares model and tokenizer
-        4. Prepares training and validation datasets
-        5. Configures and executes training
-        6. Saves the best model
+        Handles the complete training pipeline including:
+        - GPU memory optimization
+        - Model and tokenizer loading
+        - Dataset preparation and validation
+        - Training execution with LoRA
+        - Model saving and evaluation
         
         Args:
             data_path: Path to the training data file
+            
+        Returns:
+            Dictionary containing evaluation metrics (ROUGE, BLEU, etc.)
             
         Raises:
             RuntimeError: If any part of the training process fails
@@ -277,15 +258,13 @@ class Db2Trainer:
                 logging_dir=str(LOGS_DIR),
                 evaluation_strategy=self.config.eval_strategy,
                 save_strategy=self.config.save_strategy,
+                eval_steps=self.config.eval_steps,
+                save_steps=self.config.save_steps,
                 save_total_limit=self.config.save_total_limit,
                 load_best_model_at_end=True,
-                metric_for_best_model=self.config.metric_for_best_model,
-                greater_is_better=self.config.greater_is_better,
+                metric_for_best_model="rouge1",
                 report_to="tensorboard",
-                # Randomization settings
-                seed=self.config.seed,
-                data_seed=self.config.data_seed,
-                group_by_length=self.config.group_by_length
+                seed=self.config.seed
             )
 
             # Initialize and run trainer
@@ -299,16 +278,21 @@ class Db2Trainer:
                 compute_metrics=self.compute_metrics
             )
 
+            # Run training
             trainer.train()
+            
+            # Get final evaluation metrics
+            metrics = trainer.evaluate()
             
             # Save the best model
             BEST_MODEL_DIR.mkdir(parents=True, exist_ok=True)
             self.model.save_pretrained(BEST_MODEL_DIR)
-            self.logger.info(f"Best model saved to {BEST_MODEL_DIR}")
+            
+            return metrics
             
         except Exception as e:
             self.logger.error(f"Training failed: {e}", exc_info=True)
-            raise RuntimeError(f"Training failed: {e}")
+            raise RuntimeError(f"Training failed: {str(e)}")
 
 
 if __name__ == "__main__":

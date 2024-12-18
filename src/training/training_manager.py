@@ -31,26 +31,32 @@ class TrainingManager:
         return sorted(valid_files)
 
     def train(self, data_path: Path) -> Dict[str, Any]:
-        """Run model training process on all files sequentially.
-        
-        Args:
-            data_path: Path to training data file or directory
-            
-        Returns:
-            Dict containing training metrics (eval_loss, etc.)
-        """
+        """Run model training process with metrics tracking."""
         try:
             training_files = self._load_and_validate_files(data_path)
-            metrics = {}
+            metrics_history = []
             
             for file_path in training_files:
                 logger.info(f"Training on file: {file_path.name}")
                 result = self.trainer.train(file_path)
-                metrics.update(result)
+                metrics_history.append(result)
             
+            # Aggregate metrics across training runs
+            final_metrics = self._aggregate_metrics(metrics_history)
             logger.info("Training completed successfully")
-            return metrics
+            return final_metrics
             
         except Exception as e:
             logger.error("Training failed", exc_info=True)
             raise RuntimeError(f"Training failed: {str(e)}")
+
+    def _aggregate_metrics(self, metrics_history: List[Dict[str, float]]) -> Dict[str, float]:
+        """Aggregate metrics across multiple training runs."""
+        if not metrics_history:
+            return {}
+        
+        aggregated = {}
+        for metric, values in metrics_history[-1].items():  # Just use the last run's metrics
+            aggregated[metric] = values
+        
+        return aggregated
