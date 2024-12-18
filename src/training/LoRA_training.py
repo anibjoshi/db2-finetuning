@@ -10,11 +10,10 @@ from transformers import (
 )
 from datasets import load_dataset, Dataset
 from peft import LoraConfig, get_peft_model, TaskType, prepare_model_for_kbit_training
-from accelerate import Accelerator
 import logging
-import os
 from pathlib import Path
-from config import TrainingConfig, FINETUNED_MODEL_DIR, BEST_MODEL_DIR, LOGS_DIR
+from config import FINETUNED_MODEL_DIR, BEST_MODEL_DIR, LOGS_DIR
+from .training_config import TrainingConfig
 import math
 
 def tokenize_function(examples: Dict[str, Any], tokenizer: AutoTokenizer, max_length: int) -> Dict[str, Any]:

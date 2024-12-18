@@ -3,10 +3,12 @@ import argparse
 from pathlib import Path
 from typing import Optional
 
-from data.processor import DataProcessor
+from preprocessing.data_processor import DataProcessor
 from training.training_manager import TrainingManager
 from inference.inference_manager import InferenceManager
-from training.LoRA_training import Db2FineTuningConfig
+from training.training_config import TrainingConfig
+from experiments.experiments import ExperimentManager, ExperimentConfig
+
 from config import (
     RAW_DATA_DIR, 
     PROCESSED_DATA_DIR, 
@@ -38,18 +40,20 @@ def setup_logging(log_file: Optional[str] = "training.log") -> None:
 def parse_args() -> argparse.Namespace:
     """Parse and validate command line arguments.
     
-    Configures argument parser with three main actions:
+    Configures argument parser with four main actions:
     1. generate: Process raw DB2 documentation into training data
     2. train: Fine-tune the model on processed data
-    3. infer: Run inference using the trained model
+    3. run-experiment: Run hyperparameter optimization
+    4. infer: Run inference using the trained model
     
     Returns:
         Parsed command line arguments
         
     Example:
-        python main.py generate --raw-dir data/raw --output-dir data/processed
-        python main.py train --data-dir data/processed
-        python main.py infer "How do I create a database?" --version 12.1
+        python main.py generate
+        python main.py train
+        python main.py run-experiment
+        python main.py infer "How do I create a database?" 
     """
     parser = argparse.ArgumentParser(
         description="Db2 Documentation Processing, Training and Inference"
@@ -82,6 +86,9 @@ def parse_args() -> argparse.Namespace:
         help='Directory containing processed training data'
     )
     
+    # Experiment parser - simple command without options
+    subparsers.add_parser('run-experiment', help='Run hyperparameter optimization')
+    
     # Inference parser
     infer_parser = subparsers.add_parser('infer', help='Run model inference')
     infer_parser.add_argument(
@@ -113,7 +120,8 @@ def main() -> None:
     Orchestrates the complete workflow based on command line arguments:
     1. Data Generation: Process raw Db2 documentation into training format
     2. Training: Fine-tune the model using processed data
-    3. Inference: Generate responses to Db2 questions
+    3. Experimentation: Run hyperparameter optimization
+    4. Inference: Generate responses to Db2 questions
     
     The function handles all high-level error cases and ensures proper
     logging of any failures.
@@ -133,11 +141,18 @@ def main() -> None:
         
         elif args.action == 'train':
             # Initialize training configuration and start training
-            config = Db2FineTuningConfig()
+            config = TrainingConfig()
             trainer = TrainingManager(config)
-            
+            print(args.data_dir)
             # Process single file or directory of files
             trainer.train(args.data_dir)
+            
+        elif args.action == 'run-experiment':
+            # Run hyperparameter optimization
+            exp_config = ExperimentConfig()  # Use default configuration
+            experiment = ExperimentManager(exp_config)
+            best_params = experiment.run_optimization()
+            logger.info(f"Best hyperparameters found: {best_params}")
             
         elif args.action == 'infer':
             # Load model and generate response
