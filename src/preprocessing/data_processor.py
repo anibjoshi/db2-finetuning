@@ -1,7 +1,7 @@
 import logging
 from pathlib import Path
 from typing import List
-from preprocessing.conv_generator import generate_first_turn_conversations
+from preprocessing.conversation_generator import generate_first_turn_conversations
 
 logger = logging.getLogger(__name__)
 

@@ -2,9 +2,25 @@ import json
 from typing import List, Dict
 import logging
 from pathlib import Path
+import re
 
 logger = logging.getLogger(__name__)
 
+def clean_text(text: str) -> str:
+    """Clean text by removing extra whitespace and normalizing line breaks.
+    
+    Args:
+        text: Input text to clean
+        
+    Returns:
+        Cleaned text with normalized whitespace
+    """
+    # Remove tabs and extra spaces
+    text = re.sub(r'\t+', ' ', text)
+    text = re.sub(r'\s+', ' ', text)
+    # Normalize line breaks
+    text = text.replace('\n', ' ').strip()
+    return text
 
 interactions = [
     # Direct queries about the SQL code
@@ -90,6 +106,10 @@ def generate_first_turn_conversations(input_path: str, output_path: str) -> None
                         explanation=explanation,
                         response=response
                     )
+
+                    # Clean the formatted content
+                    user_content = clean_text(user_content)
+                    assistant_content = clean_text(assistant_content)
 
                     # Create the conversation
                     conversation = {
