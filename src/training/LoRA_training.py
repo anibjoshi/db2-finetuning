@@ -137,7 +137,7 @@ class Db2Trainer:
                     trust_remote_code=True,
                     device_map="auto",
                     load_in_8bit=True,
-                    torch_dtype=torch.float16 if self.config.use_fp16 else None
+                    torch_dtype=torch.bfloat16 if self.config.use_bf16 else None
                 )
                 self.model = prepare_model_for_kbit_training(self.model)
             else:
@@ -149,7 +149,7 @@ class Db2Trainer:
                 local_files_only=True,
                 trust_remote_code=True,
                 device_map="auto",
-                torch_dtype=torch.float16 if self.config.use_fp16 else None
+                torch_dtype=torch.bfloat16 if self.config.use_bf16 else None
             )
             
         # Configure and apply LoRA adaptation
@@ -261,7 +261,7 @@ class Db2Trainer:
                 gradient_accumulation_steps=self.config.gradient_accumulation_steps,
                 num_train_epochs=self.config.num_epochs,
                 warmup_steps=self.config.warmup_steps,
-                fp16=self.config.use_fp16,
+                bf16=self.config.use_bf16,
                 evaluation_strategy=self.config.eval_strategy,
                 save_strategy=self.config.save_strategy,
                 eval_steps=self.config.eval_steps,
