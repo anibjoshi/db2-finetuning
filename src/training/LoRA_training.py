@@ -254,8 +254,7 @@ class Db2Trainer:
                 gradient_accumulation_steps=self.config.gradient_accumulation_steps,
                 num_train_epochs=self.config.num_epochs,
                 warmup_steps=self.config.warmup_steps,
-                fp16=self.config.use_fp16,  # Simple fp16 flag
-                logging_dir=str(LOGS_DIR),
+                fp16=self.config.use_fp16,
                 evaluation_strategy=self.config.eval_strategy,
                 save_strategy=self.config.save_strategy,
                 eval_steps=self.config.eval_steps,
@@ -264,7 +263,9 @@ class Db2Trainer:
                 load_best_model_at_end=True,
                 metric_for_best_model="rouge1",
                 report_to="tensorboard",
-                seed=self.config.seed
+                seed=self.config.seed,
+                dataloader_num_workers=8,
+                dataloader_pin_memory=True
             )
 
             # Initialize and run trainer
@@ -274,7 +275,10 @@ class Db2Trainer:
                 train_dataset=train_dataset,
                 eval_dataset=val_dataset,
                 tokenizer=self.tokenizer,
-                data_collator=DataCollatorForLanguageModeling(self.tokenizer, mlm=False),
+                data_collator=DataCollatorForLanguageModeling(
+                    tokenizer=self.tokenizer, 
+                    mlm=False
+                ),
                 compute_metrics=self.compute_metrics
             )
 
