@@ -17,9 +17,9 @@ class TrainingConfig:
     lora_dropout: float = 0.1
     
     # Training hyperparameters
-    learning_rate: float = 2e-5
-    batch_size: int = 8
-    max_length: int = 512
+    learning_rate: float = 3e-5
+    batch_size: int = 32
+    max_length: int = 256
     num_epochs: int = 2
     gradient_accumulation_steps: int = 4
     warmup_steps: int = 100
@@ -31,8 +31,8 @@ class TrainingConfig:
     # Evaluation and saving
     eval_strategy: str = "steps"
     save_strategy: str = "steps"
-    eval_steps: int = 100
-    save_steps: int = 100
+    eval_steps: int = 1000
+    save_steps: int = 1000
     save_total_limit: int = 3
     
     # Dataset configuration
