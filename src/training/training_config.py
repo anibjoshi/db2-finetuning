@@ -24,6 +24,10 @@ class TrainingConfig:
     gradient_accumulation_steps: int = 4
     warmup_steps: int = 100
     
+    # DataLoader configuration
+    dataloader_num_workers: int = 8
+    pin_memory: bool = True  # Enable pinned memory for faster GPU transfer
+    
     # Evaluation and saving
     eval_strategy: str = "steps"
     save_strategy: str = "steps"

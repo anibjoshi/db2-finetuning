@@ -11,6 +11,7 @@ from transformers import (
 from datasets import load_dataset, Dataset
 from peft import LoraConfig, get_peft_model, TaskType, prepare_model_for_kbit_training
 import logging
+import os
 from pathlib import Path
 from config import FINETUNED_MODEL_DIR, BEST_MODEL_DIR, LOGS_DIR
 from .training_config import TrainingConfig
@@ -79,6 +80,12 @@ class Db2Trainer:
         self.tokenizer = None
         self.metrics_manager = None  # Will initialize after tokenizer is loaded
         
+        # Set tokenizer parallelism based on number of workers
+        if self.config.dataloader_num_workers > 0:
+            os.environ["TOKENIZERS_PARALLELISM"] = "false"  # Disable when using multiple workers
+        else:
+            os.environ["TOKENIZERS_PARALLELISM"] = "true"   # Enable for single process
+    
     def check_gpu(self) -> bool:
         """Check GPU availability and adjust training parameters accordingly.
         
@@ -264,8 +271,8 @@ class Db2Trainer:
                 metric_for_best_model="rouge1",
                 report_to="tensorboard",
                 seed=self.config.seed,
-                dataloader_num_workers=8,
-                dataloader_pin_memory=True
+                dataloader_num_workers=self.config.dataloader_num_workers,
+                dataloader_pin_memory=self.config.pin_memory
             )
 
             # Initialize and run trainer
