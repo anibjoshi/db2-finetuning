@@ -9,7 +9,7 @@ class TrainingConfig:
     # Model configuration
     model_name: str = str(BASE_MODEL_DIR)
     load_in_8bit: bool = True
-    use_fp16: bool = True  # Simple flag for mixed precision training
+    use_bf16: bool = True  # Using BF16 instead of FP16 for better stability
     
     # LoRA configuration
     lora_r: int = 32
