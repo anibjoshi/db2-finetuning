@@ -13,7 +13,7 @@ class InferenceManager:
     """Manages high-level inference operations for Db2 question answering.
     
     This class provides a simplified interface for generating responses to
-    Db2 questions, handling model selection, error management, and logging.
+    Db2 questions, handling model selection, error handling, and logging.
     
     Attributes:
         model_path (Path): Path to the model directory
@@ -71,4 +71,4 @@ class InferenceManager:
             
         except Exception as e:
             logger.error("Inference failed", exc_info=True)
-            raise RuntimeError(f"Inference failed: {str(e)}") 
+            raise RuntimeError(f"Inference failed: {str(e)}")

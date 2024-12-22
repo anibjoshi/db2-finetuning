@@ -1,4 +1,4 @@
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 import torch
 from pathlib import Path
 import logging
@@ -9,6 +9,7 @@ from config import (
     DEFAULT_DB2_VERSION,
     SUPPORTED_DB2_VERSIONS
 )
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -90,6 +91,27 @@ class DB2ModelInference:
             logger.error(f"Failed to load model: {str(e)}")
             raise
             
+    def validate_response(self, response: str) -> bool:
+        """Validate response for basic quality checks.
+        
+        Args:
+            response: Generated response text
+            
+        Returns:
+            bool: True if response meets quality standards
+        """
+        if not response or len(response.strip()) < 10:
+            logger.warning("Response too short or empty")
+            return False
+            
+        # Basic quality checks
+        quality_indicators = [
+            len(response.split()) >= 20,  # Minimum word count
+            not bool(re.search(r'(\w+)\1{2,}', response))  # No word repetition
+        ]
+        
+        return all(quality_indicators)
+
     def generate_response(
         self,
         question: str,
@@ -175,6 +197,12 @@ class DB2ModelInference:
                 response = response.strip()
                 
             logger.info(f"Generated response: {response}")
+            
+            # Add simple validation before returning
+            if not self.validate_response(response):
+                logger.warning("Generated response failed quality check")
+                raise ValueError("Generated response failed quality validation")
+                
             return response
             
         except Exception as e:

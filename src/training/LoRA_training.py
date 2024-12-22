@@ -262,20 +262,18 @@ class Db2Trainer:
                 num_train_epochs=self.config.num_epochs,
                 warmup_steps=self.config.warmup_steps,
                 bf16=self.config.use_bf16,
-                evaluation_strategy=self.config.eval_strategy,
+                evaluation_strategy="no",  # Disable evaluation during training
                 save_strategy=self.config.save_strategy,
-                eval_steps=self.config.eval_steps,
                 save_steps=self.config.save_steps,
                 save_total_limit=self.config.save_total_limit,
-                load_best_model_at_end=True,
-                metric_for_best_model="rouge1",
+                load_best_model_at_end=False,  # Disable loading best model
                 report_to="tensorboard",
                 seed=self.config.seed,
                 dataloader_num_workers=self.config.dataloader_num_workers,
                 dataloader_pin_memory=self.config.pin_memory
             )
 
-            # Initialize and run trainer
+            # Initialize trainer
             trainer = Trainer(
                 model=self.model,
                 args=training_args,
@@ -290,14 +288,21 @@ class Db2Trainer:
             )
 
             # Run training
+            self.logger.info("Starting training...")
             trainer.train()
             
-            # Get final evaluation metrics
-            metrics = trainer.evaluate()
-            
-            # Save the best model
+            # Save the trained model immediately after training
+            self.logger.info("Saving trained model...")
             BEST_MODEL_DIR.mkdir(parents=True, exist_ok=True)
             self.model.save_pretrained(BEST_MODEL_DIR)
+            self.tokenizer.save_pretrained(BEST_MODEL_DIR)
+            
+            # Run evaluation separately
+            self.logger.info("Running evaluation...")
+            metrics = trainer.evaluate()
+            
+            # Log evaluation results
+            self.logger.info(f"Evaluation metrics: {metrics}")
             
             return metrics
             
