@@ -29,6 +29,9 @@ DEFAULT_LOG_FILE = "db2_assistant.log"
 SUPPORTED_DB2_VERSIONS = ["11.1", "11.5", "12.1"]
 DEFAULT_DB2_VERSION = "12.1" 
 
+# Add to existing config.py
+EVALUATION_DATA_DIR = Path("src/data/evaluation")
+
 @dataclass
 class InferenceConfig:
     """Configuration for model inference."""

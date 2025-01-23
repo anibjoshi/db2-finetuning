@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 from typing import Optional
 from .inference import generate_db2_response
-from config import (
+from utils.config import (
     DEFAULT_DB2_VERSION,
     LOGS_DIR
 )

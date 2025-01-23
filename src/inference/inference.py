@@ -4,7 +4,7 @@ from pathlib import Path
 import logging
 import json
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from config import (
+from utils.config import (
     LOGS_DIR,
     DEFAULT_DB2_VERSION,
     SUPPORTED_DB2_VERSIONS

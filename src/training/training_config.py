@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from config import BASE_MODEL_DIR
+from utils.config import BASE_MODEL_DIR
 from typing import Optional, Literal
 
 @dataclass
@@ -36,5 +36,5 @@ class TrainingConfig:
     save_total_limit: int = 3
     
     # Dataset configuration
-    validation_split: float = 0.1
+    validation_split: float = 0.1    
     seed: int = 42

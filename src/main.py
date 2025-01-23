@@ -6,10 +6,10 @@ from typing import Optional
 from preprocessing.data_processor import DataProcessor
 from training.training_manager import TrainingManager
 from inference.inference_manager import InferenceManager
+from evaluation.evaluation_manager import EvaluationManager
 from training.training_config import TrainingConfig
-from experiments.experiments import ExperimentManager, ExperimentConfig
 
-from config import (
+from utils.config import (
     RAW_DATA_DIR, 
     PROCESSED_DATA_DIR, 
     BEST_MODEL_DIR,
@@ -104,6 +104,21 @@ def parse_args() -> argparse.Namespace:
         help='Db2 version'
     )
     
+    # Rename validation parser to evaluation
+    eval_parser = subparsers.add_parser('evaluate', help='Evaluate model performance')
+    eval_parser.add_argument(
+        '--data-path',
+        type=Path,
+        default=None,
+        help='Path to evaluation data (optional)'
+    )
+    eval_parser.add_argument(
+        '--model-path',
+        type=Path,
+        default=BEST_MODEL_DIR,
+        help='Path to model for evaluation'
+    )
+    
     # Global arguments
     parser.add_argument(
         '--log-file',
@@ -147,13 +162,6 @@ def main() -> None:
             # Process single file or directory of files
             trainer.train(args.data_dir)
             
-        elif args.action == 'run-experiment':
-            # Run hyperparameter optimization
-            exp_config = ExperimentConfig()  # Use default configuration
-            experiment = ExperimentManager(exp_config)
-            best_params = experiment.run_optimization()
-            logger.info(f"Best hyperparameters found: {best_params}")
-            
         elif args.action == 'infer':
             # Load model and generate response
             inferencer = InferenceManager(BEST_MODEL_DIR)
@@ -168,6 +176,11 @@ def main() -> None:
             else:
                 print("\nNo response generated")
             
+        elif args.action == 'evaluate':
+            # Run model evaluation
+            evaluator = EvaluationManager(args.model_path)
+            evaluator.evaluate(args.data_path)
+                
     except Exception as e:
         logger.error("Process failed", exc_info=True)
         raise SystemExit(1)

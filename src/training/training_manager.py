@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import List, Dict, Any
 from training.LoRA_training import Db2Trainer
 from training.training_config import TrainingConfig
+from metrics.training_metrics import TrainingMetrics
 
 logger = logging.getLogger(__name__)
 

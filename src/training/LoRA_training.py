@@ -13,9 +13,9 @@ from peft import LoraConfig, get_peft_model, TaskType, prepare_model_for_kbit_tr
 import logging
 import os
 from pathlib import Path
-from config import FINETUNED_MODEL_DIR, BEST_MODEL_DIR, LOGS_DIR
+from utils.config import FINETUNED_MODEL_DIR, BEST_MODEL_DIR, LOGS_DIR
 from .training_config import TrainingConfig
-from .metrics_manager import MetricsManager
+from metrics.training_metrics import TrainingMetrics
 
 def tokenize_function(examples: Dict[str, Any], tokenizer: AutoTokenizer, max_length: int) -> Dict[str, Any]:
     """Tokenize and format Db2 dialogue data.
@@ -78,7 +78,7 @@ class Db2Trainer:
         self.logger = logging.getLogger("Db2Trainer")
         self.model = None
         self.tokenizer = None
-        self.metrics_manager = None  # Will initialize after tokenizer is loaded
+        self.metrics = None  # Will initialize after tokenizer is loaded
         
         # Set tokenizer parallelism based on number of workers
         if self.config.dataloader_num_workers > 0:
@@ -128,6 +128,9 @@ class Db2Trainer:
         )
         self.tokenizer.pad_token = self.tokenizer.pad_token or self.tokenizer.eos_token
         
+        # Initialize metrics after tokenizer is loaded
+        self.metrics = TrainingMetrics(self.tokenizer)
+        
         # Try 8-bit loading first, fall back to 16-bit
         try:
             if self.config.load_in_8bit:
@@ -166,9 +169,6 @@ class Db2Trainer:
         
         # Enable gradient checkpointing by default for memory efficiency
         self.model.gradient_checkpointing_enable()
-        
-        # Initialize metrics manager after tokenizer is loaded
-        self.metrics_manager = MetricsManager(self.tokenizer)
     
     def prepare_datasets(self, data_path: Path) -> Tuple[Dataset, Dataset]:
         """Load and prepare training and validation datasets.
@@ -224,7 +224,7 @@ class Db2Trainer:
     
     def compute_metrics(self, eval_pred: EvalPrediction) -> Dict[str, float]:
         """Compute evaluation metrics using metrics manager."""
-        return self.metrics_manager.compute_metrics(eval_pred)
+        return self.metrics.compute_metrics(eval_pred)
     
     def train(self, data_path: Path) -> Dict[str, float]:
         """Execute the complete training process.
@@ -252,7 +252,7 @@ class Db2Trainer:
             self.load_model_and_tokenizer()
             train_dataset, val_dataset = self.prepare_datasets(data_path)
             
-            # Configure training arguments using config
+            # Configure training arguments
             training_args = TrainingArguments(
                 output_dir=str(FINETUNED_MODEL_DIR),
                 learning_rate=self.config.learning_rate,
@@ -262,11 +262,12 @@ class Db2Trainer:
                 num_train_epochs=self.config.num_epochs,
                 warmup_steps=self.config.warmup_steps,
                 bf16=self.config.use_bf16,
-                evaluation_strategy="no",  # Disable evaluation during training
+                evaluation_strategy=self.config.eval_strategy,
                 save_strategy=self.config.save_strategy,
                 save_steps=self.config.save_steps,
                 save_total_limit=self.config.save_total_limit,
-                load_best_model_at_end=False,  # Disable loading best model
+                load_best_model_at_end=True,
+                metric_for_best_model="eval_loss",
                 report_to="tensorboard",
                 seed=self.config.seed,
                 dataloader_num_workers=self.config.dataloader_num_workers,
@@ -291,18 +292,15 @@ class Db2Trainer:
             self.logger.info("Starting training...")
             trainer.train()
             
-            # Save the trained model immediately after training
+            # Save the trained model
             self.logger.info("Saving trained model...")
             BEST_MODEL_DIR.mkdir(parents=True, exist_ok=True)
             self.model.save_pretrained(BEST_MODEL_DIR)
             self.tokenizer.save_pretrained(BEST_MODEL_DIR)
             
-            # Run evaluation separately
-            self.logger.info("Running evaluation...")
+            # Run final evaluation
+            self.logger.info("Running final evaluation...")
             metrics = trainer.evaluate()
-            
-            # Log evaluation results
-            self.logger.info(f"Evaluation metrics: {metrics}")
             
             return metrics
             
