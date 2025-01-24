@@ -275,7 +275,8 @@ class Db2Trainer:
                 data_collator=DataCollatorForLanguageModeling(
                     tokenizer=self.tokenizer, 
                     mlm=False
-                )
+                ),
+                compute_metrics=self.compute_metrics  # Add metrics computation
             )
 
             # Run training with basic evaluation

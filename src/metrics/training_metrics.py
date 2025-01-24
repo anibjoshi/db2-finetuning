@@ -1,7 +1,9 @@
-from typing import Dict
-import numpy as np
+from typing import Dict, Any
 import torch
+import evaluate
 from transformers import EvalPrediction
+import numpy as np
+from datasets import load_metric
 from .base_metrics import BaseMetrics
 from metrics.metrics_config import MetricsConfig
 
@@ -17,25 +19,80 @@ class TrainingMetrics(BaseMetrics):
         """
         super().__init__(tokenizer)
         self.config = config or MetricsConfig()
+        # Initialize metrics
+        self.rouge = evaluate.load('rouge')
+        self.bleu = evaluate.load('bleu')
 
     def compute_metrics(self, eval_pred: EvalPrediction) -> Dict[str, float]:
-        """Compute training evaluation metrics.
+        """Compute evaluation metrics.
         
-        Computes only essential metrics during training to avoid OOM:
+        Computes:
         - Loss
-        - Token accuracy
-        - Basic ROUGE score
+        - Perplexity
+        - BLEU score
+        - ROUGE scores
+        
+        Args:
+            eval_pred: Evaluation prediction object containing logits and labels
+            
+        Returns:
+            Dictionary of computed metrics
+        """
+        logits, labels = eval_pred.predictions, eval_pred.label_ids
+        
+        # Compute loss and perplexity
+        loss = torch.nn.functional.cross_entropy(
+            torch.tensor(logits.reshape(-1, logits.shape[-1])),
+            torch.tensor(labels.reshape(-1)),
+            ignore_index=-100
+        )
+        perplexity = torch.exp(loss)
+        
+        # Generate predictions
+        predictions = np.argmax(logits, axis=-1)
+        
+        # Decode predictions and labels
+        decoded_preds = self.tokenizer.batch_decode(predictions, skip_special_tokens=True)
+        decoded_labels = self.tokenizer.batch_decode(
+            [[l for l in label if l != -100] for label in labels],
+            skip_special_tokens=True
+        )
+        
+        # Compute ROUGE scores
+        rouge_output = self.rouge.compute(
+            predictions=decoded_preds,
+            references=decoded_labels,
+            use_stemmer=True
+        )
+        
+        # Compute BLEU score
+        bleu_output = self.bleu.compute(
+            predictions=decoded_preds,
+            references=[[ref] for ref in decoded_labels]
+        )
+        
+        return {
+            "loss": loss.item(),
+            "perplexity": perplexity.item(),
+            "bleu": bleu_output["bleu"],
+            "rouge1": rouge_output["rouge1"],
+            "rouge2": rouge_output["rouge2"],
+            "rougeL": rouge_output["rougeL"],
+            "rougeLsum": rouge_output["rougeLsum"]
+        }
+
+    def compute_token_accuracy(self, eval_pred: EvalPrediction) -> float:
+        """Compute token accuracy.
         
         Args:
             eval_pred: Contains predictions and labels
             
         Returns:
-            Dictionary of metrics
+            Token accuracy
         """
         try:
             # Process in small batches to avoid OOM
             batch_size = self.config.eval_batch_size
-            total_loss = 0
             total_accuracy = 0
             total_samples = 0
             
@@ -68,15 +125,10 @@ class TrainingMetrics(BaseMetrics):
                     torch.cuda.empty_cache()
             
             # Calculate final metrics
-            metrics = {}
-            if self.config.compute_token_accuracy:
-                metrics["eval_accuracy"] = total_accuracy / total_samples if total_samples > 0 else 0
+            token_accuracy = total_accuracy / total_samples if total_samples > 0 else 0
             
-            return metrics
+            return token_accuracy
             
         except Exception as e:
-            self.logger.error(f"Error computing metrics: {e}")
-            # Return basic metrics if computation fails
-            return {
-                "eval_accuracy": 0.0,
-            } 
+            self.logger.error(f"Error computing token accuracy: {e}")
+            return 0.0 
