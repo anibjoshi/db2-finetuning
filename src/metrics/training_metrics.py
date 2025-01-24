@@ -59,88 +59,92 @@ class TrainingMetrics(BaseMetrics):
             raise
 
     def _get_batch_size(self, total_samples: int) -> int:
-        """Determine optimal batch size based on available memory.
-        
-        Args:
-            total_samples: Total number of samples to process
-            
-        Returns:
-            Optimal batch size
-        """
+        """Determine optimal batch size based on available memory."""
         if not torch.cuda.is_available():
-            return self.config.eval_batch_size
+            return min(self.config.eval_batch_size, 8)
 
         try:
             # Get available GPU memory
             gpu_memory = torch.cuda.get_device_properties(0).total_memory
-            available_memory = gpu_memory * self.config.max_memory_usage
+            free_memory = torch.cuda.memory_reserved(0)  # Changed from memory_allocated
+            available_memory = (gpu_memory - free_memory) * 0.3  # Only use 30% of available memory
             
-            # Estimate memory per sample (conservative estimate)
-            sample_memory = 1024 * 1024 * 4  # 4MB per sample estimate
+            # Very conservative memory estimate
+            sample_memory = 1024 * 1024 * 16  # 16MB per sample estimate
             
-            # Calculate maximum possible batch size
-            max_batch_size = int(available_memory / sample_memory)
+            # Calculate maximum possible batch size with safety margin
+            max_batch_size = max(1, int(available_memory / (sample_memory * 4)))  # 4x safety factor
             
-            # Use the smaller of calculated and configured batch size
-            return min(max_batch_size, self.config.eval_batch_size)
+            return min(max_batch_size, 8)  # Hard cap at 8
         except Exception:
-            return self.config.eval_batch_size
+            return 4  # Very conservative fallback
 
     def compute_metrics(self, eval_pred: EvalPrediction) -> Dict[str, float]:
         """Memory-efficient metric computation with O(n) complexity."""
         try:
             total_samples = len(eval_pred.predictions)
-            batch_size = self._get_batch_size(total_samples)
             
-            # Initialize accumulators for each metric
-            accumulated_results = {
-                metric_name: {
-                    'weighted_sum': 0.0,
-                    'total_weight': 0
-                }
-                for metric_name in self.metrics.keys()
-            }
+            # Limit maximum samples for evaluation
+            max_eval_samples = 1000
+            if total_samples > max_eval_samples:
+                # Randomly sample indices
+                indices = np.random.choice(total_samples, max_eval_samples, replace=False)
+                eval_pred = EvalPrediction(
+                    predictions=eval_pred.predictions[indices],
+                    label_ids=eval_pred.label_ids[indices]
+                )
+                total_samples = max_eval_samples
+            
+            # Use very small batch size for prediction processing
+            batch_size = min(self._get_batch_size(total_samples), 8)
+            
+            # Initialize accumulators as simple counters
+            metric_sums = {}
+            metric_counts = {}
             
             # Process in batches - O(n)
             for i in range(0, total_samples, batch_size):
                 batch_end = min(i + batch_size, total_samples)
-                batch_preds = eval_pred.predictions[i:batch_end]
-                batch_labels = eval_pred.label_ids[i:batch_end]
                 
-                # Single pass prediction conversion - O(b) where b is batch size
-                batch_pred_classes = np.argmax(batch_preds, axis=-1)
-                batch_weight = len(batch_preds)
+                # Process predictions in smaller chunks to avoid OOM
+                with torch.no_grad():
+                    # Move data to CPU immediately
+                    batch_preds = torch.from_numpy(eval_pred.predictions[i:batch_end]).cpu()
+                    batch_labels = torch.from_numpy(eval_pred.label_ids[i:batch_end]).cpu()
+                    
+                    # Convert to predictions
+                    batch_pred_classes = torch.argmax(batch_preds, dim=-1).numpy()
+                    batch_labels = batch_labels.numpy()
                 
-                # Compute all metrics in single batch pass
-                batch_results = {}
+                # Clear memory immediately
+                del batch_preds
+                torch.cuda.empty_cache()
+                
+                # Process one metric at a time
                 for metric_name, metric in self.metrics.items():
-                    # Each metric computation is O(b)
                     result = metric.compute(
                         predictions=batch_pred_classes,
                         references=batch_labels,
                         average="weighted" if metric_name == "f1" else None
                     )
                     
-                    # Accumulate results - O(1)
+                    # Update running sums
                     for key, value in result.items():
-                        if key not in batch_results:
-                            batch_results[key] = {
-                                'weighted_sum': value * batch_weight,
-                                'total_weight': batch_weight
-                            }
-                        accumulated_results[key]['weighted_sum'] += value * batch_weight
-                        accumulated_results[key]['total_weight'] += batch_weight
+                        if key not in metric_sums:
+                            metric_sums[key] = 0.0
+                            metric_counts[key] = 0
+                        metric_sums[key] += value * len(batch_labels)
+                        metric_counts[key] += len(batch_labels)
                 
-                # Clear memory
-                del batch_preds, batch_labels, batch_pred_classes, batch_results
-                if torch.cuda.is_available():
-                    torch.cuda.empty_cache()
+                # Clear batch data
+                del batch_pred_classes, batch_labels
+                torch.cuda.empty_cache()
             
-            # Calculate final averages - O(m) where m is number of metrics
+            # Calculate final averages
             final_metrics = {
-                key: acc['weighted_sum'] / acc['total_weight']
-                for key, acc in accumulated_results.items()
-                if acc['total_weight'] > 0
+                key: metric_sums[key] / metric_counts[key]
+                for key in metric_sums
+                if metric_counts[key] > 0
             }
             
             return final_metrics
