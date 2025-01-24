@@ -1,22 +1,106 @@
 from typing import Dict, Any, Optional
 import logging
 from pathlib import Path
+import random
+import json
+from datasets import load_dataset, Dataset
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from metrics.evaluation_metrics import EvaluationMetrics
 from utils.config import BEST_MODEL_DIR, EVALUATION_DATA_DIR
+from datetime import datetime
 
 class EvaluationManager:
     """Manages model evaluation processes."""
 
-    def __init__(self, model_path: Path = BEST_MODEL_DIR):
+    def __init__(
+        self, 
+        model_path: Path = BEST_MODEL_DIR,
+        eval_samples: int = 1000,
+        seed: int = 42
+    ):
         """Initialize evaluation manager.
         
         Args:
             model_path: Path to the model to evaluate
+            eval_samples: Number of samples to use for evaluation
+            seed: Random seed for reproducibility
         """
         self.logger = logging.getLogger("EvaluationManager")
         self.model_path = model_path
+        self.eval_samples = eval_samples
+        self.seed = seed
+        random.seed(seed)
         
+        # Create evaluation data directory
+        self.eval_data_dir = Path("src/data/evaluation")
+        self.eval_data_dir.mkdir(parents=True, exist_ok=True)
+    
+    def create_evaluation_set(self, data_path: Path) -> Path:
+        """Create and save evaluation dataset from training data.
+        
+        Args:
+            data_path: Path to the training dataset
+            
+        Returns:
+            Path to the saved evaluation dataset
+        """
+        try:
+            # Generate fixed evaluation file name
+            eval_file = self.eval_data_dir / f"eval_set_{data_path.stem}.jsonl"
+            
+            # If evaluation file exists, use it
+            if eval_file.exists():
+                self.logger.info(f"Using existing evaluation set: {eval_file}")
+                return eval_file
+            
+            # Create new evaluation set
+            self.logger.info(f"Creating new evaluation set: {eval_file}")
+            
+            # Load the full dataset
+            dataset = load_dataset("json", data_files=str(data_path))["train"]
+            total_samples = len(dataset)
+            
+            # Sample with fixed seed for reproducibility
+            random.seed(42)  # Fixed seed for evaluation set
+            indices = random.sample(range(total_samples), min(self.eval_samples, total_samples))
+            eval_examples = [dataset[i] for i in indices]
+            
+            # Save evaluation dataset
+            with open(eval_file, 'w', encoding='utf-8') as f:
+                for example in eval_examples:
+                    f.write(json.dumps(example, ensure_ascii=False) + '\n')
+            
+            self.logger.info(f"Created evaluation set with {len(eval_examples)} samples")
+            
+            return eval_file
+            
+        except Exception as e:
+            self.logger.error(f"Failed to create evaluation set: {e}")
+            raise
+
+    def prepare_eval_data(self, data_path: Path) -> Dataset:
+        """Prepare evaluation dataset.
+        
+        Args:
+            data_path: Path to the dataset
+            
+        Returns:
+            Dataset containing evaluation samples
+        """
+        try:
+            # Create evaluation set if using training data
+            if "processed" in str(data_path):  # Check if this is training data
+                data_path = self.create_evaluation_set(data_path)
+            
+            # Load the evaluation dataset
+            dataset = load_dataset("json", data_files=str(data_path))["train"]
+            self.logger.info(f"Loaded {len(dataset)} samples for evaluation from {data_path}")
+            return dataset
+            
+        except Exception as e:
+            self.logger.error(f"Failed to prepare evaluation data: {e}")
+            raise
+
     def load_model(self) -> None:
         """Load model and tokenizer for evaluation."""
         try:
@@ -32,45 +116,58 @@ class EvaluationManager:
             self.logger.error(f"Failed to load model: {e}")
             raise
 
-    def evaluate(self, evaluation_data: Optional[Path] = None) -> Dict[str, float]:
-        """Run evaluation suite on the model.
-        
-        Args:
-            evaluation_data: Optional path to evaluation dataset
-                           If None, uses default evaluation data
-        
-        Returns:
-            Dictionary of evaluation metrics
-        """
+    def evaluate(
+        self, 
+        training_data: Path,
+        evaluation_data: Optional[Path] = None
+    ) -> Dict[str, float]:
+        """Run evaluation suite on the model."""
         try:
             self.load_model()
             
-            data_path = evaluation_data or EVALUATION_DATA_DIR
-            if not data_path.exists():
-                raise FileNotFoundError(f"Evaluation data not found at {data_path}")
-
-            results = {
-                "accuracy": self.metrics.calculate_accuracy(self.model, data_path),
-                "response_quality": self.metrics.evaluate_response_quality(
-                    self.model, data_path
-                ),
-                "version_compatibility": self.metrics.evaluate_version_compatibility(
-                    self.model, data_path
-                )
+            # First evaluate on training data subset
+            train_eval_data = self.prepare_eval_data(training_data)
+            train_results = {
+                "training_data_eval": {
+                    "accuracy": self.metrics.calculate_accuracy(self.model, train_eval_data),
+                    "response_quality": self.metrics.evaluate_response_quality(
+                        self.model, train_eval_data
+                    ),
+                    "content_relevance": self.metrics.evaluate_content_relevance(
+                        self.model, train_eval_data
+                    )
+                }
             }
+            
+            # If separate evaluation data is provided, evaluate on that too
+            if evaluation_data and evaluation_data.exists():
+                eval_dataset = self.prepare_eval_data(evaluation_data)
+                eval_results = {
+                    "held_out_eval": {
+                        "accuracy": self.metrics.calculate_accuracy(self.model, eval_dataset),
+                        "response_quality": self.metrics.evaluate_response_quality(
+                            self.model, eval_dataset
+                        ),
+                        "content_relevance": self.metrics.evaluate_content_relevance(
+                            self.model, eval_dataset
+                        )
+                    }
+                }
+                train_results.update(eval_results)
             
             # Print results nicely
             print("\nEvaluation Results:")
-            for metric, value in results.items():
-                if isinstance(value, dict):
-                    print(f"\n{metric}:")
-                    for submetric, subvalue in value.items():
-                        print(f"  {submetric}: {subvalue:.4f}")
-                else:
-                    print(f"{metric}: {value:.4f}")
+            for dataset_name, metrics in train_results.items():
+                print(f"\n{dataset_name}:")
+                for metric_name, value in metrics.items():
+                    if isinstance(value, dict):
+                        print(f"  {metric_name}:")
+                        for submetric, subvalue in value.items():
+                            print(f"    {submetric}: {subvalue:.4f}")
+                    else:
+                        print(f"  {metric_name}: {value:.4f}")
             
-            self.logger.info(f"Evaluation Results: {results}")
-            return results
+            return train_results
             
         except Exception as e:
             self.logger.error("Evaluation failed", exc_info=True)

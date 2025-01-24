@@ -1,23 +1,36 @@
-from typing import Dict, Any
+from typing import Dict, List, Any
 from pathlib import Path
 import torch
 import numpy as np
 from transformers import PreTrainedModel
-from datasets import load_dataset
+from datasets import Dataset
 from .base_metrics import BaseMetrics
+from nltk.translate.bleu_score import sentence_bleu
+from rouge_score import rouge_scorer
 
 class EvaluationMetrics(BaseMetrics):
     """Comprehensive model evaluation metrics."""
 
+    def __init__(self, tokenizer):
+        super().__init__(tokenizer)
+        self.rouge_scorer = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
+
     def calculate_accuracy(
         self, 
         model: PreTrainedModel, 
-        data_path: Path
+        dataset: Dataset
     ) -> float:
-        """Calculate response accuracy against ground truth."""
-        dataset = load_dataset("json", data_files=str(data_path))["train"]
-        predictions = []
-        references = []
+        """Calculate response accuracy against ground truth.
+        
+        Args:
+            model: The model to evaluate
+            dataset: Dataset containing examples
+            
+        Returns:
+            Token-level accuracy score
+        """
+        total_correct = 0
+        total_tokens = 0
         
         for example in dataset:
             input_text = example.get('input', '')
@@ -29,26 +42,38 @@ class EvaluationMetrics(BaseMetrics):
                 outputs = model.generate(**inputs)
             pred_text = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
             
-            predictions.append(pred_text)
-            references.append(target_text)
+            # Calculate token accuracy
+            pred_tokens = self.tokenizer.encode(pred_text, add_special_tokens=False)
+            target_tokens = self.tokenizer.encode(target_text, add_special_tokens=False)
             
-        # Calculate token-level accuracy
-        eval_pred = self.prepare_eval_prediction(predictions, references)
-        token_accuracy = np.mean((eval_pred.predictions == eval_pred.label_ids).astype(float))
+            # Get the shorter length to compare
+            min_len = min(len(pred_tokens), len(target_tokens))
+            correct_tokens = sum(p == t for p, t in zip(pred_tokens[:min_len], target_tokens[:min_len]))
+            
+            total_correct += correct_tokens
+            total_tokens += min_len
         
-        return token_accuracy
+        return total_correct / total_tokens if total_tokens > 0 else 0.0
 
     def evaluate_response_quality(
         self, 
         model: PreTrainedModel, 
-        data_path: Path
+        dataset: Dataset
     ) -> Dict[str, float]:
-        """Evaluate quality metrics of model responses."""
-        dataset = load_dataset("json", data_files=str(data_path))["train"]
-        predictions = []
-        references = []
+        """Evaluate quality metrics of model responses.
         
+        Args:
+            model: The model to evaluate
+            dataset: Dataset containing examples
+            
+        Returns:
+            Dictionary of quality metrics
+        """
         try:
+            bleu_scores = []
+            rouge_scores = {'rouge1': [], 'rouge2': [], 'rougeL': []}
+            response_lengths = []
+            
             for example in dataset:
                 input_text = example.get('input', '')
                 target_text = example.get('output', '')
@@ -59,110 +84,81 @@ class EvaluationMetrics(BaseMetrics):
                     outputs = model.generate(**inputs)
                 pred_text = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
                 
-                predictions.append(pred_text)
-                references.append(target_text)
+                # Calculate BLEU score
+                reference = [target_text.split()]
+                candidate = pred_text.split()
+                bleu = sentence_bleu(reference, candidate)
+                bleu_scores.append(bleu)
+                
+                # Calculate ROUGE scores
+                rouge_result = self.rouge_scorer.score(target_text, pred_text)
+                for key in rouge_scores:
+                    rouge_scores[key].append(rouge_result[key].fmeasure)
+                
+                # Track response length
+                response_lengths.append(len(candidate))
             
-            return self.compute_text_metrics(predictions, references)
+            # Aggregate metrics
+            metrics = {
+                'bleu_score': np.mean(bleu_scores),
+                'rouge1_f1': np.mean(rouge_scores['rouge1']),
+                'rouge2_f1': np.mean(rouge_scores['rouge2']),
+                'rougeL_f1': np.mean(rouge_scores['rougeL']),
+                'avg_response_length': np.mean(response_lengths),
+                'response_length_std': np.std(response_lengths)
+            }
+            
+            return metrics
             
         except Exception as e:
             self.logger.error(f"Error computing quality metrics: {e}")
             raise
 
-    def evaluate_version_compatibility(
+    def evaluate_content_relevance(
         self, 
         model: PreTrainedModel, 
-        data_path: Path
+        dataset: Dataset
     ) -> Dict[str, float]:
-        """Evaluate DB2 version-specific performance."""
-        dataset = load_dataset("json", data_files=str(data_path))["train"]
-        version_correct = 0
-        total = 0
+        """Evaluate content relevance of responses.
         
+        Args:
+            model: The model to evaluate
+            dataset: Dataset containing examples
+            
+        Returns:
+            Dictionary of relevance metrics
+        """
         try:
+            keyword_matches = []
+            context_scores = []
+            
             for example in dataset:
-                if 'db2_version' in example:
-                    total += 1
-                    input_text = example.get('input', '')
-                    target_text = example.get('output', '')
-                    version = example.get('db2_version')
-                    
-                    # Generate prediction
-                    inputs = self.tokenizer(input_text, return_tensors="pt", truncation=True)
-                    with torch.no_grad():
-                        outputs = model.generate(**inputs)
-                    pred_text = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
-                    
-                    # Check if version-specific content is correct
-                    if self._check_version_specific_content(pred_text, target_text, version):
-                        version_correct += 1
+                input_text = example.get('input', '')
+                target_text = example.get('output', '')
+                
+                # Generate prediction
+                inputs = self.tokenizer(input_text, return_tensors="pt", truncation=True)
+                with torch.no_grad():
+                    outputs = model.generate(**inputs)
+                pred_text = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+                
+                # Calculate keyword overlap
+                input_keywords = set(input_text.lower().split())
+                pred_keywords = set(pred_text.lower().split())
+                target_keywords = set(target_text.lower().split())
+                
+                keyword_match = len(pred_keywords & target_keywords) / len(target_keywords) if target_keywords else 0
+                keyword_matches.append(keyword_match)
+                
+                # Calculate context relevance
+                context_relevance = len(pred_keywords & input_keywords) / len(input_keywords) if input_keywords else 0
+                context_scores.append(context_relevance)
             
             return {
-                'version_accuracy': version_correct / total if total > 0 else 0.0,
-                'version_consistency': self._calculate_version_consistency(model, dataset)
+                'keyword_match_rate': np.mean(keyword_matches),
+                'context_relevance': np.mean(context_scores)
             }
             
         except Exception as e:
-            self.logger.error(f"Error computing version compatibility metrics: {e}")
-            raise
-
-    def _check_version_specific_content(
-        self,
-        prediction: str,
-        reference: str,
-        version: str
-    ) -> bool:
-        """Check if prediction contains correct version-specific content."""
-        version_mentioned = version in prediction
-        content_match = any(
-            ref_part in prediction 
-            for ref_part in reference.split() 
-            if version in ref_part
-        )
-        
-        return version_mentioned and content_match
-
-    def _calculate_version_consistency(
-        self,
-        model: PreTrainedModel,
-        dataset: Any
-    ) -> float:
-        """Calculate consistency of responses across versions."""
-        query_groups = {}
-        for example in dataset:
-            if 'query_id' in example and 'db2_version' in example:
-                query_id = example['query_id']
-                if query_id not in query_groups:
-                    query_groups[query_id] = []
-                query_groups[query_id].append(example)
-        
-        consistency_scores = []
-        for query_group in query_groups.values():
-            if len(query_group) > 1:
-                responses = []
-                for example in query_group:
-                    inputs = self.tokenizer(example['input'], return_tensors="pt", truncation=True)
-                    with torch.no_grad():
-                        outputs = model.generate(**inputs)
-                    response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
-                    responses.append(response)
-                
-                consistency_scores.append(self._calculate_response_similarity(responses))
-        
-        return np.mean(consistency_scores) if consistency_scores else 1.0
-
-    def _calculate_response_similarity(self, responses: list) -> float:
-        """Calculate similarity between responses."""
-        if not responses:
-            return 1.0
-            
-        word_sets = [set(response.lower().split()) for response in responses]
-        similarities = []
-        
-        for i in range(len(word_sets)):
-            for j in range(i + 1, len(word_sets)):
-                intersection = len(word_sets[i] & word_sets[j])
-                union = len(word_sets[i] | word_sets[j])
-                similarity = intersection / union if union > 0 else 1.0
-                similarities.append(similarity)
-                
-        return np.mean(similarities) if similarities else 1.0 
+            self.logger.error(f"Error computing relevance metrics: {e}")
+            raise 
