@@ -35,9 +35,13 @@ class EvaluationManager:
         self.seed = seed
         random.seed(seed)
         
-        # Use EVALUATION_DATA_DIR from config
+        # Create directories
         self.eval_data_dir = EVALUATION_DATA_DIR
         self.eval_data_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Add results directory
+        self.results_dir = Path("src/data/evaluation/results")
+        self.results_dir.mkdir(parents=True, exist_ok=True)
     
     def create_evaluation_set(self, data_path: Path) -> Path:
         """Create and save evaluation dataset from training data.
@@ -126,6 +130,28 @@ class EvaluationManager:
             self.logger.error(f"Failed to load model: {e}")
             raise
 
+    def save_metrics(self, metrics: Dict[str, Any]) -> None:
+        """Save evaluation metrics to a file.
+        
+        Args:
+            metrics: Dictionary of evaluation metrics
+        """
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        results_file = self.results_dir / f"eval_results_{timestamp}.json"
+        
+        # Add metadata to results
+        results = {
+            "timestamp": timestamp,
+            "model_path": str(self.model_path),
+            "num_samples": self.eval_samples,
+            "metrics": metrics
+        }
+        
+        # Save results
+        with open(results_file, 'w') as f:
+            json.dump(results, f, indent=2)
+        self.logger.info(f"Saved evaluation results to {results_file}")
+
     def evaluate(
         self, 
         training_data: Optional[Path] = None,
@@ -185,6 +211,9 @@ class EvaluationManager:
                             print(f"    {submetric}: {subvalue:.4f}")
                     else:
                         print(f"  {metric_name}: {value:.4f}")
+            
+            # Save metrics to file
+            self.save_metrics(train_results)
             
             return train_results
             
