@@ -89,32 +89,29 @@ class Db2Trainer:
             os.environ["TOKENIZERS_PARALLELISM"] = "true"   # Enable for single process
     
     def check_gpu(self) -> bool:
-        """Check GPU availability and optimize memory usage."""
+        """Check GPU availability and adjust training parameters accordingly.
+        
+        Checks available GPU memory and adjusts batch size and gradient
+        accumulation steps to prevent out-of-memory errors. For GPUs with
+        less than 24GB memory, reduces batch size and increases gradient
+        accumulation steps.
+        
+        Returns:
+            bool: True if GPU is available, False if training on CPU
+        """
         if not torch.cuda.is_available():
             self.logger.warning("No GPU available - training will be slow")
             return False
-        
-        # Get total and reserved memory
-        gpu = torch.cuda.current_device()
-        total_mem = torch.cuda.get_device_properties(gpu).total_memory / 1024**3  # GB
-        reserved_mem = torch.cuda.max_memory_reserved(gpu) / 1024**3  # GB
-        
-        # Calculate safe maximum batch size based on available memory
-        # Rule of thumb: Each token takes ~4 bytes in bf16
-        tokens_per_sample = self.config.max_length
-        estimated_mem_per_sample = tokens_per_sample * 4 * 2  # *2 for activations
-        available_mem = total_mem * 0.95  # Use 95% of total memory
-        max_batch_size = int(available_mem * 1024**3 / estimated_mem_per_sample)
-        
-        # Update batch size and accumulation steps
-        self.config.batch_size = min(max_batch_size, 16)  # Cap at 16 for stability
-        effective_batch = self.config.batch_size * self.config.gradient_accumulation_steps
-        
-        self.logger.info(f"GPU Memory: {total_mem:.1f}GB total, {reserved_mem:.1f}GB reserved")
-        self.logger.info(f"Batch size set to {self.config.batch_size} (effective: {effective_batch})")
-        
+            
+        gpu_memory = torch.cuda.get_device_properties(0).total_memory / 1024**3
+        if gpu_memory < 24:
+            self.config.batch_size = min(self.config.batch_size, 2)
+            self.config.gradient_accumulation_steps *= 2
+            self.logger.warning(
+                f"Limited GPU memory ({gpu_memory:.1f}GB) - adjusted batch size: {self.config.batch_size}"
+            )
         # Store GPU memory for model loading
-        self.gpu_memory = f"{int(total_mem * 0.95)}GB"
+        self.gpu_memory = f"{int(gpu_memory * 0.95)}GB"  # Use 85% of available memory
         return True
         
     def load_model_and_tokenizer(self) -> None:
@@ -137,21 +134,15 @@ class Db2Trainer:
         # Initialize metrics after tokenizer is loaded
         self.metrics = TrainingMetrics(self.tokenizer)
         
-        # Configure quantization for maximum memory efficiency
+        # Configure quantization
         quantization_config = BitsAndBytesConfig(
             load_in_4bit=True,
-            bnb_4bit_compute_dtype=torch.bfloat16,
+            bnb_4bit_compute_dtype=torch.bfloat16,  # Better for training stability
             bnb_4bit_use_double_quant=True,
-            bnb_4bit_quant_type="nf4",
-            bnb_4bit_quant_storage_dtype=torch.uint8
+            bnb_4bit_quant_type="nf4"
         )
         
-        # Empty CUDA cache before loading
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()
-            torch.cuda.reset_peak_memory_stats()
-        
-        # Load model with memory optimizations
+        # Load model with quantization
         self.model = AutoModelForCausalLM.from_pretrained(
             self.config.model_name,
             local_files_only=True,
@@ -159,15 +150,9 @@ class Db2Trainer:
             device_map="auto",
             quantization_config=quantization_config,
             torch_dtype=torch.bfloat16,
-            max_memory={0: self.gpu_memory},
+            max_memory={0: self.gpu_memory},  # Use calculated memory limit
             use_cache=False
         )
-        
-        # Monitor memory usage
-        if torch.cuda.is_available():
-            allocated = torch.cuda.memory_allocated() / 1024**3
-            reserved = torch.cuda.memory_reserved() / 1024**3
-            self.logger.info(f"GPU Memory after loading: {allocated:.1f}GB allocated, {reserved:.1f}GB reserved")
         
         self.model = prepare_model_for_kbit_training(self.model)
             
@@ -224,21 +209,11 @@ class Db2Trainer:
             self.config.max_length
         )
         
-        # Add sequence length for grouping
-        def add_length(examples):
-            return {"length": [len(x) for x in examples["input_ids"]]}
-        
-        # Process datasets with optimizations
+        # Process and shuffle both splits
         train_dataset = dataset_dict["train"].map(
             tokenize,
             batched=True,
-            batch_size=1000,  # Larger batch size for processing
-            num_proc=self.config.dataloader_num_workers,
             remove_columns=dataset_dict["train"].column_names
-        ).map(
-            add_length,
-            batched=True,
-            num_proc=self.config.dataloader_num_workers
         ).shuffle(seed=self.config.seed)
         
         val_dataset = dataset_dict["test"].map(
@@ -288,17 +263,7 @@ class Db2Trainer:
                 report_to=["tensorboard"],
                 seed=self.config.seed,
                 dataloader_num_workers=self.config.dataloader_num_workers,
-                dataloader_pin_memory=self.config.pin_memory,
-                gradient_checkpointing=self.config.gradient_checkpointing,
-                max_grad_norm=self.config.max_grad_norm,
-                dataloader_prefetch_factor=self.config.prefetch_factor,
-                fp16_opt_level="O2",  # More aggressive mixed precision
-                logging_steps=10,  # More frequent logging
-                group_by_length=True,  # Batch similar lengths together
-                length_column_name="length",
-                remove_unused_columns=True,
-                ddp_find_unused_parameters=False,
-                optim="adamw_torch_fused",  # Use fused optimizer
+                dataloader_pin_memory=self.config.pin_memory
             )
 
             # Initialize trainer
