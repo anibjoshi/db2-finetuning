@@ -8,19 +8,21 @@ class TrainingConfig:
     
     # Model settings
     model_name: str = str(BASE_MODEL_DIR)
-    max_length: int = 512
+    max_length: int = 384
     
     # LoRA parameters
-    lora_r: int = 16  # Increased for more capacity
-    lora_alpha: int = 32  # Scaled with rank
+    lora_r: int = 16
+    lora_alpha: int = 32
     lora_dropout: float = 0.1
     
     # Training parameters
-    learning_rate: float = 5e-5  # Reduced for stability
-    batch_size: int = 4
-    gradient_accumulation_steps: int = 32
+    learning_rate: float = 5e-5
+    batch_size: int = 12
+    gradient_accumulation_steps: int = 12
+    gradient_checkpointing: bool = True
+    max_grad_norm: float = 1.0
     num_epochs: int = 2
-    warmup_steps: int = 500  # Increased warmup
+    warmup_steps: int = 500
     
     # Evaluation settings
     validation_split: float = 0.1
@@ -30,6 +32,9 @@ class TrainingConfig:
     
     # Hardware settings
     use_bf16: bool = True
-    dataloader_num_workers: int = 4
+    dataloader_num_workers: int = 8
     pin_memory: bool = True
     seed: int = 42
+    
+    # Memory optimization
+    prefetch_factor: int = 2

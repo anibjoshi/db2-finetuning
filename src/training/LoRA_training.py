@@ -110,8 +110,8 @@ class Db2Trainer:
             self.logger.warning(
                 f"Limited GPU memory ({gpu_memory:.1f}GB) - adjusted batch size: {self.config.batch_size}"
             )
-        # Store GPU memory for model loading
-        self.gpu_memory = f"{int(gpu_memory * 0.85)}GB"  # Use 85% of available memory
+        # Use more GPU memory since we have headroom
+        self.gpu_memory = f"{int(gpu_memory * 0.95)}GB"  # Increased from 0.85 to 0.95
         return True
         
     def load_model_and_tokenizer(self) -> None:
@@ -134,15 +134,16 @@ class Db2Trainer:
         # Initialize metrics after tokenizer is loaded
         self.metrics = TrainingMetrics(self.tokenizer)
         
-        # Configure quantization
+        # More aggressive quantization config
         quantization_config = BitsAndBytesConfig(
             load_in_4bit=True,
-            bnb_4bit_compute_dtype=torch.bfloat16,  # Better for training stability
+            bnb_4bit_compute_dtype=torch.bfloat16,
             bnb_4bit_use_double_quant=True,
-            bnb_4bit_quant_type="nf4"
+            bnb_4bit_quant_type="nf4",
+            bnb_4bit_quant_storage=True
         )
         
-        # Load model with quantization
+        # Load model with optimizations
         self.model = AutoModelForCausalLM.from_pretrained(
             self.config.model_name,
             local_files_only=True,
@@ -150,8 +151,10 @@ class Db2Trainer:
             device_map="auto",
             quantization_config=quantization_config,
             torch_dtype=torch.bfloat16,
-            max_memory={0: self.gpu_memory},  # Use calculated memory limit
-            use_cache=False
+            max_memory={0: self.gpu_memory},
+            use_cache=False,
+            low_cpu_mem_usage=True,
+            offload_folder="offload"  # Enable disk offloading if needed
         )
         
         self.model = prepare_model_for_kbit_training(self.model)
@@ -209,11 +212,21 @@ class Db2Trainer:
             self.config.max_length
         )
         
-        # Process and shuffle both splits
+        # Add sequence length for grouping
+        def add_length(examples):
+            return {"length": [len(x) for x in examples["input_ids"]]}
+        
+        # Process datasets with optimizations
         train_dataset = dataset_dict["train"].map(
             tokenize,
             batched=True,
+            batch_size=1000,  # Larger batch size for processing
+            num_proc=self.config.dataloader_num_workers,
             remove_columns=dataset_dict["train"].column_names
+        ).map(
+            add_length,
+            batched=True,
+            num_proc=self.config.dataloader_num_workers
         ).shuffle(seed=self.config.seed)
         
         val_dataset = dataset_dict["test"].map(
@@ -263,7 +276,17 @@ class Db2Trainer:
                 report_to=["tensorboard"],
                 seed=self.config.seed,
                 dataloader_num_workers=self.config.dataloader_num_workers,
-                dataloader_pin_memory=self.config.pin_memory
+                dataloader_pin_memory=self.config.pin_memory,
+                gradient_checkpointing=self.config.gradient_checkpointing,
+                max_grad_norm=self.config.max_grad_norm,
+                dataloader_prefetch_factor=self.config.prefetch_factor,
+                fp16_opt_level="O2",  # More aggressive mixed precision
+                logging_steps=10,  # More frequent logging
+                group_by_length=True,  # Batch similar lengths together
+                length_column_name="length",
+                remove_unused_columns=True,
+                ddp_find_unused_parameters=False,
+                optim="adamw_torch_fused",  # Use fused optimizer
             )
 
             # Initialize trainer
