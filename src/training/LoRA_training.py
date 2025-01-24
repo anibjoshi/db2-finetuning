@@ -6,7 +6,8 @@ from transformers import (
     TrainingArguments, 
     Trainer,
     DataCollatorForLanguageModeling,
-    EvalPrediction
+    EvalPrediction,
+    BitsAndBytesConfig
 )
 from datasets import load_dataset, Dataset
 from peft import LoraConfig, get_peft_model, TaskType, prepare_model_for_kbit_training
@@ -114,9 +115,8 @@ class Db2Trainer:
     def load_model_and_tokenizer(self) -> None:
         """Load and prepare the model and tokenizer for training.
         
-        Attempts to load the model in 8-bit quantization first for memory efficiency.
-        Falls back to 16-bit if 8-bit loading fails. Configures the tokenizer and
-        applies LoRA adaptation to the model.
+        Attempts to load the model in 4-bit quantization for memory efficiency.
+        Configures the tokenizer and applies LoRA adaptation to the model.
         
         Raises:
             RuntimeError: If model loading fails
@@ -132,29 +132,27 @@ class Db2Trainer:
         # Initialize metrics after tokenizer is loaded
         self.metrics = TrainingMetrics(self.tokenizer)
         
-        # Try 8-bit loading first, fall back to 16-bit
-        try:
-            if self.config.load_in_8bit:
-                self.model = AutoModelForCausalLM.from_pretrained(
-                    self.config.model_name,
-                    local_files_only=True,
-                    trust_remote_code=True,
-                    device_map="auto",
-                    load_in_8bit=True,
-                    torch_dtype=torch.bfloat16 if self.config.use_bf16 else None
-                )
-                self.model = prepare_model_for_kbit_training(self.model)
-            else:
-                raise ImportError("8-bit loading disabled")
-        except (ImportError, RuntimeError) as e:
-            self.logger.warning(f"8-bit loading failed, using 16-bit: {e}")
-            self.model = AutoModelForCausalLM.from_pretrained(
-                self.config.model_name,
-                local_files_only=True,
-                trust_remote_code=True,
-                device_map="auto",
-                torch_dtype=torch.bfloat16 if self.config.use_bf16 else None
-            )
+        # Configure quantization
+        quantization_config = BitsAndBytesConfig(
+            load_in_4bit=True,
+            bnb_4bit_compute_dtype=torch.bfloat16,  # Better for training stability
+            bnb_4bit_use_double_quant=True,
+            bnb_4bit_quant_type="nf4"
+        )
+        
+        # Load model with quantization
+        self.model = AutoModelForCausalLM.from_pretrained(
+            self.config.model_name,
+            local_files_only=True,
+            trust_remote_code=True,
+            device_map="auto",
+            quantization_config=quantization_config,
+            torch_dtype=torch.bfloat16,  # Use bfloat16 consistently
+            max_memory={0: "85%"},
+            use_cache=False
+        )
+        
+        self.model = prepare_model_for_kbit_training(self.model)
             
         # Configure and apply LoRA adaptation
         lora_config = LoraConfig(
@@ -170,6 +168,7 @@ class Db2Trainer:
         
         # Enable gradient checkpointing by default for memory efficiency
         self.model.gradient_checkpointing_enable()
+        self.model.config.use_cache = False  # Ensure cache is disabled
     
     def prepare_datasets(self, data_path: Path) -> Tuple[Dataset, Dataset]:
         """Load and prepare training and validation datasets.
@@ -233,7 +232,7 @@ class Db2Trainer:
             # Initialize metrics logger with config
             metrics_logger = MetricsLogger(
                 experiment_name=f"training_{data_path.stem}",
-                training_config=self.config.__dict__,  # Log all training hyperparameters
+                training_config=self.config.__dict__,
             )
             
             self.check_gpu()
@@ -247,36 +246,34 @@ class Db2Trainer:
                 output_dir=str(FINETUNED_MODEL_DIR),
                 learning_rate=self.config.learning_rate,
                 per_device_train_batch_size=self.config.batch_size,
-                per_device_eval_batch_size=4,  # Small eval batch size
+                per_device_eval_batch_size=4,
                 gradient_accumulation_steps=self.config.gradient_accumulation_steps,
                 num_train_epochs=self.config.num_epochs,
                 warmup_steps=self.config.warmup_steps,
                 bf16=self.config.use_bf16,
-                evaluation_strategy="steps",  # Light evaluation during training
+                eval_strategy="steps",  # Updated from evaluation_strategy
                 eval_steps=self.config.eval_steps,
                 save_strategy="steps",
                 save_steps=self.config.save_steps,
                 save_total_limit=self.config.save_total_limit,
                 load_best_model_at_end=True,
-                metric_for_best_model="eval_loss",  # Only track loss
-                report_to=["tensorboard"],  # Only use tensorboard
+                metric_for_best_model="eval_loss",
+                report_to=["tensorboard"],
                 seed=self.config.seed,
                 dataloader_num_workers=self.config.dataloader_num_workers,
                 dataloader_pin_memory=self.config.pin_memory
             )
 
-            # Initialize trainer with minimal metrics
+            # Initialize trainer
             trainer = Trainer(
                 model=self.model,
                 args=training_args,
                 train_dataset=train_dataset,
                 eval_dataset=val_dataset,
-                tokenizer=self.tokenizer,
                 data_collator=DataCollatorForLanguageModeling(
                     tokenizer=self.tokenizer, 
                     mlm=False
                 )
-                # No compute_metrics for lighter evaluation
             )
 
             # Run training with basic evaluation

@@ -7,7 +7,7 @@ class TrainingConfig:
     """Configuration for LoRA fine-tuning."""
     
     # Model settings
-    model_name: str = str(BASE_MODEL_DIR)  # Use local model path instead of HF model ID
+    model_name: str = str(BASE_MODEL_DIR)
     max_length: int = 512
     
     # LoRA parameters
@@ -29,7 +29,6 @@ class TrainingConfig:
     save_total_limit: int = 3
     
     # Hardware settings
-    load_in_8bit: bool = True
     use_bf16: bool = True
     dataloader_num_workers: int = 4
     pin_memory: bool = True
