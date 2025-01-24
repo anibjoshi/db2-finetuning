@@ -8,7 +8,9 @@ from typing import Optional
 SRC_DIR = Path("src")
 DATA_DIR = SRC_DIR / "data"
 MODEL_DIR = SRC_DIR / "model"
-LOGS_DIR = SRC_DIR / "logs"
+BASE_DIR = SRC_DIR
+LOGS_DIR = BASE_DIR / "logs"
+TENSORBOARD_DIR = LOGS_DIR / "tensorboard"
 
 # Data directories
 RAW_DATA_DIR = DATA_DIR / "raw"
@@ -31,6 +33,10 @@ DEFAULT_DB2_VERSION = "12.1"
 
 # Add to existing config.py
 EVALUATION_DATA_DIR = Path("src/data/evaluation")
+
+# Create directories if they don't exist
+LOGS_DIR.mkdir(parents=True, exist_ok=True)
+TENSORBOARD_DIR.mkdir(parents=True, exist_ok=True)
 
 @dataclass
 class InferenceConfig:

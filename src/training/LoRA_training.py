@@ -16,6 +16,7 @@ from pathlib import Path
 from utils.config import FINETUNED_MODEL_DIR, BEST_MODEL_DIR, LOGS_DIR
 from .training_config import TrainingConfig
 from metrics.training_metrics import TrainingMetrics
+from utils.metrics_logger import MetricsLogger
 
 def tokenize_function(examples: Dict[str, Any], tokenizer: AutoTokenizer, max_length: int) -> Dict[str, Any]:
     """Tokenize and format Db2 dialogue data.
@@ -227,25 +228,14 @@ class Db2Trainer:
         return self.metrics.compute_metrics(eval_pred)
     
     def train(self, data_path: Path) -> Dict[str, float]:
-        """Execute the complete training process.
-        
-        Handles the complete training pipeline including:
-        - GPU memory optimization
-        - Model and tokenizer loading
-        - Dataset preparation and validation
-        - Training execution with LoRA
-        - Model saving and evaluation
-        
-        Args:
-            data_path: Path to the training data file
-            
-        Returns:
-            Dictionary containing evaluation metrics (ROUGE, BLEU, etc.)
-            
-        Raises:
-            RuntimeError: If any part of the training process fails
-        """
+        """Execute the complete training process."""
         try:
+            # Initialize metrics logger with config
+            metrics_logger = MetricsLogger(
+                experiment_name=f"training_{data_path.stem}",
+                training_config=self.config.__dict__,  # Log all training hyperparameters
+            )
+            
             self.check_gpu()
             FINETUNED_MODEL_DIR.mkdir(parents=True, exist_ok=True)
             
@@ -257,24 +247,25 @@ class Db2Trainer:
                 output_dir=str(FINETUNED_MODEL_DIR),
                 learning_rate=self.config.learning_rate,
                 per_device_train_batch_size=self.config.batch_size,
-                per_device_eval_batch_size=self.config.batch_size,
+                per_device_eval_batch_size=4,  # Small eval batch size
                 gradient_accumulation_steps=self.config.gradient_accumulation_steps,
                 num_train_epochs=self.config.num_epochs,
                 warmup_steps=self.config.warmup_steps,
                 bf16=self.config.use_bf16,
-                evaluation_strategy=self.config.eval_strategy,
-                save_strategy=self.config.save_strategy,
+                evaluation_strategy="steps",  # Light evaluation during training
+                eval_steps=self.config.eval_steps,
+                save_strategy="steps",
                 save_steps=self.config.save_steps,
                 save_total_limit=self.config.save_total_limit,
                 load_best_model_at_end=True,
-                metric_for_best_model="eval_loss",
-                report_to="tensorboard",
+                metric_for_best_model="eval_loss",  # Only track loss
+                report_to=["tensorboard"],  # Only use tensorboard
                 seed=self.config.seed,
                 dataloader_num_workers=self.config.dataloader_num_workers,
                 dataloader_pin_memory=self.config.pin_memory
             )
 
-            # Initialize trainer
+            # Initialize trainer with minimal metrics
             trainer = Trainer(
                 model=self.model,
                 args=training_args,
@@ -284,13 +275,17 @@ class Db2Trainer:
                 data_collator=DataCollatorForLanguageModeling(
                     tokenizer=self.tokenizer, 
                     mlm=False
-                ),
-                compute_metrics=self.compute_metrics
+                )
+                # No compute_metrics for lighter evaluation
             )
 
-            # Run training
+            # Run training with basic evaluation
             self.logger.info("Starting training...")
-            trainer.train()
+            train_result = trainer.train()
+            
+            # Log final metrics
+            metrics_logger.log_metrics(train_result.metrics, "training")
+            metrics_logger.close()  # Clean up logging resources
             
             # Save the trained model
             self.logger.info("Saving trained model...")
@@ -298,11 +293,7 @@ class Db2Trainer:
             self.model.save_pretrained(BEST_MODEL_DIR)
             self.tokenizer.save_pretrained(BEST_MODEL_DIR)
             
-            # Run final evaluation
-            self.logger.info("Running final evaluation...")
-            metrics = trainer.evaluate()
-            
-            return metrics
+            return train_result.metrics
             
         except Exception as e:
             self.logger.error(f"Training failed: {e}", exc_info=True)
