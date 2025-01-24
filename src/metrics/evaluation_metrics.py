@@ -32,7 +32,11 @@ class EvaluationMetrics(BaseMetrics):
         total_correct = 0
         total_tokens = 0
         
-        for example in dataset:
+        self.logger.info(f"Starting accuracy evaluation on {len(dataset)} samples")
+        for i, example in enumerate(dataset):
+            if i % 10 == 0:  # Log every 10 samples
+                self.logger.info(f"Processing sample {i}/{len(dataset)}")
+            
             input_text = example.get('input', '')
             target_text = example.get('output', '')
             
@@ -52,7 +56,9 @@ class EvaluationMetrics(BaseMetrics):
             total_correct += correct_tokens
             total_tokens += min_len
         
-        return total_correct / total_tokens if total_tokens > 0 else 0.0
+        accuracy = total_correct / total_tokens if total_tokens > 0 else 0.0
+        self.logger.info(f"Completed accuracy evaluation. Final accuracy: {accuracy:.4f}")
+        return accuracy
 
     def evaluate_response_quality(
         self, 
@@ -69,11 +75,15 @@ class EvaluationMetrics(BaseMetrics):
             Dictionary of quality metrics
         """
         try:
+            self.logger.info(f"Starting response quality evaluation on {len(dataset)} samples")
             bleu_scores = []
             rouge_scores = {'rouge1': [], 'rouge2': [], 'rougeL': []}
             response_lengths = []
             
-            for example in dataset:
+            for i, example in enumerate(dataset):
+                if i % 10 == 0:
+                    self.logger.info(f"Processing sample {i}/{len(dataset)}")
+                
                 input_text = example.get('input', '')
                 target_text = example.get('output', '')
                 
@@ -104,6 +114,10 @@ class EvaluationMetrics(BaseMetrics):
                 'response_length_std': np.std(response_lengths)
             }
             
+            self.logger.info("Completed response quality evaluation:")
+            for metric, value in metrics.items():
+                self.logger.info(f"{metric}: {value:.4f}")
+            
             return metrics
             
         except Exception as e:
@@ -125,10 +139,14 @@ class EvaluationMetrics(BaseMetrics):
             Dictionary of relevance metrics
         """
         try:
+            self.logger.info(f"Starting content relevance evaluation on {len(dataset)} samples")
             keyword_matches = []
             context_scores = []
             
-            for example in dataset:
+            for i, example in enumerate(dataset):
+                if i % 10 == 0:
+                    self.logger.info(f"Processing sample {i}/{len(dataset)}")
+                
                 input_text = example.get('input', '')
                 target_text = example.get('output', '')
                 
@@ -149,10 +167,16 @@ class EvaluationMetrics(BaseMetrics):
                 context_relevance = len(pred_keywords & input_keywords) / len(input_keywords) if input_keywords else 0
                 context_scores.append(context_relevance)
             
-            return {
+            results = {
                 'keyword_match_rate': np.mean(keyword_matches),
                 'context_relevance': np.mean(context_scores)
             }
+            
+            self.logger.info("Completed content relevance evaluation:")
+            for metric, value in results.items():
+                self.logger.info(f"{metric}: {value:.4f}")
+            
+            return results
             
         except Exception as e:
             self.logger.error(f"Error computing relevance metrics: {e}")
