@@ -15,17 +15,25 @@ class MetricsConfig:
         metrics_list: List of metrics to track during training
         log_to_file: Whether to log metrics to a file
         metrics_output_dir: Directory to save metrics logs
+        eval_batch_size: Batch size for evaluation
+        compute_token_accuracy: Whether to compute token accuracy
+        ignore_token_id: Token ID to ignore in token accuracy computation
+        max_memory_usage: Maximum fraction of GPU memory to use
     """
     metrics_list: List[str] = None
     log_to_file: bool = True
     metrics_output_dir: str = "logs/metrics"
+    eval_batch_size: int = 32
+    compute_token_accuracy: bool = True
+    ignore_token_id: int = -100
+    max_memory_usage: float = 0.9
 
     def __post_init__(self):
         if self.metrics_list is None:
             self.metrics_list = ["accuracy", "f1", "precision", "recall"]
 
 class TrainingMetrics(BaseMetrics):
-    """Metrics computation during model training."""
+    """Memory-efficient metrics computation during model training."""
 
     def __init__(self, tokenizer, config: MetricsConfig = None):
         """Initialize training metrics.
@@ -50,34 +58,85 @@ class TrainingMetrics(BaseMetrics):
             self.logger.error(f"Failed to load metrics: {e}")
             raise
 
-    def compute_metrics(self, eval_pred: EvalPrediction) -> Dict[str, float]:
-        """Compute evaluation metrics for predictions.
+    def _get_batch_size(self, total_samples: int) -> int:
+        """Determine optimal batch size based on available memory.
         
         Args:
-            eval_pred: EvalPrediction object containing predictions and labels
+            total_samples: Total number of samples to process
             
         Returns:
-            Dictionary of metric names and values
+            Optimal batch size
         """
+        if not torch.cuda.is_available():
+            return self.config.eval_batch_size
+
         try:
-            predictions = np.argmax(eval_pred.predictions, axis=-1)
+            # Get available GPU memory
+            gpu_memory = torch.cuda.get_device_properties(0).total_memory
+            available_memory = gpu_memory * self.config.max_memory_usage
             
-            metrics_dict = {}
-            for metric_name, metric in self.metrics.items():
-                if metric_name == "f1":
-                    result = metric.compute(
-                        predictions=predictions,
-                        references=eval_pred.label_ids,
-                        average="weighted"
-                    )
-                else:
-                    result = metric.compute(
-                        predictions=predictions,
-                        references=eval_pred.label_ids
-                    )
-                metrics_dict.update(result)
+            # Estimate memory per sample (conservative estimate)
+            sample_memory = 1024 * 1024 * 4  # 4MB per sample estimate
             
-            return metrics_dict
+            # Calculate maximum possible batch size
+            max_batch_size = int(available_memory / sample_memory)
+            
+            # Use the smaller of calculated and configured batch size
+            return min(max_batch_size, self.config.eval_batch_size)
+        except Exception:
+            return self.config.eval_batch_size
+
+    def compute_metrics(self, eval_pred: EvalPrediction) -> Dict[str, float]:
+        """Memory-efficient metric computation."""
+        try:
+            total_samples = len(eval_pred.predictions)
+            batch_size = self._get_batch_size(total_samples)
+            
+            metrics_dict = {metric: 0.0 for metric in self.metrics.keys()}
+            sample_counts = {metric: 0 for metric in self.metrics.keys()}
+            
+            # Process in batches
+            for i in range(0, total_samples, batch_size):
+                batch_end = min(i + batch_size, total_samples)
+                batch_preds = eval_pred.predictions[i:batch_end]
+                batch_labels = eval_pred.label_ids[i:batch_end]
+                
+                # Convert predictions to class indices
+                batch_pred_classes = np.argmax(batch_preds, axis=-1)
+                
+                # Compute metrics for batch
+                for metric_name, metric in self.metrics.items():
+                    if metric_name == "f1":
+                        result = metric.compute(
+                            predictions=batch_pred_classes,
+                            references=batch_labels,
+                            average="weighted"
+                        )
+                    else:
+                        result = metric.compute(
+                            predictions=batch_pred_classes,
+                            references=batch_labels
+                        )
+                    
+                    # Accumulate weighted results
+                    batch_weight = len(batch_preds)
+                    for key, value in result.items():
+                        metrics_dict[key] += value * batch_weight
+                        sample_counts[key] += batch_weight
+                
+                # Clear memory
+                del batch_preds, batch_labels, batch_pred_classes
+                if torch.cuda.is_available():
+                    torch.cuda.empty_cache()
+            
+            # Calculate final weighted averages
+            final_metrics = {
+                key: value / sample_counts[key]
+                for key, value in metrics_dict.items()
+                if sample_counts[key] > 0
+            }
+            
+            return final_metrics
             
         except Exception as e:
             self.logger.error(f"Error computing metrics: {e}")
@@ -101,52 +160,33 @@ class TrainingMetrics(BaseMetrics):
             raise
 
     def compute_token_accuracy(self, eval_pred: EvalPrediction) -> float:
-        """Compute token accuracy.
-        
-        Args:
-            eval_pred: Contains predictions and labels
-            
-        Returns:
-            Token accuracy
-        """
+        """Memory-efficient token accuracy computation."""
         try:
-            # Process in small batches to avoid OOM
-            batch_size = self.config.eval_batch_size
-            total_accuracy = 0
-            total_samples = 0
+            total_samples = len(eval_pred.predictions)
+            batch_size = self._get_batch_size(total_samples)
             
-            # Process predictions in batches
-            for i in range(0, len(eval_pred.predictions), batch_size):
-                # Get current batch
-                batch_preds = eval_pred.predictions[i:i + batch_size]
-                batch_labels = eval_pred.label_ids[i:i + batch_size]
+            total_correct = 0
+            total_tokens = 0
+            
+            for i in range(0, total_samples, batch_size):
+                batch_end = min(i + batch_size, total_samples)
+                batch_preds = eval_pred.predictions[i:batch_end]
+                batch_labels = eval_pred.label_ids[i:batch_end]
                 
-                # Basic token-level metrics
+                # Calculate token accuracy
                 pred_ids = np.argmax(batch_preds, axis=-1)
-                labels = np.where(
-                    batch_labels != self.config.ignore_token_id,
-                    batch_labels,
-                    self.tokenizer.pad_token_id
-                )
+                mask = batch_labels != self.config.ignore_token_id
                 
-                # Calculate metrics for this batch
-                if self.config.compute_token_accuracy:
-                    batch_accuracy = np.mean((pred_ids == labels).astype(float))
-                    
-                    # Update totals
-                    batch_size = len(batch_preds)
-                    total_accuracy += batch_accuracy * batch_size
-                    total_samples += batch_size
+                correct_tokens = np.sum((pred_ids == batch_labels) & mask)
+                total_tokens += np.sum(mask)
+                total_correct += correct_tokens
                 
-                # Clear GPU memory
-                del batch_preds, batch_labels, pred_ids, labels
+                # Clear memory
+                del batch_preds, batch_labels, pred_ids, mask
                 if torch.cuda.is_available():
                     torch.cuda.empty_cache()
             
-            # Calculate final metrics
-            token_accuracy = total_accuracy / total_samples if total_samples > 0 else 0
-            
-            return token_accuracy
+            return total_correct / total_tokens if total_tokens > 0 else 0.0
             
         except Exception as e:
             self.logger.error(f"Error computing token accuracy: {e}")
