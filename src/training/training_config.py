@@ -7,20 +7,20 @@ class TrainingConfig:
     """Configuration for LoRA fine-tuning."""
     
     # Model settings
-    model_name: str = "mistralai/Mistral-7B-v0.1"
+    model_name: str = str(BASE_MODEL_DIR)  # Use local model path instead of HF model ID
     max_length: int = 512
     
     # LoRA parameters
-    lora_r: int = 8  # LoRA attention dimension
-    lora_alpha: int = 16  # Alpha scaling
-    lora_dropout: float = 0.05
+    lora_r: int = 16  # Increased for more capacity
+    lora_alpha: int = 32  # Scaled with rank
+    lora_dropout: float = 0.1
     
     # Training parameters
-    learning_rate: float = 3e-4  # This seems high for LoRA
+    learning_rate: float = 5e-5  # Reduced for stability
     batch_size: int = 4
     gradient_accumulation_steps: int = 32
     num_epochs: int = 2
-    warmup_steps: int = 100
+    warmup_steps: int = 500  # Increased warmup
     
     # Evaluation settings
     validation_split: float = 0.1
