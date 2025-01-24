@@ -110,6 +110,8 @@ class Db2Trainer:
             self.logger.warning(
                 f"Limited GPU memory ({gpu_memory:.1f}GB) - adjusted batch size: {self.config.batch_size}"
             )
+        # Store GPU memory for model loading
+        self.gpu_memory = f"{int(gpu_memory * 0.85)}GB"  # Use 85% of available memory
         return True
         
     def load_model_and_tokenizer(self) -> None:
@@ -147,8 +149,8 @@ class Db2Trainer:
             trust_remote_code=True,
             device_map="auto",
             quantization_config=quantization_config,
-            torch_dtype=torch.bfloat16,  # Use bfloat16 consistently
-            max_memory={0: "85%"},
+            torch_dtype=torch.bfloat16,
+            max_memory={0: self.gpu_memory},  # Use calculated memory limit
             use_cache=False
         )
         
