@@ -87,53 +87,60 @@ class TrainingMetrics(BaseMetrics):
             return self.config.eval_batch_size
 
     def compute_metrics(self, eval_pred: EvalPrediction) -> Dict[str, float]:
-        """Memory-efficient metric computation."""
+        """Memory-efficient metric computation with O(n) complexity."""
         try:
             total_samples = len(eval_pred.predictions)
             batch_size = self._get_batch_size(total_samples)
             
-            metrics_dict = {metric: 0.0 for metric in self.metrics.keys()}
-            sample_counts = {metric: 0 for metric in self.metrics.keys()}
+            # Initialize accumulators for each metric
+            accumulated_results = {
+                metric_name: {
+                    'weighted_sum': 0.0,
+                    'total_weight': 0
+                }
+                for metric_name in self.metrics.keys()
+            }
             
-            # Process in batches
+            # Process in batches - O(n)
             for i in range(0, total_samples, batch_size):
                 batch_end = min(i + batch_size, total_samples)
                 batch_preds = eval_pred.predictions[i:batch_end]
                 batch_labels = eval_pred.label_ids[i:batch_end]
                 
-                # Convert predictions to class indices
+                # Single pass prediction conversion - O(b) where b is batch size
                 batch_pred_classes = np.argmax(batch_preds, axis=-1)
+                batch_weight = len(batch_preds)
                 
-                # Compute metrics for batch
+                # Compute all metrics in single batch pass
+                batch_results = {}
                 for metric_name, metric in self.metrics.items():
-                    if metric_name == "f1":
-                        result = metric.compute(
-                            predictions=batch_pred_classes,
-                            references=batch_labels,
-                            average="weighted"
-                        )
-                    else:
-                        result = metric.compute(
-                            predictions=batch_pred_classes,
-                            references=batch_labels
-                        )
+                    # Each metric computation is O(b)
+                    result = metric.compute(
+                        predictions=batch_pred_classes,
+                        references=batch_labels,
+                        average="weighted" if metric_name == "f1" else None
+                    )
                     
-                    # Accumulate weighted results
-                    batch_weight = len(batch_preds)
+                    # Accumulate results - O(1)
                     for key, value in result.items():
-                        metrics_dict[key] += value * batch_weight
-                        sample_counts[key] += batch_weight
+                        if key not in batch_results:
+                            batch_results[key] = {
+                                'weighted_sum': value * batch_weight,
+                                'total_weight': batch_weight
+                            }
+                        accumulated_results[key]['weighted_sum'] += value * batch_weight
+                        accumulated_results[key]['total_weight'] += batch_weight
                 
                 # Clear memory
-                del batch_preds, batch_labels, batch_pred_classes
+                del batch_preds, batch_labels, batch_pred_classes, batch_results
                 if torch.cuda.is_available():
                     torch.cuda.empty_cache()
             
-            # Calculate final weighted averages
+            # Calculate final averages - O(m) where m is number of metrics
             final_metrics = {
-                key: value / sample_counts[key]
-                for key, value in metrics_dict.items()
-                if sample_counts[key] > 0
+                key: acc['weighted_sum'] / acc['total_weight']
+                for key, acc in accumulated_results.items()
+                if acc['total_weight'] > 0
             }
             
             return final_metrics
