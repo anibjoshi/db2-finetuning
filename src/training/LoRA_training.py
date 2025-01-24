@@ -89,29 +89,32 @@ class Db2Trainer:
             os.environ["TOKENIZERS_PARALLELISM"] = "true"   # Enable for single process
     
     def check_gpu(self) -> bool:
-        """Check GPU availability and adjust training parameters accordingly.
-        
-        Checks available GPU memory and adjusts batch size and gradient
-        accumulation steps to prevent out-of-memory errors. For GPUs with
-        less than 24GB memory, reduces batch size and increases gradient
-        accumulation steps.
-        
-        Returns:
-            bool: True if GPU is available, False if training on CPU
-        """
+        """Check GPU availability and optimize memory usage."""
         if not torch.cuda.is_available():
             self.logger.warning("No GPU available - training will be slow")
             return False
-            
-        gpu_memory = torch.cuda.get_device_properties(0).total_memory / 1024**3
-        if gpu_memory < 24:
-            self.config.batch_size = min(self.config.batch_size, 2)
-            self.config.gradient_accumulation_steps *= 2
-            self.logger.warning(
-                f"Limited GPU memory ({gpu_memory:.1f}GB) - adjusted batch size: {self.config.batch_size}"
-            )
-        # Use more GPU memory since we have headroom
-        self.gpu_memory = f"{int(gpu_memory * 0.95)}GB"  # Increased from 0.85 to 0.95
+        
+        # Get total and reserved memory
+        gpu = torch.cuda.current_device()
+        total_mem = torch.cuda.get_device_properties(gpu).total_memory / 1024**3  # GB
+        reserved_mem = torch.cuda.max_memory_reserved(gpu) / 1024**3  # GB
+        
+        # Calculate safe maximum batch size based on available memory
+        # Rule of thumb: Each token takes ~4 bytes in bf16
+        tokens_per_sample = self.config.max_length
+        estimated_mem_per_sample = tokens_per_sample * 4 * 2  # *2 for activations
+        available_mem = total_mem * 0.95  # Use 95% of total memory
+        max_batch_size = int(available_mem * 1024**3 / estimated_mem_per_sample)
+        
+        # Update batch size and accumulation steps
+        self.config.batch_size = min(max_batch_size, 16)  # Cap at 16 for stability
+        effective_batch = self.config.batch_size * self.config.gradient_accumulation_steps
+        
+        self.logger.info(f"GPU Memory: {total_mem:.1f}GB total, {reserved_mem:.1f}GB reserved")
+        self.logger.info(f"Batch size set to {self.config.batch_size} (effective: {effective_batch})")
+        
+        # Store GPU memory for model loading
+        self.gpu_memory = f"{int(total_mem * 0.95)}GB"
         return True
         
     def load_model_and_tokenizer(self) -> None:
@@ -134,16 +137,21 @@ class Db2Trainer:
         # Initialize metrics after tokenizer is loaded
         self.metrics = TrainingMetrics(self.tokenizer)
         
-        # More aggressive quantization config
+        # Configure quantization for maximum memory efficiency
         quantization_config = BitsAndBytesConfig(
             load_in_4bit=True,
             bnb_4bit_compute_dtype=torch.bfloat16,
             bnb_4bit_use_double_quant=True,
             bnb_4bit_quant_type="nf4",
-            bnb_4bit_quant_storage=True
+            bnb_4bit_quant_storage_dtype=torch.uint8
         )
         
-        # Load model with optimizations
+        # Empty CUDA cache before loading
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+            torch.cuda.reset_peak_memory_stats()
+        
+        # Load model with memory optimizations
         self.model = AutoModelForCausalLM.from_pretrained(
             self.config.model_name,
             local_files_only=True,
@@ -152,10 +160,14 @@ class Db2Trainer:
             quantization_config=quantization_config,
             torch_dtype=torch.bfloat16,
             max_memory={0: self.gpu_memory},
-            use_cache=False,
-            low_cpu_mem_usage=True,
-            offload_folder="offload"  # Enable disk offloading if needed
+            use_cache=False
         )
+        
+        # Monitor memory usage
+        if torch.cuda.is_available():
+            allocated = torch.cuda.memory_allocated() / 1024**3
+            reserved = torch.cuda.memory_reserved() / 1024**3
+            self.logger.info(f"GPU Memory after loading: {allocated:.1f}GB allocated, {reserved:.1f}GB reserved")
         
         self.model = prepare_model_for_kbit_training(self.model)
             
