@@ -250,14 +250,13 @@ class Db2Trainer:
                 per_device_train_batch_size=self.config.batch_size,
                 per_device_eval_batch_size=2,
                 gradient_accumulation_steps=self.config.gradient_accumulation_steps,
-                max_eval_samples=1000,
                 eval_accumulation_steps=4,
                 num_train_epochs=self.config.num_epochs,
                 warmup_steps=self.config.warmup_steps,
                 bf16=self.config.use_bf16,
-                eval_strategy="steps",  # Updated from evaluation_strategy
+                eval_strategy="steps",
                 eval_steps=self.config.eval_steps,
-                save_strategy="steps",
+                save_strategy="steps", 
                 save_steps=self.config.save_steps,
                 save_total_limit=self.config.save_total_limit,
                 load_best_model_at_end=True,
@@ -268,7 +267,7 @@ class Db2Trainer:
                 dataloader_pin_memory=self.config.pin_memory
             )
 
-            # Initialize trainer
+            # Initialize trainer without compute_metrics
             trainer = Trainer(
                 model=self.model,
                 args=training_args,
@@ -277,8 +276,7 @@ class Db2Trainer:
                 data_collator=DataCollatorForLanguageModeling(
                     tokenizer=self.tokenizer, 
                     mlm=False
-                ),
-                compute_metrics=self.compute_metrics  # Add metrics computation
+                )
             )
 
             # Run training with basic evaluation
@@ -287,7 +285,7 @@ class Db2Trainer:
             
             # Log final metrics
             metrics_logger.log_metrics(train_result.metrics, "training")
-            metrics_logger.close()  # Clean up logging resources
+            metrics_logger.close()
             
             # Save the trained model
             self.logger.info("Saving trained model...")
