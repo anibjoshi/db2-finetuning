@@ -16,7 +16,7 @@ class TrainingConfig:
     lora_dropout: float = 0.1
     
     # Training parameters
-    learning_rate: float = 5e-5
+    learning_rate: float = 3e-5
     batch_size: int = 64
     gradient_accumulation_steps: int = 4
     gradient_checkpointing: bool = True
