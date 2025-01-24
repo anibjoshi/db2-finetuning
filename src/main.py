@@ -107,12 +107,6 @@ def parse_args() -> argparse.Namespace:
     # Rename validation parser to evaluation
     eval_parser = subparsers.add_parser('evaluate', help='Evaluate model performance')
     eval_parser.add_argument(
-        '--data-path',
-        type=Path,
-        default=None,
-        help='Path to evaluation data (optional)'
-    )
-    eval_parser.add_argument(
         '--model-path',
         type=Path,
         default=BEST_MODEL_DIR,
@@ -178,9 +172,10 @@ def main() -> None:
             
         elif args.action == 'evaluate':
             # Run model evaluation
-            evaluator = EvaluationManager(args.model_path)
-            evaluator.evaluate(args.data_path)
-                
+            evaluator = EvaluationManager(model_path=args.model_path)
+            results = evaluator.evaluate()
+            logger.info("Evaluation completed successfully")
+            
     except Exception as e:
         logger.error("Process failed", exc_info=True)
         raise SystemExit(1)

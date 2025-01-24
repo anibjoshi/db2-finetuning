@@ -6,7 +6,11 @@ import json
 from datasets import load_dataset, Dataset
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from metrics.evaluation_metrics import EvaluationMetrics
-from utils.config import BEST_MODEL_DIR, EVALUATION_DATA_DIR
+from utils.config import (
+    BEST_MODEL_DIR, 
+    EVALUATION_DATA_DIR,
+    PROCESSED_DATA_DIR
+)
 from datetime import datetime
 
 class EvaluationManager:
@@ -31,8 +35,8 @@ class EvaluationManager:
         self.seed = seed
         random.seed(seed)
         
-        # Create evaluation data directory
-        self.eval_data_dir = Path("src/data/evaluation")
+        # Use EVALUATION_DATA_DIR from config
+        self.eval_data_dir = EVALUATION_DATA_DIR
         self.eval_data_dir.mkdir(parents=True, exist_ok=True)
     
     def create_evaluation_set(self, data_path: Path) -> Path:
@@ -78,18 +82,24 @@ class EvaluationManager:
             self.logger.error(f"Failed to create evaluation set: {e}")
             raise
 
-    def prepare_eval_data(self, data_path: Path) -> Dataset:
+    def prepare_eval_data(self, data_path: Optional[Path] = None) -> Dataset:
         """Prepare evaluation dataset.
         
         Args:
-            data_path: Path to the dataset
+            data_path: Optional specific path to dataset.
+                      If None, uses default processed data path.
             
         Returns:
             Dataset containing evaluation samples
         """
         try:
+            # Use default processed data path if none provided
+            if data_path is None:
+                data_path = next(PROCESSED_DATA_DIR.glob("SQL*.jsonl"))
+                self.logger.info(f"Using default training data: {data_path}")
+            
             # Create evaluation set if using training data
-            if "processed" in str(data_path):  # Check if this is training data
+            if PROCESSED_DATA_DIR in data_path.parents:
                 data_path = self.create_evaluation_set(data_path)
             
             # Load the evaluation dataset
@@ -118,14 +128,23 @@ class EvaluationManager:
 
     def evaluate(
         self, 
-        training_data: Path,
+        training_data: Optional[Path] = None,
         evaluation_data: Optional[Path] = None
     ) -> Dict[str, float]:
-        """Run evaluation suite on the model."""
+        """Run evaluation suite on the model.
+        
+        Args:
+            training_data: Optional path to training dataset. 
+                         If None, uses default processed data.
+            evaluation_data: Optional path to separate evaluation dataset
+            
+        Returns:
+            Dictionary of evaluation metrics
+        """
         try:
             self.load_model()
             
-            # First evaluate on training data subset
+            # Use prepared evaluation data
             train_eval_data = self.prepare_eval_data(training_data)
             train_results = {
                 "training_data_eval": {
@@ -140,7 +159,7 @@ class EvaluationManager:
             }
             
             # If separate evaluation data is provided, evaluate on that too
-            if evaluation_data and evaluation_data.exists():
+            if evaluation_data is not None and evaluation_data.exists():
                 eval_dataset = self.prepare_eval_data(evaluation_data)
                 eval_results = {
                     "held_out_eval": {
