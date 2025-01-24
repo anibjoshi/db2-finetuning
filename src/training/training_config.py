@@ -4,37 +4,33 @@ from typing import Optional, Literal
 
 @dataclass
 class TrainingConfig:
-    """Configuration for model training hyperparameters."""
+    """Configuration for LoRA fine-tuning."""
     
-    # Model configuration
-    model_name: str = str(BASE_MODEL_DIR)
-    load_in_8bit: bool = True
-    use_bf16: bool = True  # Using BF16 instead of FP16 for better stability
+    # Model settings
+    model_name: str = "mistralai/Mistral-7B-v0.1"
+    max_length: int = 512
     
-    # LoRA configuration
-    lora_r: int = 32
-    lora_alpha: int = 16
-    lora_dropout: float = 0.1
+    # LoRA parameters
+    lora_r: int = 8  # LoRA attention dimension
+    lora_alpha: int = 16  # Alpha scaling
+    lora_dropout: float = 0.05
     
-    # Training hyperparameters
-    learning_rate: float = 3e-5
-    batch_size: int = 32
-    max_length: int = 256
+    # Training parameters
+    learning_rate: float = 3e-4  # This seems high for LoRA
+    batch_size: int = 4
+    gradient_accumulation_steps: int = 32
     num_epochs: int = 2
-    gradient_accumulation_steps: int = 4
     warmup_steps: int = 100
     
-    # DataLoader configuration
-    dataloader_num_workers: int = 8
-    pin_memory: bool = True  # Enable pinned memory for faster GPU transfer
-    
-    # Evaluation and saving
-    eval_strategy: str = "steps"
-    save_strategy: str = "steps"
-    eval_steps: int = 1000
-    save_steps: int = 1000
+    # Evaluation settings
+    validation_split: float = 0.1
+    eval_steps: int = 100
+    save_steps: int = 100
     save_total_limit: int = 3
     
-    # Dataset configuration
-    validation_split: float = 0.1    
+    # Hardware settings
+    load_in_8bit: bool = True
+    use_bf16: bool = True
+    dataloader_num_workers: int = 4
+    pin_memory: bool = True
     seed: int = 42
