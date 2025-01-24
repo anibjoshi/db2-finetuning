@@ -37,7 +37,7 @@ class EvaluationMetrics(BaseMetrics):
             target_text = example.get('output', '')
             
             # Generate prediction
-            inputs = self.tokenizer(input_text, return_tensors="pt", truncation=True)
+            inputs = self.tokenizer(input_text, return_tensors="pt", truncation=True).to("cuda")
             with torch.no_grad():
                 outputs = model.generate(**inputs)
             pred_text = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
@@ -46,7 +46,6 @@ class EvaluationMetrics(BaseMetrics):
             pred_tokens = self.tokenizer.encode(pred_text, add_special_tokens=False)
             target_tokens = self.tokenizer.encode(target_text, add_special_tokens=False)
             
-            # Get the shorter length to compare
             min_len = min(len(pred_tokens), len(target_tokens))
             correct_tokens = sum(p == t for p, t in zip(pred_tokens[:min_len], target_tokens[:min_len]))
             
@@ -79,26 +78,23 @@ class EvaluationMetrics(BaseMetrics):
                 target_text = example.get('output', '')
                 
                 # Generate prediction
-                inputs = self.tokenizer(input_text, return_tensors="pt", truncation=True)
+                inputs = self.tokenizer(input_text, return_tensors="pt", truncation=True).to("cuda")
                 with torch.no_grad():
                     outputs = model.generate(**inputs)
                 pred_text = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
                 
-                # Calculate BLEU score
+                # Calculate metrics
                 reference = [target_text.split()]
                 candidate = pred_text.split()
                 bleu = sentence_bleu(reference, candidate)
                 bleu_scores.append(bleu)
                 
-                # Calculate ROUGE scores
                 rouge_result = self.rouge_scorer.score(target_text, pred_text)
                 for key in rouge_scores:
                     rouge_scores[key].append(rouge_result[key].fmeasure)
                 
-                # Track response length
                 response_lengths.append(len(candidate))
             
-            # Aggregate metrics
             metrics = {
                 'bleu_score': np.mean(bleu_scores),
                 'rouge1_f1': np.mean(rouge_scores['rouge1']),
@@ -137,12 +133,12 @@ class EvaluationMetrics(BaseMetrics):
                 target_text = example.get('output', '')
                 
                 # Generate prediction
-                inputs = self.tokenizer(input_text, return_tensors="pt", truncation=True)
+                inputs = self.tokenizer(input_text, return_tensors="pt", truncation=True).to("cuda")
                 with torch.no_grad():
                     outputs = model.generate(**inputs)
                 pred_text = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
                 
-                # Calculate keyword overlap
+                # Calculate metrics
                 input_keywords = set(input_text.lower().split())
                 pred_keywords = set(pred_text.lower().split())
                 target_keywords = set(target_text.lower().split())
@@ -150,7 +146,6 @@ class EvaluationMetrics(BaseMetrics):
                 keyword_match = len(pred_keywords & target_keywords) / len(target_keywords) if target_keywords else 0
                 keyword_matches.append(keyword_match)
                 
-                # Calculate context relevance
                 context_relevance = len(pred_keywords & input_keywords) / len(input_keywords) if input_keywords else 0
                 context_scores.append(context_relevance)
             
