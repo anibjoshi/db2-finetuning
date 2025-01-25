@@ -27,14 +27,15 @@ class EvaluationMetrics(BaseMetrics):
         with torch.no_grad():
             outputs = model.generate(
                 **inputs,
-                max_length=256,
-                min_length=10,
+                max_length=128,           # Even shorter responses
+                min_length=5,             # Allow shorter responses
                 num_beams=1,
                 do_sample=False,
                 temperature=1.0,
-                repetition_penalty=1.2,
-                length_penalty=1.0,
-                early_stopping=True
+                repetition_penalty=1.5,   # Stronger repetition penalty
+                length_penalty=0.8,       # Slightly favor shorter responses
+                early_stopping=True,
+                no_repeat_ngram_size=3    # Prevent 3-gram repetitions
             )
         # Remove the prompt from the response
         full_text = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
@@ -94,15 +95,7 @@ class EvaluationMetrics(BaseMetrics):
         model: PreTrainedModel, 
         dataset: Dataset
     ) -> Dict[str, float]:
-        """Evaluate quality metrics of model responses.
-        
-        Args:
-            model: The model to evaluate
-            dataset: Dataset containing examples
-            
-        Returns:
-            Dictionary of quality metrics
-        """
+        """Evaluate quality metrics of model responses."""
         try:
             self.logger.info(f"Starting response quality evaluation on {len(dataset)} samples")
             bleu_scores = []
@@ -116,11 +109,8 @@ class EvaluationMetrics(BaseMetrics):
                 input_text = example.get('input', '')
                 target_text = example.get('output', '')
                 
-                # Generate prediction
-                inputs = self.tokenizer(input_text, return_tensors="pt", truncation=True).to("cuda")
-                with torch.no_grad():
-                    outputs = model.generate(**inputs)
-                pred_text = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+                # Use consistent generation method
+                pred_text = self.generate_response(model, input_text)
                 
                 # Calculate metrics
                 reference = [target_text.split()]
@@ -133,6 +123,13 @@ class EvaluationMetrics(BaseMetrics):
                     rouge_scores[key].append(rouge_result[key].fmeasure)
                 
                 response_lengths.append(len(candidate))
+                
+                # Debug logging for first few examples
+                if i < 3:
+                    self.logger.info("\nExample evaluation:")
+                    self.logger.info(f"Input: {input_text}")
+                    self.logger.info(f"Target: {target_text}")
+                    self.logger.info(f"Prediction: {pred_text}")
             
             metrics = {
                 'bleu_score': np.mean(bleu_scores),
@@ -158,15 +155,7 @@ class EvaluationMetrics(BaseMetrics):
         model: PreTrainedModel, 
         dataset: Dataset
     ) -> Dict[str, float]:
-        """Evaluate content relevance of responses.
-        
-        Args:
-            model: The model to evaluate
-            dataset: Dataset containing examples
-            
-        Returns:
-            Dictionary of relevance metrics
-        """
+        """Evaluate content relevance of responses."""
         try:
             self.logger.info(f"Starting content relevance evaluation on {len(dataset)} samples")
             keyword_matches = []
@@ -179,11 +168,8 @@ class EvaluationMetrics(BaseMetrics):
                 input_text = example.get('input', '')
                 target_text = example.get('output', '')
                 
-                # Generate prediction
-                inputs = self.tokenizer(input_text, return_tensors="pt", truncation=True).to("cuda")
-                with torch.no_grad():
-                    outputs = model.generate(**inputs)
-                pred_text = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+                # Use consistent generation method
+                pred_text = self.generate_response(model, input_text)
                 
                 # Calculate metrics
                 input_keywords = set(input_text.lower().split())
@@ -195,6 +181,13 @@ class EvaluationMetrics(BaseMetrics):
                 
                 context_relevance = len(pred_keywords & input_keywords) / len(input_keywords) if input_keywords else 0
                 context_scores.append(context_relevance)
+                
+                # Debug logging for first few examples
+                if i < 3:
+                    self.logger.info("\nExample evaluation:")
+                    self.logger.info(f"Input: {input_text}")
+                    self.logger.info(f"Target: {target_text}")
+                    self.logger.info(f"Prediction: {pred_text}")
             
             results = {
                 'keyword_match_rate': np.mean(keyword_matches),
