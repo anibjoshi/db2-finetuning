@@ -15,13 +15,15 @@ class EvaluationMetrics(BaseMetrics):
         super().__init__(tokenizer)
         self.rouge_scorer = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
         
-        # Match training data format more closely
-        self.prompt_template = "{} What does this mean?"
+        # Even simpler prompt, just focus on the meaning
+        self.prompt_template = "{} means"
 
     def generate_response(self, model: PreTrainedModel, input_text: str) -> str:
         """Generate a response with controlled parameters."""
-        # Extract SQL code if present in the input
-        sql_code = input_text.split('.')[0] if '.' in input_text else input_text
+        # Extract just the SQL code
+        sql_code = input_text.split()[0] if input_text else ""
+        if not sql_code.startswith("SQL"):
+            sql_code = "SQL" + sql_code
         
         # Format input to match training pattern
         prompt = self.prompt_template.format(sql_code)
@@ -30,14 +32,15 @@ class EvaluationMetrics(BaseMetrics):
         with torch.no_grad():
             outputs = model.generate(
                 **inputs,
-                max_length=150,
+                max_length=100,
                 min_length=5,
-                num_beams=1,              # Back to simpler generation
+                num_beams=1,
                 do_sample=False,
                 temperature=1.0,
                 repetition_penalty=1.2,
                 length_penalty=1.0,
-                early_stopping=True
+                early_stopping=True,
+                pad_token_id=self.tokenizer.eos_token_id
             )
         response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
         
