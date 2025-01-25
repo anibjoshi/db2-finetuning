@@ -44,14 +44,7 @@ class EvaluationManager:
         self.results_dir.mkdir(parents=True, exist_ok=True)
     
     def create_evaluation_set(self, data_path: Path) -> Path:
-        """Create and save evaluation dataset from training data.
-        
-        Args:
-            data_path: Path to the training dataset
-            
-        Returns:
-            Path to the saved evaluation dataset
-        """
+        """Create and save evaluation dataset from training data."""
         try:
             # Generate fixed evaluation file name
             eval_file = self.eval_data_dir / f"eval_set_{data_path.stem}.jsonl"
@@ -71,7 +64,24 @@ class EvaluationManager:
             # Sample with fixed seed for reproducibility
             random.seed(42)  # Fixed seed for evaluation set
             indices = random.sample(range(total_samples), min(self.eval_samples, total_samples))
-            eval_examples = [dataset[i] for i in indices]
+            
+            # Transform dialogue format to input/output format
+            eval_examples = []
+            for i in indices:
+                dialogue = dataset[i]['dialogue']
+                # Only use first turn (user question and assistant response)
+                if len(dialogue) >= 2 and dialogue[0]['role'] == 'user' and dialogue[1]['role'] == 'assistant':
+                    example = {
+                        'input': dialogue[0]['content'],  # First user question
+                        'output': dialogue[1]['content']  # First assistant response
+                    }
+                    eval_examples.append(example)
+                    
+                    # Debug log for first few examples
+                    if len(eval_examples) <= 3:
+                        self.logger.info("\nExample conversion:")
+                        self.logger.info(f"Original dialogue: {dialogue}")
+                        self.logger.info(f"Converted example: {example}")
             
             # Save evaluation dataset
             with open(eval_file, 'w', encoding='utf-8') as f:
@@ -79,7 +89,6 @@ class EvaluationManager:
                     f.write(json.dumps(example, ensure_ascii=False) + '\n')
             
             self.logger.info(f"Created evaluation set with {len(eval_examples)} samples")
-            
             return eval_file
             
         except Exception as e:
@@ -87,15 +96,7 @@ class EvaluationManager:
             raise
 
     def prepare_eval_data(self, data_path: Optional[Path] = None) -> Dataset:
-        """Prepare evaluation dataset.
-        
-        Args:
-            data_path: Optional specific path to dataset.
-                      If None, uses default processed data path.
-            
-        Returns:
-            Dataset containing evaluation samples
-        """
+        """Prepare evaluation dataset."""
         try:
             # Use default processed data path if none provided
             if data_path is None:
@@ -106,8 +107,25 @@ class EvaluationManager:
             if PROCESSED_DATA_DIR in data_path.parents:
                 data_path = self.create_evaluation_set(data_path)
             
-            # Load the evaluation dataset
+            # Load and validate the dataset
             dataset = load_dataset("json", data_files=str(data_path))["train"]
+            
+            # Debug: Check dataset content
+            self.logger.info(f"\nFirst 3 examples from evaluation dataset:")
+            for i, example in enumerate(dataset[:3]):
+                self.logger.info(f"\nExample {i+1}:")
+                self.logger.info(f"Input: {example.get('input', 'NO INPUT')}")
+                self.logger.info(f"Output: {example.get('output', 'NO OUTPUT')}")
+            
+            if len(dataset) == 0:
+                raise ValueError("Empty evaluation dataset")
+            
+            # Validate dataset format
+            for example in dataset:
+                if not example.get('input') or not example.get('output'):
+                    self.logger.warning("Found example with missing input or output")
+                    self.logger.warning(f"Example: {example}")
+            
             self.logger.info(f"Loaded {len(dataset)} samples for evaluation from {data_path}")
             return dataset
             
