@@ -15,25 +15,31 @@ class EvaluationMetrics(BaseMetrics):
         super().__init__(tokenizer)
         self.rouge_scorer = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
         
-        # Even simpler prompt, just focus on the meaning
-        self.prompt_template = "{} means"
+        # Llama 3 chat format
+        self.prompt_template = """<|im_start|>system
+You are a helpful assistant that provides accurate information about DB2 SQL codes.
+<|im_end|>
+<|im_start|>user
+{} What does this mean?
+<|im_end|>
+<|im_start|>assistant"""
 
     def generate_response(self, model: PreTrainedModel, input_text: str) -> str:
         """Generate a response with controlled parameters."""
-        # Extract just the SQL code
+        # Extract SQL code and format exactly like training
         sql_code = input_text.split()[0] if input_text else ""
         if not sql_code.startswith("SQL"):
             sql_code = "SQL" + sql_code
         
-        # Format input to match training pattern
+        # Format input using Llama 3 chat format
         prompt = self.prompt_template.format(sql_code)
         
         inputs = self.tokenizer(prompt, return_tensors="pt", truncation=True).to("cuda")
         with torch.no_grad():
             outputs = model.generate(
                 **inputs,
-                max_length=100,
-                min_length=5,
+                max_length=200,
+                min_length=10,
                 num_beams=1,
                 do_sample=False,
                 temperature=1.0,
@@ -44,9 +50,11 @@ class EvaluationMetrics(BaseMetrics):
             )
         response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
         
-        # Clean up response
-        if prompt in response:
-            response = response.replace(prompt, "").strip()
+        # Clean up response - extract just the assistant's response
+        if "<|im_start|>assistant" in response:
+            response = response.split("<|im_start|>assistant")[-1].strip()
+        if "<|im_end|>" in response:
+            response = response.split("<|im_end|>")[0].strip()
         
         return response
 
