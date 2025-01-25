@@ -118,12 +118,16 @@ class EvaluationManager:
     def load_model(self) -> None:
         """Load model and tokenizer for evaluation."""
         try:
+            self.logger.info(f"Loading model from {self.model_path}")
             self.tokenizer = AutoTokenizer.from_pretrained(self.model_path)
             self.model = AutoModelForCausalLM.from_pretrained(
                 self.model_path,
                 device_map="auto",
                 trust_remote_code=True
             )
+            self.logger.info("Model loaded successfully")
+            self.logger.info(f"Model device: {next(self.model.parameters()).device}")
+            
             # Initialize metrics after tokenizer is loaded
             self.metrics = EvaluationMetrics(self.tokenizer)
         except Exception as e:

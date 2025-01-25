@@ -34,7 +34,7 @@ class EvaluationMetrics(BaseMetrics):
         
         self.logger.info(f"Starting accuracy evaluation on {len(dataset)} samples")
         for i, example in enumerate(dataset):
-            if i % 10 == 0:  # Log every 10 samples
+            if i % 10 == 0:
                 self.logger.info(f"Processing sample {i}/{len(dataset)}")
             
             input_text = example.get('input', '')
@@ -43,8 +43,21 @@ class EvaluationMetrics(BaseMetrics):
             # Generate prediction
             inputs = self.tokenizer(input_text, return_tensors="pt", truncation=True).to("cuda")
             with torch.no_grad():
-                outputs = model.generate(**inputs)
+                outputs = model.generate(
+                    **inputs,
+                    max_length=512,
+                    num_beams=1,
+                    do_sample=False,
+                    temperature=1.0
+                )
             pred_text = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+            
+            # Debug logging for first few examples
+            if i < 3:
+                self.logger.info("\nExample evaluation:")
+                self.logger.info(f"Input: {input_text}")
+                self.logger.info(f"Target: {target_text}")
+                self.logger.info(f"Prediction: {pred_text}")
             
             # Calculate token accuracy
             pred_tokens = self.tokenizer.encode(pred_text, add_special_tokens=False)
