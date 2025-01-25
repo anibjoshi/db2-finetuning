@@ -23,6 +23,24 @@ Give a single, complete response.
 User: {} What does this mean?
 Assistant:"""
 
+        # Generation parameters
+        self.max_length = 512
+        self.min_length = 50
+        self.generation_config = {
+            "max_length": self.max_length,
+            "min_length": self.min_length,
+            "temperature": 0.7,
+            "top_p": 0.9,
+            "repetition_penalty": 1.3,
+            "no_repeat_ngram_size": 3,
+            "length_penalty": 1.0,
+            "early_stopping": True,
+            "do_sample": True,
+            "num_return_sequences": 1,
+            "pad_token_id": self.tokenizer.pad_token_id,
+            "eos_token_id": self.tokenizer.eos_token_id,
+        }
+
     def generate_response(self, model: PreTrainedModel, input_text: str) -> str:
         """Generate a response with controlled parameters."""
         # Extract SQL code and format exactly like training
@@ -37,18 +55,7 @@ Assistant:"""
         with torch.no_grad():
             outputs = model.generate(
                 **inputs,
-                max_length=self.max_length,
-                min_length=50,              # Ensure substantive responses
-                temperature=0.7,            # Balance between creativity and focus
-                top_p=0.9,                 # Nucleus sampling for natural text
-                repetition_penalty=1.3,     # Discourage repetition
-                no_repeat_ngram_size=3,     # Prevent repeating phrases
-                length_penalty=1.0,         # Balanced length control
-                early_stopping=True,        # Efficient generation
-                do_sample=True,            # Enable sampling for natural text
-                num_return_sequences=1,
-                pad_token_id=self.tokenizer.pad_token_id,
-                eos_token_id=self.tokenizer.eos_token_id,
+                **self.generation_config
             )
         response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
         
