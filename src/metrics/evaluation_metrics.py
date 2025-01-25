@@ -15,31 +15,36 @@ class EvaluationMetrics(BaseMetrics):
         super().__init__(tokenizer)
         self.rouge_scorer = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
         
-        # Define prompt template
-        self.prompt_template = "Question: {}\nAnswer: "
+        # Match training data format more closely
+        self.prompt_template = "{} What does this mean?"
 
     def generate_response(self, model: PreTrainedModel, input_text: str) -> str:
         """Generate a response with controlled parameters."""
-        # Format input with prompt template
-        prompt = self.prompt_template.format(input_text)
+        # Extract SQL code if present in the input
+        sql_code = input_text.split('.')[0] if '.' in input_text else input_text
+        
+        # Format input to match training pattern
+        prompt = self.prompt_template.format(sql_code)
         
         inputs = self.tokenizer(prompt, return_tensors="pt", truncation=True).to("cuda")
         with torch.no_grad():
             outputs = model.generate(
                 **inputs,
-                max_length=128,           # Even shorter responses
-                min_length=5,             # Allow shorter responses
-                num_beams=1,
+                max_length=150,
+                min_length=5,
+                num_beams=1,              # Back to simpler generation
                 do_sample=False,
                 temperature=1.0,
-                repetition_penalty=1.5,   # Stronger repetition penalty
-                length_penalty=0.8,       # Slightly favor shorter responses
-                early_stopping=True,
-                no_repeat_ngram_size=3    # Prevent 3-gram repetitions
+                repetition_penalty=1.2,
+                length_penalty=1.0,
+                early_stopping=True
             )
-        # Remove the prompt from the response
-        full_text = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
-        response = full_text.replace(prompt, "").strip()
+        response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+        
+        # Clean up response
+        if prompt in response:
+            response = response.replace(prompt, "").strip()
+        
         return response
 
     def calculate_accuracy(
