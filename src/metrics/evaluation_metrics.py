@@ -14,24 +14,22 @@ class EvaluationMetrics(BaseMetrics):
         super().__init__(tokenizer)
         self.rouge_scorer = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
         
-        # Generation settings
-        self.prompt_template = """You are a DB2 database expert assistant. \
-You provide brief, specific explanations of DB2 SQL codes. \
-Focus only on explaining what the SQL code means.
-
-User: {} What does this mean?
-Assistant:"""
+        # Match training format exactly
+        self.prompt_template = """<|im_start|>user
+{} What does this mean?<|im_end|>
+<|im_start|>assistant
+{} means """
 
         self.generation_config = {
-            "max_length": 100,           # Shorter responses
-            "min_length": 10,           # Allow shorter responses
-            "temperature": 0.3,         # More focused responses
-            "top_p": 0.5,              # More conservative sampling
-            "repetition_penalty": 1.5,  # Stronger repetition penalty
+            "max_length": 100,
+            "min_length": 10,
+            "temperature": 0.1,         # Even more focused
+            "top_p": 0.3,              # Very conservative sampling
+            "repetition_penalty": 1.5,
             "no_repeat_ngram_size": 3,
-            "length_penalty": 0.5,      # Favor shorter responses
+            "length_penalty": 0.3,      # Strongly favor shorter responses
             "early_stopping": True,
-            "do_sample": True,
+            "do_sample": False,        # Use greedy decoding
             "num_return_sequences": 1,
             "pad_token_id": self.tokenizer.pad_token_id,
             "eos_token_id": self.tokenizer.eos_token_id,
@@ -45,7 +43,7 @@ Assistant:"""
             sql_code = "SQL" + sql_code
         
         # Generate response
-        prompt = self.prompt_template.format(sql_code)
+        prompt = self.prompt_template.format(sql_code, sql_code)  # Include code twice
         inputs = self.tokenizer(prompt, return_tensors="pt", truncation=True).to("cuda")
         
         with torch.no_grad():
@@ -53,7 +51,12 @@ Assistant:"""
             response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
             
         # Extract assistant's response
-        return response.split("Assistant:")[-1].strip()
+        if "<|im_start|>assistant" in response:
+            response = response.split("<|im_start|>assistant")[-1].strip()
+        if "<|im_end|>" in response:
+            response = response.split("<|im_end|>")[0].strip()
+        
+        return response
 
     def _log_example(self, i: int, input_text: str, target_text: str, pred_text: str) -> None:
         """Log example inputs and outputs."""
