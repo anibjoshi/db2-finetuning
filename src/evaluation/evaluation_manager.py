@@ -57,38 +57,37 @@ class EvaluationManager:
             # Create new evaluation set
             self.logger.info(f"Creating new evaluation set: {eval_file}")
             
-            # Load the full dataset
-            dataset = load_dataset("json", data_files=str(data_path))["train"]
-            total_samples = len(dataset)
-            
-            # Sample with fixed seed for reproducibility
-            random.seed(42)  # Fixed seed for evaluation set
-            indices = random.sample(range(total_samples), min(self.eval_samples, total_samples))
-            
-            # Transform dialogue format to input/output format
+            # Read and process the JSONL file directly
             eval_examples = []
-            for i in indices:
-                dialogue = dataset[i]['dialogue']
-                # Only use first turn (user question and assistant response)
-                if len(dialogue) >= 2 and dialogue[0]['role'] == 'user' and dialogue[1]['role'] == 'assistant':
-                    example = {
-                        'input': dialogue[0]['content'],  # First user question
-                        'output': dialogue[1]['content']  # First assistant response
-                    }
-                    eval_examples.append(example)
-                    
-                    # Debug log for first few examples
-                    if len(eval_examples) <= 3:
-                        self.logger.info("\nExample conversion:")
-                        self.logger.info(f"Original dialogue: {dialogue}")
-                        self.logger.info(f"Converted example: {example}")
+            with open(data_path, 'r') as f:
+                lines = f.readlines()
+                # Sample lines if we have more than we need
+                if len(lines) > self.eval_samples:
+                    random.seed(42)  # Fixed seed
+                    lines = random.sample(lines, self.eval_samples)
+                
+                for line in lines:
+                    dialogue = json.loads(line)['dialogue']
+                    # Extract first turn Q&A
+                    if len(dialogue) >= 2 and dialogue[0]['role'] == 'user' and dialogue[1]['role'] == 'assistant':
+                        example = {
+                            'input': dialogue[0]['content'],
+                            'output': dialogue[1]['content']
+                        }
+                        eval_examples.append(example)
             
             # Save evaluation dataset
-            with open(eval_file, 'w', encoding='utf-8') as f:
+            with open(eval_file, 'w') as f:
                 for example in eval_examples:
-                    f.write(json.dumps(example, ensure_ascii=False) + '\n')
+                    f.write(json.dumps(example) + '\n')
             
             self.logger.info(f"Created evaluation set with {len(eval_examples)} samples")
+            # Log a few examples
+            for i, example in enumerate(eval_examples[:3]):
+                self.logger.info(f"\nExample {i+1}:")
+                self.logger.info(f"Input: {example['input']}")
+                self.logger.info(f"Output: {example['output']}")
+            
             return eval_file
             
         except Exception as e:
@@ -112,19 +111,25 @@ class EvaluationManager:
             
             # Debug: Check dataset content
             self.logger.info(f"\nFirst 3 examples from evaluation dataset:")
-            for i, example in enumerate(dataset[:3]):
+            for i, example in enumerate(dataset.select(range(min(3, len(dataset))))):
                 self.logger.info(f"\nExample {i+1}:")
-                self.logger.info(f"Input: {example.get('input', 'NO INPUT')}")
-                self.logger.info(f"Output: {example.get('output', 'NO OUTPUT')}")
+                if isinstance(example, dict):
+                    self.logger.info(f"Input: {example.get('input', 'NO INPUT')}")
+                    self.logger.info(f"Output: {example.get('output', 'NO OUTPUT')}")
+                else:
+                    self.logger.info(f"Unexpected example format: {example}")
             
             if len(dataset) == 0:
                 raise ValueError("Empty evaluation dataset")
             
             # Validate dataset format
             for example in dataset:
-                if not example.get('input') or not example.get('output'):
-                    self.logger.warning("Found example with missing input or output")
-                    self.logger.warning(f"Example: {example}")
+                if isinstance(example, dict):
+                    if not example.get('input') or not example.get('output'):
+                        self.logger.warning("Found example with missing input or output")
+                        self.logger.warning(f"Example: {example}")
+                else:
+                    self.logger.warning(f"Found example with unexpected format: {example}")
             
             self.logger.info(f"Loaded {len(dataset)} samples for evaluation from {data_path}")
             return dataset
