@@ -14,6 +14,32 @@ class EvaluationMetrics(BaseMetrics):
     def __init__(self, tokenizer):
         super().__init__(tokenizer)
         self.rouge_scorer = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
+        
+        # Define prompt template
+        self.prompt_template = "Question: {}\nAnswer: "
+
+    def generate_response(self, model: PreTrainedModel, input_text: str) -> str:
+        """Generate a response with controlled parameters."""
+        # Format input with prompt template
+        prompt = self.prompt_template.format(input_text)
+        
+        inputs = self.tokenizer(prompt, return_tensors="pt", truncation=True).to("cuda")
+        with torch.no_grad():
+            outputs = model.generate(
+                **inputs,
+                max_length=256,
+                min_length=10,
+                num_beams=1,
+                do_sample=False,
+                temperature=1.0,
+                repetition_penalty=1.2,
+                length_penalty=1.0,
+                early_stopping=True
+            )
+        # Remove the prompt from the response
+        full_text = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+        response = full_text.replace(prompt, "").strip()
+        return response
 
     def calculate_accuracy(
         self, 
@@ -40,21 +66,7 @@ class EvaluationMetrics(BaseMetrics):
             input_text = example.get('input', '')
             target_text = example.get('output', '')
             
-            # Generate prediction with controlled parameters
-            inputs = self.tokenizer(input_text, return_tensors="pt", truncation=True).to("cuda")
-            with torch.no_grad():
-                outputs = model.generate(
-                    **inputs,
-                    max_length=256,  # Shorter max length
-                    min_length=10,   # Ensure some minimal response
-                    num_beams=1,     # Simple greedy decoding
-                    do_sample=False,
-                    temperature=1.0,
-                    repetition_penalty=1.2,  # Penalize repetition
-                    length_penalty=1.0,      # Neither favor nor penalize length
-                    early_stopping=True      # Stop when EOS is generated
-                )
-            pred_text = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+            pred_text = self.generate_response(model, input_text)
             
             # Debug logging for first few examples
             if i < 3:
