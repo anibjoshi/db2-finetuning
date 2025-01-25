@@ -1,5 +1,4 @@
 from typing import Dict, List, Any
-from pathlib import Path
 import torch
 import numpy as np
 from transformers import PreTrainedModel
@@ -9,31 +8,28 @@ from nltk.translate.bleu_score import sentence_bleu
 from rouge_score import rouge_scorer
 
 class EvaluationMetrics(BaseMetrics):
-    """Comprehensive model evaluation metrics."""
+    """Metrics for evaluating DB2 SQL code explanation model."""
 
     def __init__(self, tokenizer):
         super().__init__(tokenizer)
         self.rouge_scorer = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
         
-        # Match inference prompt format
+        # Generation settings
         self.prompt_template = """You are a DB2 database expert assistant. \
-Provide clear and accurate answers to DB2 related questions. \
-Give a single, complete response.
+You provide brief, specific explanations of DB2 SQL codes. \
+Focus only on explaining what the SQL code means.
 
 User: {} What does this mean?
 Assistant:"""
 
-        # Generation parameters
-        self.max_length = 512
-        self.min_length = 50
         self.generation_config = {
-            "max_length": self.max_length,
-            "min_length": self.min_length,
-            "temperature": 0.7,
-            "top_p": 0.9,
-            "repetition_penalty": 1.3,
+            "max_length": 100,           # Shorter responses
+            "min_length": 10,           # Allow shorter responses
+            "temperature": 0.3,         # More focused responses
+            "top_p": 0.5,              # More conservative sampling
+            "repetition_penalty": 1.5,  # Stronger repetition penalty
             "no_repeat_ngram_size": 3,
-            "length_penalty": 1.0,
+            "length_penalty": 0.5,      # Favor shorter responses
             "early_stopping": True,
             "do_sample": True,
             "num_return_sequences": 1,
@@ -41,44 +37,34 @@ Assistant:"""
             "eos_token_id": self.tokenizer.eos_token_id,
         }
 
-    def generate_response(self, model: PreTrainedModel, input_text: str) -> str:
-        """Generate a response with controlled parameters."""
-        # Extract SQL code and format exactly like training
+    def _generate_response(self, model: PreTrainedModel, input_text: str) -> str:
+        """Generate model response for given input."""
+        # Extract and format SQL code
         sql_code = input_text.split()[0] if input_text else ""
         if not sql_code.startswith("SQL"):
             sql_code = "SQL" + sql_code
         
-        # Format input using inference prompt format
+        # Generate response
         prompt = self.prompt_template.format(sql_code)
-        
         inputs = self.tokenizer(prompt, return_tensors="pt", truncation=True).to("cuda")
+        
         with torch.no_grad():
-            outputs = model.generate(
-                **inputs,
-                **self.generation_config
-            )
-        response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
-        
-        # Clean up response - extract just the assistant's response
-        if "Assistant:" in response:
-            response = response.split("Assistant:")[-1].strip()
-        
-        return response
-
-    def calculate_accuracy(
-        self, 
-        model: PreTrainedModel, 
-        dataset: Dataset
-    ) -> float:
-        """Calculate response accuracy against ground truth.
-        
-        Args:
-            model: The model to evaluate
-            dataset: Dataset containing examples
+            outputs = model.generate(**inputs, **self.generation_config)
+            response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
             
-        Returns:
-            Token-level accuracy score
-        """
+        # Extract assistant's response
+        return response.split("Assistant:")[-1].strip()
+
+    def _log_example(self, i: int, input_text: str, target_text: str, pred_text: str) -> None:
+        """Log example inputs and outputs."""
+        if i < 3:  # Log first 3 examples
+            self.logger.info("\nExample evaluation:")
+            self.logger.info(f"Input: {input_text}")
+            self.logger.info(f"Target: {target_text}")
+            self.logger.info(f"Prediction: {pred_text}")
+
+    def calculate_accuracy(self, model: PreTrainedModel, dataset: Dataset) -> float:
+        """Calculate token-level accuracy."""
         total_correct = 0
         total_tokens = 0
         
@@ -89,15 +75,9 @@ Assistant:"""
             
             input_text = example.get('input', '')
             target_text = example.get('output', '')
+            pred_text = self._generate_response(model, input_text)
             
-            pred_text = self.generate_response(model, input_text)
-            
-            # Debug logging for first few examples
-            if i < 3:
-                self.logger.info("\nExample evaluation:")
-                self.logger.info(f"Input: {input_text}")
-                self.logger.info(f"Target: {target_text}")
-                self.logger.info(f"Prediction: {pred_text}")
+            self._log_example(i, input_text, target_text, pred_text)
             
             # Calculate token accuracy
             pred_tokens = self.tokenizer.encode(pred_text, add_special_tokens=False)
@@ -113,116 +93,82 @@ Assistant:"""
         self.logger.info(f"Completed accuracy evaluation. Final accuracy: {accuracy:.4f}")
         return accuracy
 
-    def evaluate_response_quality(
-        self, 
-        model: PreTrainedModel, 
-        dataset: Dataset
-    ) -> Dict[str, float]:
-        """Evaluate quality metrics of model responses."""
-        try:
-            self.logger.info(f"Starting response quality evaluation on {len(dataset)} samples")
-            bleu_scores = []
-            rouge_scores = {'rouge1': [], 'rouge2': [], 'rougeL': []}
-            response_lengths = []
+    def evaluate_response_quality(self, model: PreTrainedModel, dataset: Dataset) -> Dict[str, float]:
+        """Evaluate BLEU, ROUGE scores and response lengths."""
+        bleu_scores = []
+        rouge_scores = {'rouge1': [], 'rouge2': [], 'rougeL': []}
+        response_lengths = []
+        
+        self.logger.info(f"Starting response quality evaluation on {len(dataset)} samples")
+        for i, example in enumerate(dataset):
+            if i % 10 == 0:
+                self.logger.info(f"Processing sample {i}/{len(dataset)}")
             
-            for i, example in enumerate(dataset):
-                if i % 10 == 0:
-                    self.logger.info(f"Processing sample {i}/{len(dataset)}")
-                
-                input_text = example.get('input', '')
-                target_text = example.get('output', '')
-                
-                # Use consistent generation method
-                pred_text = self.generate_response(model, input_text)
-                
-                # Calculate metrics
-                reference = [target_text.split()]
-                candidate = pred_text.split()
-                bleu = sentence_bleu(reference, candidate)
-                bleu_scores.append(bleu)
-                
-                rouge_result = self.rouge_scorer.score(target_text, pred_text)
-                for key in rouge_scores:
-                    rouge_scores[key].append(rouge_result[key].fmeasure)
-                
-                response_lengths.append(len(candidate))
-                
-                # Debug logging for first few examples
-                if i < 3:
-                    self.logger.info("\nExample evaluation:")
-                    self.logger.info(f"Input: {input_text}")
-                    self.logger.info(f"Target: {target_text}")
-                    self.logger.info(f"Prediction: {pred_text}")
+            input_text = example.get('input', '')
+            target_text = example.get('output', '')
+            pred_text = self._generate_response(model, input_text)
             
-            metrics = {
-                'bleu_score': np.mean(bleu_scores),
-                'rouge1_f1': np.mean(rouge_scores['rouge1']),
-                'rouge2_f1': np.mean(rouge_scores['rouge2']),
-                'rougeL_f1': np.mean(rouge_scores['rougeL']),
-                'avg_response_length': np.mean(response_lengths),
-                'response_length_std': np.std(response_lengths)
-            }
+            self._log_example(i, input_text, target_text, pred_text)
             
-            self.logger.info("Completed response quality evaluation:")
-            for metric, value in metrics.items():
-                self.logger.info(f"{metric}: {value:.4f}")
+            # Calculate metrics
+            reference = [target_text.split()]
+            candidate = pred_text.split()
             
-            return metrics
-            
-        except Exception as e:
-            self.logger.error(f"Error computing quality metrics: {e}")
-            raise
+            bleu_scores.append(sentence_bleu(reference, candidate))
+            rouge_result = self.rouge_scorer.score(target_text, pred_text)
+            for key in rouge_scores:
+                rouge_scores[key].append(rouge_result[key].fmeasure)
+            response_lengths.append(len(candidate))
+        
+        metrics = {
+            'bleu_score': np.mean(bleu_scores),
+            'rouge1_f1': np.mean(rouge_scores['rouge1']),
+            'rouge2_f1': np.mean(rouge_scores['rouge2']),
+            'rougeL_f1': np.mean(rouge_scores['rougeL']),
+            'avg_response_length': np.mean(response_lengths),
+            'response_length_std': np.std(response_lengths)
+        }
+        
+        self.logger.info("Completed response quality evaluation:")
+        for metric, value in metrics.items():
+            self.logger.info(f"{metric}: {value:.4f}")
+        
+        return metrics
 
-    def evaluate_content_relevance(
-        self, 
-        model: PreTrainedModel, 
-        dataset: Dataset
-    ) -> Dict[str, float]:
-        """Evaluate content relevance of responses."""
-        try:
-            self.logger.info(f"Starting content relevance evaluation on {len(dataset)} samples")
-            keyword_matches = []
-            context_scores = []
+    def evaluate_content_relevance(self, model: PreTrainedModel, dataset: Dataset) -> Dict[str, float]:
+        """Evaluate keyword overlap between predictions and targets/inputs."""
+        keyword_matches = []
+        context_scores = []
+        
+        self.logger.info(f"Starting content relevance evaluation on {len(dataset)} samples")
+        for i, example in enumerate(dataset):
+            if i % 10 == 0:
+                self.logger.info(f"Processing sample {i}/{len(dataset)}")
             
-            for i, example in enumerate(dataset):
-                if i % 10 == 0:
-                    self.logger.info(f"Processing sample {i}/{len(dataset)}")
-                
-                input_text = example.get('input', '')
-                target_text = example.get('output', '')
-                
-                # Use consistent generation method
-                pred_text = self.generate_response(model, input_text)
-                
-                # Calculate metrics
-                input_keywords = set(input_text.lower().split())
-                pred_keywords = set(pred_text.lower().split())
-                target_keywords = set(target_text.lower().split())
-                
-                keyword_match = len(pred_keywords & target_keywords) / len(target_keywords) if target_keywords else 0
-                keyword_matches.append(keyword_match)
-                
-                context_relevance = len(pred_keywords & input_keywords) / len(input_keywords) if input_keywords else 0
-                context_scores.append(context_relevance)
-                
-                # Debug logging for first few examples
-                if i < 3:
-                    self.logger.info("\nExample evaluation:")
-                    self.logger.info(f"Input: {input_text}")
-                    self.logger.info(f"Target: {target_text}")
-                    self.logger.info(f"Prediction: {pred_text}")
+            input_text = example.get('input', '')
+            target_text = example.get('output', '')
+            pred_text = self._generate_response(model, input_text)
             
-            results = {
-                'keyword_match_rate': np.mean(keyword_matches),
-                'context_relevance': np.mean(context_scores)
-            }
+            self._log_example(i, input_text, target_text, pred_text)
             
-            self.logger.info("Completed content relevance evaluation:")
-            for metric, value in results.items():
-                self.logger.info(f"{metric}: {value:.4f}")
+            # Calculate keyword overlap
+            input_keywords = set(input_text.lower().split())
+            pred_keywords = set(pred_text.lower().split())
+            target_keywords = set(target_text.lower().split())
             
-            return results
+            keyword_match = len(pred_keywords & target_keywords) / len(target_keywords) if target_keywords else 0
+            context_relevance = len(pred_keywords & input_keywords) / len(input_keywords) if input_keywords else 0
             
-        except Exception as e:
-            self.logger.error(f"Error computing relevance metrics: {e}")
-            raise 
+            keyword_matches.append(keyword_match)
+            context_scores.append(context_relevance)
+        
+        results = {
+            'keyword_match_rate': np.mean(keyword_matches),
+            'context_relevance': np.mean(context_scores)
+        }
+        
+        self.logger.info("Completed content relevance evaluation:")
+        for metric, value in results.items():
+            self.logger.info(f"{metric}: {value:.4f}")
+        
+        return results 
