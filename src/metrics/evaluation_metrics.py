@@ -40,15 +40,19 @@ class EvaluationMetrics(BaseMetrics):
             input_text = example.get('input', '')
             target_text = example.get('output', '')
             
-            # Generate prediction
+            # Generate prediction with controlled parameters
             inputs = self.tokenizer(input_text, return_tensors="pt", truncation=True).to("cuda")
             with torch.no_grad():
                 outputs = model.generate(
                     **inputs,
-                    max_length=512,
-                    num_beams=1,
+                    max_length=256,  # Shorter max length
+                    min_length=10,   # Ensure some minimal response
+                    num_beams=1,     # Simple greedy decoding
                     do_sample=False,
-                    temperature=1.0
+                    temperature=1.0,
+                    repetition_penalty=1.2,  # Penalize repetition
+                    length_penalty=1.0,      # Neither favor nor penalize length
+                    early_stopping=True      # Stop when EOS is generated
                 )
             pred_text = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
             
