@@ -15,14 +15,13 @@ class EvaluationMetrics(BaseMetrics):
         super().__init__(tokenizer)
         self.rouge_scorer = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
         
-        # Llama 3 chat format
-        self.prompt_template = """<|im_start|>system
-You are a helpful assistant that provides accurate information about DB2 SQL codes.
-<|im_end|>
-<|im_start|>user
-{} What does this mean?
-<|im_end|>
-<|im_start|>assistant"""
+        # Match inference prompt format
+        self.prompt_template = """You are a DB2 database expert assistant. \
+Provide clear and accurate answers to DB2 related questions. \
+Give a single, complete response.
+
+User: {} What does this mean?
+Assistant:"""
 
     def generate_response(self, model: PreTrainedModel, input_text: str) -> str:
         """Generate a response with controlled parameters."""
@@ -31,30 +30,31 @@ You are a helpful assistant that provides accurate information about DB2 SQL cod
         if not sql_code.startswith("SQL"):
             sql_code = "SQL" + sql_code
         
-        # Format input using Llama 3 chat format
+        # Format input using inference prompt format
         prompt = self.prompt_template.format(sql_code)
         
         inputs = self.tokenizer(prompt, return_tensors="pt", truncation=True).to("cuda")
         with torch.no_grad():
             outputs = model.generate(
                 **inputs,
-                max_length=200,
-                min_length=10,
-                num_beams=1,
-                do_sample=False,
-                temperature=1.0,
-                repetition_penalty=1.2,
-                length_penalty=1.0,
-                early_stopping=True,
-                pad_token_id=self.tokenizer.eos_token_id
+                max_length=self.max_length,
+                min_length=50,              # Ensure substantive responses
+                temperature=0.7,            # Balance between creativity and focus
+                top_p=0.9,                 # Nucleus sampling for natural text
+                repetition_penalty=1.3,     # Discourage repetition
+                no_repeat_ngram_size=3,     # Prevent repeating phrases
+                length_penalty=1.0,         # Balanced length control
+                early_stopping=True,        # Efficient generation
+                do_sample=True,            # Enable sampling for natural text
+                num_return_sequences=1,
+                pad_token_id=self.tokenizer.pad_token_id,
+                eos_token_id=self.tokenizer.eos_token_id,
             )
         response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
         
         # Clean up response - extract just the assistant's response
-        if "<|im_start|>assistant" in response:
-            response = response.split("<|im_start|>assistant")[-1].strip()
-        if "<|im_end|>" in response:
-            response = response.split("<|im_end|>")[0].strip()
+        if "Assistant:" in response:
+            response = response.split("Assistant:")[-1].strip()
         
         return response
 
