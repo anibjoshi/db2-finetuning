@@ -1,7 +1,7 @@
 import logging
 import argparse
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Dict
 
 from preprocessing.data_processor import DataProcessor
 from training.training_manager import TrainingManager
@@ -17,6 +17,15 @@ from utils.config import (
     SUPPORTED_DB2_VERSIONS,
     DEFAULT_DB2_VERSION
 )
+
+# Hardcoded model paths
+MODEL_PATHS: Dict[int, Path] = {
+    1: Path("src/model/model1/best_model"),
+    2: Path("src/model/model2/best_model"),
+    3: Path("src/model/model3/best_model"),
+    4: Path("src/model/model4/best_model"),
+    5: Path("src/model/model5/best_model")
+}
 
 def setup_logging(log_file: Optional[str] = "training.log") -> None:
     """Configure application-wide logging.
@@ -103,6 +112,13 @@ def parse_args() -> argparse.Namespace:
         choices=SUPPORTED_DB2_VERSIONS,
         help='Db2 version'
     )
+    infer_parser.add_argument(
+        '--model-version',
+        type=int,
+        default=1,
+        choices=list(MODEL_PATHS.keys()),
+        help='Model version to use for inference'
+    )
     
     # Rename validation parser to evaluation
     eval_parser = subparsers.add_parser('evaluate', help='Evaluate model performance')
@@ -157,8 +173,12 @@ def main() -> None:
             trainer.train(args.data_dir)
             
         elif args.action == 'infer':
-            # Load model and generate response
-            inferencer = InferenceManager(BEST_MODEL_DIR)
+            # Load specific model version and generate response
+            model_path = MODEL_PATHS.get(args.model_version)
+            if not model_path:
+                raise ValueError(f"Invalid model version: {args.model_version}")
+        
+            inferencer = InferenceManager(model_path)
             response = inferencer.generate_response(
                 question=args.question,
                 db2_version=args.version
