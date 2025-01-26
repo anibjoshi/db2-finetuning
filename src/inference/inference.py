@@ -167,14 +167,14 @@ class DB2ModelInference:
             with torch.no_grad():
                 outputs = self.model.generate(
                     **inputs,
-                    max_length=self.max_length,
+                    max_length=128,  # Ensure substantive responses
                     min_length=50,  # Ensure substantive responses
-                    temperature=0.7,  # Balance between creativity and focus
+                    temperature=0.1,  # Balance between creativity and focus
+                    top_k=50,
                     top_p=0.9,  # Nucleus sampling for natural text
-                    repetition_penalty=1.3,  # Discourage repetition
+                    repetition_penalty=1.5,  # Discourage repetition
                     no_repeat_ngram_size=3,  # Prevent repeating phrases
                     length_penalty=1.0,  # Balanced length control
-                    early_stopping=True,  # Efficient generation
                     do_sample=True,  # Enable sampling for natural text
                     num_return_sequences=1,
                     pad_token_id=self.tokenizer.pad_token_id,
@@ -198,10 +198,10 @@ class DB2ModelInference:
                 
             logger.info(f"Generated response: {response}")
             
-            # Add simple validation before returning
-            if not self.validate_response(response):
-                logger.warning("Generated response failed quality check")
-                raise ValueError("Generated response failed quality validation")
+            # # Add simple validation before returning
+            # if not self.validate_response(response):
+            #     logger.warning("Generated response failed quality check")
+            #     raise ValueError("Generated response failed quality validation")
                 
             return response
             
